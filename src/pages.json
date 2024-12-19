@@ -20,9 +20,58 @@
     }
   ],
   "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
+    "pageOrientation": "portrait",
+    "navigationBarTitleText": "Hello uniapp",
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#007AFF",
+    "backgroundColor": "#F8F8F8",
+    "backgroundColorTop": "#F4F5F6",
+    "backgroundColorBottom": "#F4F5F6",
+    "mp-360": {
+      "navigationStyle": "custom"
+    },
+    "h5": {
+      "maxWidth": 1190,
+      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#F1F1F1"
+    }
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#007AFF",
+    "borderStyle": "black",
+    "backgroundColor": "#F8F8F8",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/icon_menu_index.png",
+        "selectedIconPath": "static/icon_menu_index_checked.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/login/index",
+        "iconPath": "static/icon_menu_customer.png",
+        "selectedIconPath": "static/icon_menu_customer_checked.png",
+        "text": "客户"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/icon_menu_resource.png",
+        "selectedIconPath": "static/icon_menu_resource_checked.png",
+        "text": "空间"
+      },
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/icon_menu_contract.png",
+        "selectedIconPath": "static/icon_menu_contract_checked.png",
+        "text": "合同"
+      },
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/icon_menu_me.png",
+        "selectedIconPath": "static/icon_menu_me_checked.png",
+        "text": "我的"
+      }
+    ]
   }
 }
