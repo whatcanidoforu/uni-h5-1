@@ -1,15 +1,17 @@
 {
   "pages": [
     {
-      "path": "pages/home/index",
+      "path": "pages/login/index",
       "style": {
-        "navigationBarTitleText": "uni-app"
+        "navigationBarTitleText": "",
+        "transparentTitle": true,
+        "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/login/index",
+      "path": "pages/home/index",
       "style": {
-        "navigationBarTitleText": "uni-app-login"
+        "navigationBarTitleText": "uni-app"
       }
     },
     {
@@ -70,7 +72,7 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/login/index",
+        "pagePath": "pages/home/index",
         "iconPath": "static/icon_menu_customer.png",
         "selectedIconPath": "static/icon_menu_customer_checked.png",
         "text": "客户"

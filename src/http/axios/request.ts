@@ -92,9 +92,9 @@ class Request {
             const pages = getCurrentPages();
             const currentPage = pages[pages.length - 1];
             const currentRoute = currentPage.route || "";
-            if (currentRoute !== "/login") {
+            if (currentRoute !== "pages/login/index") {
               uni.navigateTo({
-                url: "/login?redirect=" + currentRoute,
+                url: "pages/login/index",
               });
             }
             break;

@@ -19,7 +19,6 @@ export function apiLogin(params: {
   mobile: string;
   checkCode: string;
   expire?: number | undefined;
-  oid: number;
 }): Promise<IPermission> {
   return rjkRequest({
     url: "auth.loginByCheckCode",
@@ -63,7 +62,6 @@ export function apiLoginByLoginName(params: {
   loginName: string;
   password: string;
   expire?: number | undefined;
-  oid: number;
 }) {
   return rjkRequest<IPermission>({
     url: "auth.loginByLoginName",
