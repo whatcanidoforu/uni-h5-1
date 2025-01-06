@@ -41,9 +41,10 @@ const rjkRequest = <T>(config: AxiosRequestConfig) => {
   // const permissionStore = usePermissionStore()
   const _sessionId = localStorage.getItem("sessionId");
   const _userId = localStorage.getItem("userId");
-  const _oid = localStorage.getItem("oid");
+  // const _oid = localStorage.getItem("oid");
   config.method = config.method || "POST";
-  config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}&oid=${_oid}`;
+  // config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}&oid=${_oid}`;
+  config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}`;
   const _globalBaseURL = window?.globalApi?.business ?? "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
@@ -54,9 +55,10 @@ const rjkRequestOuter = <T>(
   // const permissionStore = usePermissionStore()
   const _sessionId = localStorage.getItem("sessionId");
   const _userId = localStorage.getItem("userId");
-  const _oid = localStorage.getItem("oid");
+  // const _oid = localStorage.getItem("oid");
   config.method = config.method || "POST";
-  config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}&oid=${_oid}`;
+  // config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}&oid=${_oid}`;
+  config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}`;
   const _globalBaseURL = window?.globalApi?.business ?? "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
@@ -141,7 +143,7 @@ const rjkOpenRequest = (
 ) => {
   const _sessionId = localStorage.getItem("sessionId");
   const _userId = localStorage.getItem("userId");
-  const _oid = localStorage.getItem("oid");
+  // const _oid = localStorage.getItem("oid");
   let queryString = "";
   if (config.params) {
     for (const key in config.params) {
@@ -158,7 +160,8 @@ const rjkOpenRequest = (
   if (fullPath) {
     url = `${url.replace("/gateway", "")}${fullPath}`;
   } else {
-    url = `${url}?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}${queryString}&oid=${_oid}`;
+    // url = `${url}?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}${queryString}&oid=${_oid}`;
+    url = `${url}?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}${queryString}`;
   }
   if (open) {
     downloadLinkFile(url);

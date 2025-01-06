@@ -12,9 +12,10 @@ const request = new Request({
 const uploadRequest = <T>(config: AxiosRequestConfig) => {
   const _sessionId = localStorage.getItem("sessionId");
   const _userId = localStorage.getItem("userId");
-  const _oid = localStorage.getItem("oid");
+  // const _oid = localStorage.getItem("oid");
   config.method = "POST";
-  config.url = `?sessionId=${_sessionId}&userId=${_userId}&method=${config.url}&oid=${_oid}`;
+  // config.url = `?sessionId=${_sessionId}&userId=${_userId}&method=${config.url}&oid=${_oid}`;
+  config.url = `?sessionId=${_sessionId}&userId=${_userId}&method=${config.url}`;
   const _globalBaseURL = window?.globalApi?.business ?? "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
