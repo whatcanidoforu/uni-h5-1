@@ -43,8 +43,7 @@ const rjkRequest = <T>(config: AxiosRequestConfig) => {
   const _userId = localStorage.getItem("userId");
   // const _oid = localStorage.getItem("oid");
   config.method = config.method || "POST";
-  // config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}&oid=${_oid}`;
-  config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}`;
+  config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}&oid=1`;
   const _globalBaseURL = window?.globalApi?.business ?? "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
@@ -57,8 +56,7 @@ const rjkRequestOuter = <T>(
   const _userId = localStorage.getItem("userId");
   // const _oid = localStorage.getItem("oid");
   config.method = config.method || "POST";
-  // config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}&oid=${_oid}`;
-  config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}`;
+  config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}&oid=1`;
   const _globalBaseURL = window?.globalApi?.business ?? "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
@@ -160,8 +158,7 @@ const rjkOpenRequest = (
   if (fullPath) {
     url = `${url.replace("/gateway", "")}${fullPath}`;
   } else {
-    // url = `${url}?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}${queryString}&oid=${_oid}`;
-    url = `${url}?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}${queryString}`;
+    url = `${url}?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}${queryString}&oid=1`;
   }
   if (open) {
     downloadLinkFile(url);

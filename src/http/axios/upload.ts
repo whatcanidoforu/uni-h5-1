@@ -14,8 +14,7 @@ const uploadRequest = <T>(config: AxiosRequestConfig) => {
   const _userId = localStorage.getItem("userId");
   // const _oid = localStorage.getItem("oid");
   config.method = "POST";
-  // config.url = `?sessionId=${_sessionId}&userId=${_userId}&method=${config.url}&oid=${_oid}`;
-  config.url = `?sessionId=${_sessionId}&userId=${_userId}&method=${config.url}`;
+  config.url = `?sessionId=${_sessionId}&userId=${_userId}&method=${config.url}&oid=1`;
   const _globalBaseURL = window?.globalApi?.business ?? "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
