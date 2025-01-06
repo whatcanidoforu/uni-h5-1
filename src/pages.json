@@ -9,6 +9,22 @@
       }
     },
     {
+      "path": "pages/login/forget",
+      "style": {
+        "navigationBarTitleText": "",
+        "transparentTitle": true,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/register",
+      "style": {
+        "navigationBarTitleText": "",
+        "transparentTitle": true,
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "uni-app"

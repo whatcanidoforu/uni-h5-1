@@ -4,7 +4,7 @@
       class="login-input"
       :class="{ filled: !!userForm.loginName }"
       v-model="userForm.loginName"
-      placeholder="请输入你的用户名"
+      placeholder="请输入用户名"
       :trim="true"
       :clearable="false"
       :inputBorder="false"
@@ -19,19 +19,16 @@
       :clearable="false"
       :inputBorder="false"
     ></uni-easyinput>
-    <view class="checkbox-container">
-      <view style="display: flex; align-items: center">
-        <checkbox-group @change="rememberChange">
-          <checkbox
-            style="transform: scale(0.7)"
-            value="1"
-            color="#009ceb"
-          ></checkbox>
-        </checkbox-group>
-        <text>记住用户名</text>
-      </view>
-      <text>忘记密码？</text>
-    </view>
+    <uni-easyinput
+      class="login-input"
+      :class="{ filled: !!userForm.confirmPassword }"
+      type="password"
+      v-model="userForm.confirmPassword"
+      placeholder="请再次输入密码"
+      :trim="true"
+      :clearable="false"
+      :inputBorder="false"
+    ></uni-easyinput>
     <view class="button-container">
       <button
         class="login-button"
@@ -39,7 +36,7 @@
         :loading="userLoginLoading"
         :disabled="userLoginLoading"
       >
-        登录
+        注册
       </button>
     </view>
   </view>
@@ -47,63 +44,71 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { apiLoginByLoginName } from "@/http/api/login";
+import { apiRegister } from "@/http/api/login";
 
-const props = defineProps({
-  registerName: {
-    type: String,
-    default: "",
-  },
-});
-
-// 账号密码登录
-const remember = ref(localStorage.getItem("loginName") ? true : false);
-
-const rememberChange = (e: any) => {
-  const length = e?.detail?.value?.length ?? 0;
-  remember.value = !!length;
-};
-
-// 用户登录表单
 const userForm = ref({
-  loginName: props.registerName || localStorage.getItem("loginName") || "",
+  loginName: "",
   password: "",
+  confirmPassword: "",
 });
 const userLoginLoading = ref(false);
 
+const emit = defineEmits(["success"]);
+
 const userNameLogin = () => {
-  if (!userForm.value.loginName) {
+  const loginName = userForm.value.loginName;
+  const password = userForm.value.password;
+  const confirmPassword = userForm.value.confirmPassword;
+  if (!loginName) {
     uni.showToast({
       title: "用户名不能为空",
       icon: "none",
     });
     return false;
   }
-  if (!userForm.value.password) {
+  if (loginName.length < 4 || loginName.length > 16) {
+    uni.showToast({
+      title: "用户名必须由4-16位数字/字母/._-@组成",
+      icon: "none",
+    });
+    return false;
+  }
+  if (!password) {
     uni.showToast({
       title: "密码不能为空",
       icon: "none",
     });
     return false;
   }
+  if (password.length < 4 || password.length > 16) {
+    uni.showToast({
+      title: "密码必须位6-16位",
+      icon: "none",
+    });
+    return false;
+  }
+  if (!confirmPassword) {
+    uni.showToast({
+      title: "再次输入密码不能为空",
+      icon: "none",
+    });
+    return false;
+  }
+  if (confirmPassword != password) {
+    uni.showToast({
+      title: "两次输入密码不一致",
+      icon: "none",
+    });
+    return false;
+  }
   userLoginLoading.value = true;
-  apiLoginByLoginName({
-    loginName: userForm.value.loginName,
-    password: userForm.value.password,
-  })
-    .then((res) => {
-      if (remember.value) {
-        localStorage.setItem("loginName", userForm.value.loginName);
-      } else {
-        localStorage.removeItem("loginName");
-      }
-      localStorage.setItem("sessionId", res.sessionId);
-      localStorage.setItem("userId", res.userId);
-      localStorage.setItem("oldToken", res.oldToken);
-      localStorage.setItem("oldEmpId", res.oldEmpId);
-      uni.switchTab({
-        url: "/pages/home/index",
+  apiRegister(userForm.value)
+    .then(() => {
+      uni.showToast({
+        title: "注册成功",
+        icon: "none",
       });
+      emit("success", loginName);
     })
     .finally(() => {
       userLoginLoading.value = false;

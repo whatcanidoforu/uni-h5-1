@@ -1,5 +1,5 @@
 <template>
-  <div class="login-form">
+  <text class="login-form">
     <uni-easyinput
       class="login-input"
       :class="{ filled: !!userForm.mobile }"
@@ -23,15 +23,15 @@
       :maxlength="6"
     >
       <template #right>
-        <span
+        <text
           class="check-code-btn"
           :class="{ disabled: !canGetCode }"
           @click="getCheckCode"
-          >{{ checkCodeText }}</span
+          >{{ checkCodeText }}</text
         >
       </template>
     </uni-easyinput>
-    <div class="button-container">
+    <text class="button-container">
       <button
         class="login-button"
         @click="mobileLogin"
@@ -40,8 +40,8 @@
       >
         登录
       </button>
-    </div>
-  </div>
+    </text>
+  </text>
 </template>
 
 <script setup lang="ts">

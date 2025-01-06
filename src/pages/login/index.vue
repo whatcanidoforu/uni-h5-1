@@ -1,6 +1,6 @@
 <template>
-  <div class="login">
-    <div class="gateway-btn" @click="setGateway">网关设置</div>
+  <view class="login">
+    <view class="gateway-btn" @click="setGateway">网关设置</view>
     <uni-popup ref="RefGatewayDialog" type="dialog">
       <uni-popup-dialog
         ref="inputClose"
@@ -19,27 +19,31 @@
         </template>
       </uni-popup-dialog>
     </uni-popup>
-    <div class="main">
+    <view class="main">
       <image src="../../static/icon_logo.png" class="logo" />
-      <div class="title">欢迎登录锐嘉科云</div>
-      <div class="sub-title">{{ loginTypeName }}直接登录</div>
+      <view class="title">
+        <text>欢迎登录锐嘉科云</text>
+      </view>
+      <view class="sub-title">{{ subTitle }}</view>
       <AccountForm v-if="loginType == 1" />
       <Cellphone v-if="loginType == 2" />
-      <div class="register-container">
-        <div>
-          <span v-if="loginType == 1">没有账号？点此注册</span>
-        </div>
-        <div style="color: #009ceb" @click="changeLoginType">
+      <view class="register-container">
+        <view>
+          <text v-if="loginType == 1" @click="toRegister"
+            >没有账号？点此注册</text
+          >
+        </view>
+        <view style="color: #009ceb" @click="changeLoginType">
           {{ toggleLoginText }}登录
-        </div>
-      </div>
-    </div>
-    <div class="bottom-text">
+        </view>
+      </view>
+    </view>
+    <view class="bottom-text">
       登录即代表已阅读并同意
       <a href="javascript:;">《隐私政策》</a>
       <a href="javascript:;">《用户协议》</a>
-    </div>
-  </div>
+    </view>
+  </view>
 </template>
 
 <script setup lang="ts">
@@ -49,7 +53,7 @@ import Cellphone from "./components/cellphone.vue";
 
 const loginType = ref(1);
 
-const loginTypeName = ref("账号密码");
+const subTitle = ref("账号密码直接登录");
 const toggleLoginText = ref("验证码");
 
 const gatewayPath = ref(window.globalApi?.business ?? "");
@@ -64,13 +68,19 @@ if (!gatewayPath.value) {
 const changeLoginType = () => {
   if (loginType.value == 1) {
     loginType.value = 2;
-    loginTypeName.value = "手机验证码";
+    subTitle.value = "手机验证码直接登录";
     toggleLoginText.value = "账号";
   } else {
     loginType.value = 1;
-    loginTypeName.value = "账号密码";
+    subTitle.value = "账号密码直接登录";
     toggleLoginText.value = "验证码";
   }
+};
+
+const toRegister = () => {
+  uni.navigateTo({
+    url: "/pages/login/register",
+  });
 };
 
 const RefGatewayDialog = ref();
@@ -94,6 +104,11 @@ const gatewayConfirm = () => {
   background-image: linear-gradient(#dfeffe, #f4f8fb);
   box-sizing: border-box;
   padding-bottom: 80px;
+  .back-arrow {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+  }
   .gateway-btn {
     position: absolute;
     right: 20px;
