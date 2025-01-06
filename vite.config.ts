@@ -17,7 +17,7 @@ export default defineConfig({
         // target: 'https://172.16.1.62:9443/gateway', // 许小可
         // target: 'https://172.16.1.171:9443/gateway', // 项磊
         // target: 'https://testapi.ruijiakeyun.com/gateway', // 测试
-        target: "https://test-api.ruijiakeyun.com:2643/gateway", // 测试环境
+        target: "https://test-api.ruijiakeyun.com:2643/gateway-app", // 测试环境
         // target: "https://dev-api.ruijiakeyun.com:9443/gateway", // 测试
         // target: 'https://dev-api.ruijiakeyun.com:9443/gateway', // 测试
         // target: 'https://192.168.11.203:9443/gateway', // 项磊2

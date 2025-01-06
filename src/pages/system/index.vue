@@ -96,66 +96,46 @@
   </view>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
+<script setup lang="ts">
+import { ref, computed, onBeforeMount } from "vue";
 import { apiGetUserAuthInfo } from "@/http/api/login";
-// import { useHeaderPark } from "@/stores/park";
-// import { IPark } from "@/types/permission";
+import { useHeaderPark } from "@/stores/park";
+import type { IPark } from "@/types/permission";
 
-// const headerParkStore = useHeaderPark();
-// const parks = ref<IPark[]>([])
+const headerParkStore = useHeaderPark();
+const parks = ref<IPark[]>([]);
 
-//先注释掉，现在没有登录态，用假数据
+onBeforeMount(async () => {
+  const userId = localStorage.getItem("userId") || "";
 
-// onBeforeMount(async () => {
-//   const userId = localStorage.getItem("userId") || "";
-//   const storagedParkId =
-//     Number(localStorage.getItem(`parkId_zhaoshang_${userId}`)) || undefined;
-//   const storagedParkIdWuye =
-//     String(localStorage.getItem(`parkId_wuye_${userId}`)) || "";
-//   try {
-//     const res = await apiGetUserAuthInfo(userId);
-//     parks.value = res.parks;
-//     headerParkStore.setParks(parks.value);
-//   } catch (e) {
-//     parks.value = [];
-//   }
-//   if (parks.value.length) {
-//     if (parks.value.some((item) => item.id == storagedParkId)) {
-//       headerParkStore.selectedId = storagedParkId;
-//     } else {
-//       headerParkStore.setParkId(parks.value[0].id);
-//     }
+  const storagedParkId =
+    Number(localStorage.getItem(`parkId_zhaoshang_${userId}`)) || undefined;
+  const storagedParkIdWuye =
+    String(localStorage.getItem(`parkId_wuye_${userId}`)) || "";
+  try {
+    const res = await apiGetUserAuthInfo(userId);
+    parks.value = res.parks;
+    headerParkStore.setParks(parks.value);
+  } catch (e) {
+    parks.value = [];
+  }
+  if (parks.value.length) {
+    if (parks.value.some((item) => item.id == storagedParkId)) {
+      headerParkStore.selectedId = storagedParkId;
+    } else {
+      headerParkStore.setParkId(parks.value[0].id);
+    }
 
-//     if (parks.value.some((item) => item.wyParkId == storagedParkIdWuye)) {
-//       headerParkStore.selectedIdWuye = storagedParkIdWuye;
-//     } else {
-//       headerParkStore.setParkIdWuye(parks.value[0].wyParkId);
-//     }
-//   } else {
-//     headerParkStore.selectedId = undefined;
-//     headerParkStore.selectedIdWuye = "";
-//   }
-// });
-const parks = ref([
-  {
-    id: 1,
-    name: "移动智地",
-  },
-  {
-    id: 2,
-    name: "远古遗迹",
-  },
-  {
-    id: 3,
-    name: "炼狱小镇",
-  },
-  {
-    id: 4,
-    name: "荒漠迷城",
-  },
-]);
-
+    if (parks.value.some((item) => item.wyParkId == storagedParkIdWuye)) {
+      headerParkStore.selectedIdWuye = storagedParkIdWuye;
+    } else {
+      headerParkStore.setParkIdWuye(parks.value[0].wyParkId);
+    }
+  } else {
+    headerParkStore.selectedId = undefined;
+    headerParkStore.selectedIdWuye = "";
+  }
+});
 const systems = ref([
   {
     id: 11,
@@ -168,7 +148,7 @@ const systems = ref([
 ]);
 
 //园区
-const parkPopup = ref(null);
+const parkPopup = ref();
 const currentParkIndex = ref(0);
 const tempParkIndex = ref(0);
 const openParkUnit = () => {
@@ -176,7 +156,7 @@ const openParkUnit = () => {
   tempParkIndex.value = 0;
 };
 
-const parkChange = (e) => {
+const parkChange = (e: any) => {
   console.log(e.detail.value);
   tempParkIndex.value = e.detail.value;
 };
@@ -184,9 +164,10 @@ const confirmPark = () => {
   currentParkIndex.value = tempParkIndex.value;
   parkPopup.value.close();
   //设置当前园区的id到headerParkStore中
+  headerParkStore.setParkId(currentParkIndex.value);
 };
 //系统
-const systemPopup = ref(null);
+const systemPopup = ref();
 const currentSystemIndex = ref(0);
 const tempSystemIndex = ref(0);
 
@@ -195,7 +176,7 @@ const openSystemUnit = () => {
   tempSystemIndex.value = 0;
 };
 
-const systemChange = (e) => {
+const systemChange = (e: any) => {
   console.log(e.detail.value);
   tempSystemIndex.value = e.detail.value;
 };
