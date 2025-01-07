@@ -32,7 +32,7 @@
     <view class="button-container">
       <button
         class="login-button"
-        @click="userNameLogin"
+        @click="registerUser"
         :loading="userLoginLoading"
         :disabled="userLoginLoading"
       >
@@ -55,7 +55,7 @@ const userLoginLoading = ref(false);
 
 const emit = defineEmits(["success"]);
 
-const userNameLogin = () => {
+const registerUser = () => {
   const loginName = userForm.value.loginName;
   const password = userForm.value.password;
   const confirmPassword = userForm.value.confirmPassword;
