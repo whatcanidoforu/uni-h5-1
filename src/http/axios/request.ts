@@ -83,6 +83,10 @@ class Request {
             break;
           case "ERROR_NOT_LOGIN":
             message = "未登录";
+            uni.showToast({
+              title: message,
+              icon: "none",
+            });
             this.cancelAllRequest();
             localStorage.removeItem("sessionId");
             localStorage.removeItem("userId");
@@ -93,8 +97,8 @@ class Request {
             const currentPage = pages[pages.length - 1];
             const currentRoute = currentPage.route || "";
             if (currentRoute !== "pages/login/index") {
-              uni.navigateTo({
-                url: "pages/login/index",
+              uni.reLaunch({
+                url: "/pages/login/index",
               });
             }
             break;

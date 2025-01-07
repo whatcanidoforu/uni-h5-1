@@ -97,8 +97,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeMount } from "vue";
-import { apiGetUserAuthInfo } from "@/http/api/login";
+import { ref, onBeforeMount } from "vue";
+import { apiGetUserAuthInfo, apiLogout } from "@/http/api/login";
 import { useHeaderPark } from "@/stores/park";
 import type { IPark } from "@/types/permission";
 
@@ -215,7 +215,20 @@ const deleteAccount = () => {
     success: (res) => {
       if (res.confirm) {
         //掉用注销接口
-        console.log("点击了注销");
+        apiLogout(localStorage.getItem("sessionId")!).then(() => {
+          localStorage.removeItem("sessionId");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("oid");
+          localStorage.removeItem("oldToken");
+          localStorage.removeItem("oldEmpId");
+          uni.showToast({
+            title: "注销成功",
+            icon: "none",
+          });
+          uni.reLaunch({
+            url: "/pages/login/index",
+          });
+        });
       }
     },
   });
@@ -226,7 +239,20 @@ const toVersionRecordsPage = () => {
   });
 };
 const signOut = () => {
-  console.log("退出登录");
+  apiLogout(localStorage.getItem("sessionId")!).then(() => {
+    localStorage.removeItem("sessionId");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("oid");
+    localStorage.removeItem("oldToken");
+    localStorage.removeItem("oldEmpId");
+    uni.showToast({
+      title: "退出登录成功",
+      icon: "none",
+    });
+    uni.reLaunch({
+      url: "/pages/login/index",
+    });
+  });
 };
 </script>
 

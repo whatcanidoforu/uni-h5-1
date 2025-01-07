@@ -23,19 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import Register from "./components/register.vue";
-
-const loginType = ref(1);
-
-const gatewayPath = ref(window.globalApi?.business ?? "");
-if (!gatewayPath.value) {
-  gatewayPath.value = "https://test-api.ruijiakeyun.com:2643/gateway-app";
-  window.globalApi = {
-    business: gatewayPath.value,
-    property: window.globalApi?.property ?? "",
-  };
-}
 
 const toLogin = () => {
   uni.navigateBack({ delta: 1 });
