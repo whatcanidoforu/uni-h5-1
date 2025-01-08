@@ -64,6 +64,14 @@
         "navigationBarTitleText": "功能介绍",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
+    },
+    {
+      "path": "pages/clue/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "线索管理",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
     }
   ],
   "globalStyle": {
