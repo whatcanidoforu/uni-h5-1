@@ -29,7 +29,7 @@
   <clueFilterPop ref="clueFilterPopRef" />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue";
 import clueFilterPop from "./clue-filter-pop.vue";
 
@@ -40,7 +40,7 @@ const props = defineProps({
   },
 });
 
-const clueFilterPopRef = ref(null);
+const clueFilterPopRef = ref();
 const clickClueFilterPopRef = () => {
   console.log("clickClueFilterPopRef", clueFilterPopRef.value);
   clueFilterPopRef.value?.open();

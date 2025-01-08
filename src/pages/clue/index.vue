@@ -1,25 +1,25 @@
 <template>
   <view class="clue-page">
     <clueHeader v-model:tabIndex="tabIndex"></clueHeader>
-
     <view class="page-content">
       <uni-search-bar
         placeholder="请输入关键字搜索"
         bgColor="#FFFFFF"
-        v-model="searchValue"
-        @confirm="search"
+        v-model="params.keyWords"
+        @input="debouncedInput"
+        @confirm="debouncedInput"
         style="padding: 0; margin-top: 10px"
       />
-      <view class="status-list">
+      <view class="type-list">
         <view
-          class="status-card"
-          :class="{ active: status === item.value }"
+          class="type-card"
+          :class="{ active: params.type === item.type }"
           v-for="item in statusMapList"
-          :key="tabIndex + '_' + item.value"
-          @click="changeStatus(item.value)"
+          :key="tabIndex + '_' + item.type"
+          @click="changeStatus(item)"
         >
           <view class="label"> {{ item.label }} </view>
-          <view class="num"> {{ 32 }} </view>
+          <view class="num"> {{ item.num }} </view>
         </view>
       </view>
       <z-paging
@@ -62,81 +62,95 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue";
 import clueHeader from "./components/clue-header.vue";
-import { apiChanceSearchMyChanceClueList } from "@/http/api/clue.ts";
+import {
+  apiChanceSearchMyChanceClueList,
+  apiChanceSearchChanceClueTeam,
+  apiChanceSearchChanceClueList,
+} from "@/http/api/clue";
 
 const tabIndex = ref(0);
-const searchValue = ref("");
+const keyWords = ref("");
 
-const statusMapList = computed(() => {
-  switch (tabIndex.value) {
-    case 0:
-      return [
-        { label: "全部", value: 0 },
-        { label: "待跟进", value: 1 },
-        { label: "跟进中", value: 2 },
-        { label: "已转商机", value: 3 },
-      ];
-    case 1:
-      return [
-        { label: "全部", value: 0 },
-        { label: "待跟进", value: 1 },
-        { label: "跟进中", value: 2 },
-        { label: "已转商机", value: 3 },
-      ];
-    case 2:
-      return [
-        { label: "全部", value: 0 },
-        { label: "新线索", value: 1 },
-        { label: "历史线索", value: 2 },
-      ];
-    default:
-      return "";
+const statusMapList = ref<any>([
+  { label: "全部", type: 0, num: 0 },
+  { label: "待跟进", type: 1, num: 0 },
+  { label: "跟进中", type: 2, num: 0 },
+  { label: "已转商机", type: 3, num: 0 },
+]);
+
+const timer = ref();
+const debouncedInput = (e: string) => {
+  if (timer.value) {
+    clearTimeout(timer.value);
   }
+  timer.value = setTimeout(() => {
+    zPageing.value.reload();
+  }, 500);
+};
+
+const params = ref<any>({
+  pageNo: 1,
+  pageSize: 10,
+  keyWords: "",
+  type: 0,
+  startDate: "",
+  endDate: "",
+  directorIds: 0,
+  stages: [],
+  parkIds: [103],
+  notExistsDirector: false,
 });
-
-const status = ref(0);
-const changeStatus = (value) => {
-  console.log(value);
-  status.value = value;
+const changeStatus = (item: any) => {
+  params.value.type = item.type;
+  zPageing.value.reload();
 };
-
-const search = () => {
-  console.log(searchValue.value);
-};
-
 const dataList = ref([]);
 const zPageing = ref();
-const queryList = async (pageNo, pageSize) => {
-  let userId = Number(localStorage.getItem("userId"));
-  const params = {
-    pageNo: pageNo,
-    pageSize: pageSize,
-    type: "0",
-    startDate: "",
-    endDate: "",
-    directorIds: userId,
-    stages: [],
-    parkIds: [103],
-    notExistsDirector: false,
-  };
-  let res = await apiChanceSearchMyChanceClueList(params);
-  console.log("apiChanceSearchMyChanceClueList", res);
+const queryList = async (pageNo: number, pageSize: number) => {
+  let userId = Number(localStorage.getItem("userId")) as number;
+  params.value.pageNo = pageNo;
+  params.value.pageSize = pageSize;
+  params.value.directorIds = userId;
 
-  if (!res) {
-    zPageing.value.complete(false);
+  if (tabIndex.value === 0) {
+    let res = await apiChanceSearchMyChanceClueList(params.value as any);
+    if (!res) {
+      zPageing.value.complete(false);
+    }
+    zPageing.value.complete(res.data);
+    statusMapList.value = [
+      { label: "全部", type: 0, num: res.myClueTotal },
+      { label: "待跟进", type: 1, num: res.waitDealTotal },
+      { label: "跟进中", type: 2, num: res.dealedTotal },
+      { label: "已转商机", type: 3, num: res.businessTotal },
+    ];
+  } else if (tabIndex.value === 1) {
+    let res = await apiChanceSearchChanceClueTeam(params as any);
+    if (!res) {
+      zPageing.value.complete(false);
+    }
+    zPageing.value.complete(res.data);
+    statusMapList.value = [
+      { label: "全部", type: 0, num: res.myClueTotal },
+      { label: "待跟进", type: 1, num: res.waitDealTotal },
+      { label: "跟进中", type: 2, num: res.dealedTotal },
+      { label: "已转商机", type: 3, num: res.businessTotal },
+    ];
+  } else if (tabIndex.value === 2) {
+    let res = await apiChanceSearchChanceClueList(params as any);
+    if (!res) {
+      zPageing.value.complete(false);
+    }
+    zPageing.value.complete(res.data);
+    statusMapList.value = [
+      { label: "全部", type: 1, num: res.totalClueNum },
+      { label: "新线索", type: 2, num: res.newChanceClueNum },
+      { label: "历史线索", type: 3, num: res.historyChanceClueNum },
+    ];
   }
-  const {
-    businessTotal,
-    data,
-    dealedTotal,
-    myClueTotal,
-    total,
-    waitDealTotal,
-  } = res;
-  zPageing.value.complete(data);
 };
 </script>
 
@@ -163,14 +177,14 @@ const queryList = async (pageNo, pageSize) => {
 .uni-searchbar {
   width: 100%;
 }
-.status-list {
+.type-list {
   width: 100%;
   margin-top: 10px;
   background-color: #ffffff;
   display: flex;
   align-self: center;
   height: 80px;
-  .status-card {
+  .type-card {
     flex: 1;
     position: relative;
     color: #9a9a9a;
@@ -182,7 +196,7 @@ const queryList = async (pageNo, pageSize) => {
       margin-top: 10px;
     }
   }
-  .status-card::before {
+  .type-card::before {
     content: "";
     width: 1px;
     height: 80%;
@@ -192,10 +206,10 @@ const queryList = async (pageNo, pageSize) => {
     top: 50%;
     transform: translateY(-50%);
   }
-  .status-card.active {
+  .type-card.active {
     color: #000;
   }
-  .status-card.active::after {
+  .type-card.active::after {
     content: "";
     width: 36px;
     height: 4px;
