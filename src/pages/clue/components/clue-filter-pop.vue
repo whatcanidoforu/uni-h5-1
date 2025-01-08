@@ -12,7 +12,7 @@
         <view class="right"></view>
       </view>
 
-      <view class="pop-content">
+      <view class="pop-cot">
         <view class="time tit">创建时间</view>
         <view class="time cot">
           <uni-datetime-picker type="date" v-model="startDate" />
@@ -50,6 +50,11 @@
           </view>
         </view>
       </view>
+
+      <view class="btns">
+        <view class="cancel btn" @click="reset">重置</view>
+        <view class="confirm btn" @click="confirm">确认</view>
+      </view>
     </view>
   </uni-popup>
   <clueSourcesCheckPop ref="clueSourcesCheckPopRef" v-model:sources="sources" />
@@ -66,18 +71,45 @@ const clueFilterPopupRef = ref();
 const clueSourcesCheckPopRef = ref();
 const clueParkCheckPopRef = ref();
 
+const emit = defineEmits(["confirm"]);
+const props = defineProps({
+  params: {
+    type: Object as any,
+    default: () => {},
+  },
+});
+
 const startDate = ref("");
 const endDate = ref("");
-
-const sources = ref([]);
 const parks = ref<IPark[]>([]);
+const sources = ref([]);
 
 const clearPark = (item: IPark) => {
   let arr: number[] = parks.value.map((ite: any) => ite.id);
   parks.value.splice(arr.indexOf(item.id), 1);
 };
 
+const reset = () => {
+  startDate.value = "";
+  endDate.value = "";
+  sources.value = [];
+  parks.value = [];
+};
+const confirm = () => {
+  clueFilterPopupRef.value.close();
+  emit("confirm", {
+    startDate: startDate.value,
+    endDate: endDate.value,
+    sources: sources.value,
+    parks: parks.value,
+  });
+};
+
 const open = () => {
+  startDate.value = props.params?.startDate;
+  endDate.value = props.params?.endDate;
+  parks.value = props.params?.parks;
+  sources.value = props.params?.sources;
   clueFilterPopupRef.value.open();
 };
 const close = () => {
@@ -94,6 +126,8 @@ defineExpose({
 .popup-content {
   width: 100vw;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .pop-header {
@@ -117,6 +151,9 @@ defineExpose({
     align-items: center;
     justify-content: center;
   }
+}
+.pop-cot {
+  flex: 1;
 }
 
 .tit {
@@ -178,6 +215,30 @@ defineExpose({
       top: 0;
       transform: translate(50%, -50%);
     }
+  }
+}
+
+.btns {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  .btn {
+    border-radius: 4px;
+    flex: 1;
+    height: 40px;
+    border: 1px solid #e1e1e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cancel {
+    margin-right: 20px;
+  }
+  .confirm {
+    color: #fff;
+    background-color: #009beb;
   }
 }
 </style>

@@ -26,17 +26,26 @@
       筛选
     </view>
   </view>
-  <clueFilterPop ref="clueFilterPopRef" />
+  <clueFilterPop
+    ref="clueFilterPopRef"
+    @confirm="confirm"
+    :params="props.params"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import clueFilterPop from "./clue-filter-pop.vue";
 
+const emit = defineEmits(["update:tabIndex", "confirm"]);
 const props = defineProps({
   tabIndex: {
     type: Number,
     default: 0,
+  },
+  params: {
+    type: Object,
+    default: () => {},
   },
 });
 
@@ -46,7 +55,11 @@ const clickClueFilterPopRef = () => {
   clueFilterPopRef.value?.open();
 };
 
-const emit = defineEmits(["update:tabIndex"]);
+const confirm = (params) => {
+  console.log("clue-header confirm", params);
+  emit("confirm", params);
+};
+
 const tabIndex = computed({
   get: () => {
     return props.tabIndex;

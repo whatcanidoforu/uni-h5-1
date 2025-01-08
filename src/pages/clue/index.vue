@@ -1,6 +1,10 @@
 <template>
   <view class="clue-page">
-    <clueHeader v-model:tabIndex="tabIndex"></clueHeader>
+    <clueHeader
+      v-model:tabIndex="tabIndex"
+      :params="params"
+      @confirm="confirmParams"
+    ></clueHeader>
     <view class="page-content">
       <uni-search-bar
         placeholder="请输入关键字搜索"
@@ -101,6 +105,7 @@ const params = ref<any>({
   directorIds: 0,
   stages: [],
   parkIds: [103],
+  sources: [],
   notExistsDirector: false,
 });
 const changeStatus = (item: any) => {
@@ -151,6 +156,16 @@ const queryList = async (pageNo: number, pageSize: number) => {
       { label: "历史线索", type: 3, num: res.historyChanceClueNum },
     ];
   }
+};
+
+const confirmParams = (obj) => {
+  console.log("index confirmParams", obj);
+  params.value.startDate = obj.startDate;
+  params.value.endDate = obj.endDate;
+  params.value.sources = obj.sources;
+  params.value.parks = obj.parks;
+  params.value.parkIds = obj.parks.map((item: any) => item.id);
+  zPageing.value.reload();
 };
 </script>
 
