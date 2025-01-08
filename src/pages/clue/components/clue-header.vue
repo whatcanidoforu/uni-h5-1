@@ -1,6 +1,6 @@
 <template>
   <view class="clue-page-header">
-    <uni-icons class="left" type="left" size="20"></uni-icons>
+    <uni-icons class="left" type="left" size="20" @click="back"></uni-icons>
     <view class="center">
       <view
         class="item"
@@ -57,6 +57,10 @@ const tabIndex = computed({
 });
 const changeTabIndex = (val) => {
   tabIndex.value = val;
+};
+
+const back = () => {
+  uni.navigateBack();
 };
 </script>
 
