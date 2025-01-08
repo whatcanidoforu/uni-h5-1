@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import clueHeader from "./components/clue-header.vue";
 import {
   apiChanceSearchMyChanceClueList,
@@ -133,7 +133,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
       { label: "已转商机", type: 3, num: res.businessTotal },
     ];
   } else if (tabIndex.value === 1) {
-    let res = await apiChanceSearchChanceClueTeam(params as any);
+    let res = await apiChanceSearchChanceClueTeam(params.value as any);
     if (!res) {
       zPageing.value.complete(false);
     }
@@ -145,7 +145,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
       { label: "已转商机", type: 3, num: res.businessTotal },
     ];
   } else if (tabIndex.value === 2) {
-    let res = await apiChanceSearchChanceClueList(params as any);
+    let res = await apiChanceSearchChanceClueList(params.value as any);
     if (!res) {
       zPageing.value.complete(false);
     }
@@ -167,6 +167,20 @@ const confirmParams = (obj) => {
   params.value.parkIds = obj.parks.map((item: any) => item.id);
   zPageing.value.reload();
 };
+
+watch(
+  () => tabIndex.value,
+  (val) => {
+    if (val === 0) {
+      params.value.type = 0;
+    } else if (val === 1) {
+      params.value.type = 0;
+    } else if (val === 2) {
+      params.value.type = 1;
+    }
+    zPageing.value.reload();
+  }
+);
 </script>
 
 <style lang="scss" scoped>
