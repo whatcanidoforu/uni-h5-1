@@ -4,7 +4,7 @@
       <view class="content-item" @click="openParkUnit">
         <text>所选园区</text>
         <view>
-          {{ parks[currentParkIndex]?.name ?? "暂无园区" }}
+          {{ parkName ?? "暂无园区" }}
           <uni-icons type="right" size="16" color="#8B8989"></uni-icons>
         </view>
       </view>
@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed } from "vue";
 import { apiGetUserAuthInfo, apiLogout } from "@/http/api/login";
 import { useHeaderPark } from "@/stores/park";
 import type { IPark } from "@/types/permission";
@@ -164,8 +164,16 @@ const confirmPark = () => {
   currentParkIndex.value = tempParkIndex.value;
   parkPopup.value.close();
   //设置当前园区的id到headerParkStore中
-  headerParkStore.setParkId(currentParkIndex.value);
+  headerParkStore.setParkId(parks.value[currentParkIndex.value].id);
 };
+
+const parkName = computed(() => {
+  const park = parks.value.find(
+    (item) => item.id === headerParkStore.selectedId
+  );
+  return park ? park.name : undefined;
+});
+
 //系统
 const systemPopup = ref();
 const currentSystemIndex = ref(0);
