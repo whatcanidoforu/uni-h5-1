@@ -32,9 +32,7 @@ export function apiChanceSearchMyChanceClueList(data: IPageParams<any>) {
 }
 
 // 团队线索列表接口
-export function apiChanceSearchChanceClueTeam(
-  data: IPageParams<IThreadSearch>
-) {
+export function apiChanceSearchChanceClueTeam(data: IPageParams<any>) {
   return rjkRequest<IPageBody<IThreadTable> & any>({
     url: "chance.searchChanceClueTeam",
     data: data,
