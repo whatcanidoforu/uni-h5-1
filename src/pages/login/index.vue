@@ -29,9 +29,9 @@
       <Cellphone v-if="loginType == 2" />
       <view class="register-container">
         <view>
-          <text v-if="loginType == 1" @click="toRegister"
+          <!-- <text v-if="loginType == 1" @click="toRegister"
             >没有账号？点此注册</text
-          >
+          > -->
         </view>
         <view style="color: #009ceb" @click="changeLoginType">
           {{ toggleLoginText }}登录

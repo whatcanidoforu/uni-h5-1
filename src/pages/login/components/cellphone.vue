@@ -1,5 +1,5 @@
 <template>
-  <text class="login-form">
+  <view class="login-form">
     <uni-easyinput
       class="login-input"
       :class="{ filled: !!userForm.mobile }"
@@ -31,7 +31,7 @@
         >
       </template>
     </uni-easyinput>
-    <text class="button-container">
+    <view class="button-container">
       <button
         class="login-button"
         @click="mobileLogin"
@@ -40,8 +40,8 @@
       >
         登录
       </button>
-    </text>
-  </text>
+    </view>
+  </view>
 </template>
 
 <script setup lang="ts">
