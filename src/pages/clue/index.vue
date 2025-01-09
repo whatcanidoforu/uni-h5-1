@@ -41,6 +41,7 @@
           class="clue-card"
           v-for="(item, index) in dataList"
           :key="'clue-card' + index"
+          @click="clickCardItem(item)"
         >
           <view class="clue-name top">
             {{ item.customerName }}
@@ -183,7 +184,17 @@ const queryList = async (pageNo: number, pageSize: number) => {
       { label: "已转商机", type: 3, num: res.businessTotal },
     ];
   } else if (tabIndex.value === 2) {
-    let res = await apiChanceSearchChanceClueList(params.value as any);
+    let res = await apiChanceSearchChanceClueList({
+      pageNo: pageNo,
+      pageSize: pageSize,
+      keyWords: params.value.keyWords,
+      type: params.value.type,
+      startDate: params.value.startDate,
+      endDate: params.value.endDate,
+      parkIds: params.value.parkIds,
+      sources: params.value.sources,
+      notExistsDirector: false,
+    });
     if (!res) {
       zPageing.value.complete(false);
     }
@@ -241,6 +252,10 @@ watch(
     zPageing.value.reload();
   }
 );
+
+const clickCardItem = (item: any) => {
+  uni.navigateTo({ url: "/pages/clue/detail" });
+};
 </script>
 
 <style lang="scss" scoped>

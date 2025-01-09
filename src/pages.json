@@ -74,6 +74,14 @@
         "navigationBarTitleText": "线索管理",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
+    },
+    {
+      "path": "pages/clue/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "线索详情",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
     }
   ],
   "globalStyle": {
@@ -124,7 +132,7 @@
         "text": "合同"
       },
       {
-        "pagePath": "pages/home/index",
+        "pagePath": "pages/system/index",
         "iconPath": "static/icon_menu_me.png",
         "selectedIconPath": "static/icon_menu_me_checked.png",
         "text": "我的"
