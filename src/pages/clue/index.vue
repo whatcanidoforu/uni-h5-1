@@ -74,7 +74,9 @@ import {
   apiChanceSearchChanceClueTeam,
   apiChanceSearchChanceClueList,
 } from "@/http/api/clue";
+import { useHeaderPark } from "@/stores/park";
 
+const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 const keyWords = ref("");
 
@@ -94,6 +96,7 @@ const debouncedInput = (e: string) => {
     zPageing.value.reload();
   }, 500);
 };
+const userId = localStorage.getItem("userId") || "";
 
 const params = ref<any>({
   pageNo: 1,
@@ -104,7 +107,8 @@ const params = ref<any>({
   endDate: "",
   directorIds: 0,
   stages: [],
-  parkIds: [103],
+  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [103],
+  parks: [],
   sources: [],
   notExistsDirector: false,
 });
@@ -116,12 +120,20 @@ const dataList = ref([]);
 const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
   let userId = Number(localStorage.getItem("userId")) as number;
-  params.value.pageNo = pageNo;
-  params.value.pageSize = pageSize;
-  params.value.directorIds = userId;
 
   if (tabIndex.value === 0) {
-    let res = await apiChanceSearchMyChanceClueList(params.value as any);
+    let res = await apiChanceSearchMyChanceClueList({
+      pageNo: pageNo,
+      pageSize: pageSize,
+      keyWords: params.value.keyWords,
+      type: params.value.type,
+      startDate: params.value.startDate,
+      endDate: params.value.endDate,
+      directorIds: userId,
+      parkIds: params.value.parkIds,
+      sources: params.value.sources,
+      notExistsDirector: false,
+    });
     if (!res) {
       zPageing.value.complete(false);
     }
@@ -158,7 +170,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
   }
 };
 
-const confirmParams = (obj) => {
+const confirmParams = (obj: any) => {
   console.log("index confirmParams", obj);
   params.value.startDate = obj.startDate;
   params.value.endDate = obj.endDate;
@@ -171,6 +183,14 @@ const confirmParams = (obj) => {
 watch(
   () => tabIndex.value,
   (val) => {
+    params.value.keyWords = "";
+    params.value.startDate = "";
+    params.value.endDate = "";
+    params.value.endDate = "";
+    params.value.parkIds = headerParkStore.selectedId
+      ? [headerParkStore.selectedId]
+      : [103];
+    params.value.sources = [];
     if (val === 0) {
       params.value.type = 0;
     } else if (val === 1) {

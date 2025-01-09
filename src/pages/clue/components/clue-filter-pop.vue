@@ -65,7 +65,10 @@
 import { ref, computed } from "vue";
 import clueSourcesCheckPop from "./clue-sources-check-pop.vue";
 import clueParkCheckPop from "./clue-park-check-pop.vue";
+import { useHeaderPark } from "@/stores/park";
 import type { IPark } from "@/types/permission";
+
+const headerParkStore = useHeaderPark();
 
 const clueFilterPopupRef = ref();
 const clueSourcesCheckPopRef = ref();

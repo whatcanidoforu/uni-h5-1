@@ -24,9 +24,7 @@ import { rjkOpenRequest } from "../axios";
 
 // 我的线索
 // 我的线索列表接口
-export function apiChanceSearchMyChanceClueList(
-  data: IPageParams<IThreadSearch>
-) {
+export function apiChanceSearchMyChanceClueList(data: IPageParams<any>) {
   return rjkRequest<IPageBody<IThreadTable> & any>({
     url: "chance.searchMyChanceClueList",
     data: data,

@@ -55,7 +55,7 @@ const clickClueFilterPopRef = () => {
   clueFilterPopRef.value?.open();
 };
 
-const confirm = (params) => {
+const confirm = (params: any) => {
   console.log("clue-header confirm", params);
   emit("confirm", params);
 };
