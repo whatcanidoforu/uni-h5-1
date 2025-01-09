@@ -156,7 +156,7 @@ const openParkUnit = () => {
   tempParkIndex.value = 0;
 };
 
-const parkChange = (e: any) => {
+const parkChange = (e: []) => {
   console.log(e.detail.value);
   tempParkIndex.value = e.detail.value;
 };
