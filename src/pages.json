@@ -1,6 +1,14 @@
 {
   "pages": [
     {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "transparentTitle": "always",
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/login/index",
       "style": {
         "navigationBarTitleText": "",
@@ -30,12 +38,6 @@
         "navigationBarTitleText": "",
         "transparentTitle": "always",
         "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/home/index",
-      "style": {
-        "navigationBarTitleText": "uni-app"
       }
     },
     {

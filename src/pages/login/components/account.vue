@@ -30,7 +30,7 @@
         </checkbox-group>
         <text>记住用户名</text>
       </view>
-      <text>忘记密码？</text>
+      <text @click="forget">忘记密码？</text>
     </view>
     <view class="button-container">
       <button
@@ -70,6 +70,13 @@ const userForm = ref({
   password: "",
 });
 const userLoginLoading = ref(false);
+
+const forget = () => {
+  uni.showToast({
+    title: "请联系管理员重置密码",
+    icon: "none",
+  });
+};
 
 const userNameLogin = () => {
   if (!userForm.value.loginName) {
