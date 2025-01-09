@@ -45,7 +45,8 @@
           <view class="clue-name top">
             {{ item.customerName }}
             <view class="jump-area">
-              未跟进<uni-icons type="right" size="12"></uni-icons>
+              {{ item.statusName }}
+              <uni-icons type="right" size="12"></uni-icons>
             </view>
           </view>
           <view class="phone center">联系方式: {{ item.customerPhone }}</view>
