@@ -51,7 +51,7 @@
           <view class="label">线索状态</view>
           <view class="value">{{ formData.statusName || "-" }}</view>
         </view> -->
-        <view class="label-value">
+        <view class="label-value" @click="clueSourcesCheckPopRef?.open()">
           <view class="label">渠道来源</view>
           <view class="value">{{ formData.source || "-" }}</view>
         </view>
@@ -167,6 +167,12 @@
     @confirm="confirmAgency"
   />
 
+  <clueSourcesCheckPop
+    ref="clueSourcesCheckPopRef"
+    v-model:sources="sources"
+    @confirm="confirmSources"
+  />
+
   <uni-popup ref="FileNameRef" type="dialog">
     <uni-popup-dialog
       ref="inputClose"
@@ -200,6 +206,7 @@ import {
 import { formatDate } from "@/utils/index";
 import clueParkCheckPop from "@/pages/clue/components/clue-park-check-pop.vue";
 import clueAgencyCheckPop from "@/pages/clue/components/clue-agency-check-pop.vue";
+import clueSourcesCheckPop from "@/pages/clue/components/clue-sources-check-pop.vue";
 import { checkStr, deepClone } from "@/utils";
 import { useHeaderPark } from "@/stores/park";
 import AddPic from "@/static/icon_contact_list_add.png";
@@ -209,18 +216,22 @@ const headerParkStore = useHeaderPark();
 
 const clueParkCheckPopRef = ref();
 const clueAgencyCheckPopRef = ref();
+const clueSourcesCheckPopRef = ref();
 
 const parks = ref<any>([]);
 const agencyList = ref<any>([]);
+const sources = ref<any>([]);
 
 const formData = ref<any>({
   fileInfos: [],
 });
 const chanceContactList = ref<any>([]);
+const pageOption = ref();
 onLoad((option) => {
-  console.log(option);
-  apiChanceGetChanceClueDetailFun(Number(option?.id));
-  apiChanceGetChanceContactListFun(Number(option?.id));
+  if (option?.id) {
+    apiChanceGetChanceClueDetailFun(Number(option?.id));
+    apiChanceGetChanceContactListFun(Number(option?.id));
+  }
 });
 // 详情
 const apiChanceGetChanceClueDetailFun = (id: number) => {
@@ -337,6 +348,18 @@ const confirmAgency = (e: any) => {
     formData.value.agencyName = e[0].contact;
     formData.value.agencyContact = e[0].name;
     formData.value.agencyMobile = e[0].mobile;
+  }
+};
+const confirmSources = (e: any) => {
+  console.log("confirmSources", e);
+  if (e && e.length > 0) {
+    formData.value.source = e[0];
+    if (formData.value.source !== "渠道中介") {
+      formData.value.agencyId = "";
+      formData.value.agencyName = "";
+      formData.value.agencyContact = "";
+      formData.value.agencyMobile = "";
+    }
   }
 };
 

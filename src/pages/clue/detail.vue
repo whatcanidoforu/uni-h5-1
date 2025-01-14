@@ -294,14 +294,14 @@
           <span class="iconfont z-edit" style="font-size: 16px"></span>
           <span class="txt">编辑线索</span>
         </view>
-        <view class="more-item">
+        <view class="more-item" @click="clickUnAssignChance">
           <span
             class="iconfont z-duankailianjie"
             style="font-size: 16px"
           ></span>
           <span class="txt">释放线索</span>
         </view>
-        <view class="more-item">
+        <view class="more-item" @click="clickDeleteChance">
           <span class="iconfont z-shanchu" style="font-size: 16px"></span>
           <span class="txt">删除线索</span>
         </view>
@@ -317,18 +317,29 @@
       <view class="cancel"> </view>
     </view>
   </uni-popup>
+
+  <hbxw-confirm
+    :is-show="showInfo.show"
+    @cancel="showInfo.cancel"
+    @sure="showInfo.sure"
+    :title="showInfo.title"
+    :content="showInfo.content"
+  ></hbxw-confirm>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import clueHeader from "./components/clue-header.vue";
+import hbxwConfirm from "@/uni_modules/hbxw-confirm/components/hbxw-confirm/hbxw-confirm.vue";
 import {
   apiChanceSearchMyChanceClueList,
   apiChanceSearchChanceClueTeam,
   apiChanceSearchChanceClueList,
   apiChanceGetChanceClueDetail,
   apiChanceGetChanceContactList,
+  apiChanceDeleteChance,
+  apiChanceUnAssignChance,
 } from "@/http/api/clue";
 import { formatDate } from "@/utils/index";
 import { useHeaderPark } from "@/stores/park";
@@ -344,11 +355,14 @@ const chanceContactList = ref<any>([]);
 const pageOption = ref();
 onLoad((option) => {
   pageOption.value = option;
-  console.log(option);
 });
-onShow(() => {
+const init = () => {
+  tabIndex.value = 0;
   apiChanceGetChanceClueDetailFun(Number(pageOption.value?.id));
   apiChanceGetChanceContactListFun(Number(pageOption.value?.id));
+};
+onShow(() => {
+  init();
 });
 // 详情
 const apiChanceGetChanceClueDetailFun = (id: number) => {
@@ -418,6 +432,63 @@ const showMorePopup = () => {
 const jumpEdit = () => {
   uni.navigateTo({ url: `/pages/clue/edit?id=${formData.value.id}` });
   morePopup.value?.close();
+};
+
+const showInfo = ref({
+  show: false,
+  title: "",
+  content: "",
+  cancel: () => {
+    showInfo.value.show = false;
+  },
+  sure: () => {
+    showInfo.value.show = false;
+  },
+});
+// 释放
+const clickUnAssignChance = () => {
+  showInfo.value = {
+    show: true,
+    title: "释放确认",
+    content: "确认要释放该线索到线索池?",
+    cancel: () => {
+      showInfo.value.show = false;
+    },
+    sure: () => {
+      showInfo.value.show = false;
+      apiChanceUnAssignChance([
+        {
+          id: formData.value.id,
+          version: formData.value.version,
+        },
+      ]).then(() => {
+        init();
+        uni.showToast({ title: "释放成功", icon: "none", duration: 200 });
+      });
+    },
+  };
+};
+// 删除
+const clickDeleteChance = () => {
+  showInfo.value = {
+    show: true,
+    title: "删除确认",
+    content: "确认要删除该线索?",
+    cancel: () => {
+      showInfo.value.show = false;
+    },
+    sure: () => {
+      showInfo.value.show = false;
+      apiChanceDeleteChance({
+        id: formData.value.id,
+        version: formData.value.version,
+      }).then(() => {
+        init();
+        uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
+        uni.navigateBack();
+      });
+    },
+  };
 };
 const clickSms = () => {
   let phone = formData.value.customerPhone.toString(); // 手机号(可以是单个或则多个)

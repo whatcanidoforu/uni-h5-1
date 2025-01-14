@@ -50,7 +50,7 @@
 import { ref, computed } from "vue";
 
 const clueSourcesCheckPopRef = ref();
-const emit = defineEmits(["update:sources"]);
+const emit = defineEmits(["update:sources", "confirm"]);
 const props = defineProps({
   sources: {
     type: Array,
@@ -89,6 +89,7 @@ const cancel = () => {
 };
 const confirm = () => {
   emit("update:sources", useSources.value);
+  emit("confirm", useSources.value);
   close();
 };
 

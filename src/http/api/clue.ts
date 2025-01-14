@@ -98,3 +98,18 @@ export function apiUploadFile(file: File, fileName: string) {
     data: { file, fileName },
   });
 }
+
+// 删除线索
+export function apiChanceDeleteChance(params: IThreadChangeRequest) {
+  return rjkRequest({
+    url: "chance.deleteChance",
+    data: params,
+  });
+}
+// 释放线索
+export function apiChanceUnAssignChance(params: IThreadChangeRequest[]) {
+  return rjkRequest({
+    url: "chance.unAssignChance",
+    data: { assignChances: params },
+  });
+}

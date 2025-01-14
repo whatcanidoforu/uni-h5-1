@@ -1,0 +1,87 @@
+{
+  "id": "hbxw-confirm",
+  "displayName": "确认弹框组件hbxw-confirm",
+  "version": "1.0.1",
+  "description": "高度可自定义的确认弹框组件，面对形形色色的产品业务需求，经常需要自定义确认弹框，此组件就是一个确认弹框组件，它可以通过配置实现自己的弹窗，也可以只用它的总架子，再通过slot来实现弹窗各部件内容和UI",
+  "keywords": [
+    "确认弹框",
+    "弹框",
+    "确认取消弹窗",
+    "自定义确认取消弹窗",
+    "hbxw-confirm"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.1.0"
+  },
+  "dcloudext": {
+    "type": "component-vue",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "无"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y",
+        "alipay": "y"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "y",
+          "vue3": "y"
+        },
+        "App": {
+          "app-vue": "u",
+          "app-nvue": "u",
+          "app-uvue": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        },
+        "小程序": {
+          "微信": "y",
+          "阿里": "u",
+          "百度": "u",
+          "字节跳动": "y",
+          "QQ": "y",
+          "钉钉": "u",
+          "快手": "y",
+          "飞书": "u",
+          "京东": "u"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        }
+      }
+    }
+  }
+}

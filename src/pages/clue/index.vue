@@ -65,6 +65,14 @@
         </view>
       </z-paging>
     </view>
+
+    <uni-icons
+      class="jump-add"
+      type="plus-filled"
+      size="60"
+      color="#009bf4"
+      @click="jumpAdd"
+    ></uni-icons>
   </view>
 </template>
 
@@ -220,6 +228,9 @@ const confirmParams = (obj: any) => {
   params.value.directors = obj.directors;
   params.value.directorIds = obj.directors.map((item: any) => item.customerId);
   zPageing.value.reload();
+};
+const jumpAdd = () => {
+  uni.navigateTo({ url: `/pages/clue/edit` });
 };
 
 watch(
@@ -381,5 +392,11 @@ const clickCardItem = (item: any) => {
       }
     }
   }
+}
+.jump-add {
+  position: fixed;
+  right: 0;
+  top: 70%;
+  z-index: 999;
 }
 </style>
