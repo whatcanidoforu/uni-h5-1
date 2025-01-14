@@ -14,13 +14,6 @@
 
     <scroll-view class="base-detail page-content" scroll-y>
       <view class="card">
-        <!-- <view class="tit">基本信息</view> -->
-        <!-- <view class="label-value">
-          <view class="label">线索编号</view>
-          <view class="value a-link" @click="ClipboardData(formData.id)">
-            {{ formData.id || "-" }}
-          </view>
-        </view> -->
         <view class="label-value">
           <view class="label required">客户名称<span class="red">*</span></view>
           <uni-easyinput
@@ -47,10 +40,7 @@
           <view class="label">园区<span class="red">*</span></view>
           <view class="value">{{ formData.parkName || "-" }}</view>
         </view>
-        <!-- <view class="label-value">
-          <view class="label">线索状态</view>
-          <view class="value">{{ formData.statusName || "-" }}</view>
-        </view> -->
+
         <view class="label-value" @click="clueSourcesCheckPopRef?.open()">
           <view class="label">渠道来源</view>
           <view class="value">{{ formData.source || "-" }}</view>
@@ -91,14 +81,6 @@
           ></uni-easyinput>
         </view>
 
-        <!-- <view class="label-value">
-          <view class="label">线素负责人</view>
-          <view class="value">{{ formData.directorName || "-" }}</view>
-        </view> -->
-        <!-- <view class="label-value">
-          <view class="label">关联商机</view>
-          <view class="value">{{ formData.businessChanceId || "-" }}</view>
-        </view> -->
         <view class="label-value remark">
           <view class="label">备注</view>
           <uni-easyinput
@@ -191,25 +173,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import clueHeader from "./components/clue-header.vue";
 import {
-  apiChanceSearchMyChanceClueList,
-  apiChanceSearchChanceClueTeam,
-  apiChanceSearchChanceClueList,
   apiChanceGetChanceClueDetail,
   apiChanceGetChanceContactList,
-  apiChanceCreateChance,
   apiChanceUpdateChance,
 } from "@/http/api/clue";
-import { formatDate } from "@/utils/index";
 import clueParkCheckPop from "@/pages/clue/components/clue-park-check-pop.vue";
 import clueAgencyCheckPop from "@/pages/clue/components/clue-agency-check-pop.vue";
 import clueSourcesCheckPop from "@/pages/clue/components/clue-sources-check-pop.vue";
-import { checkStr, deepClone } from "@/utils";
+import { checkStr } from "@/utils";
 import { useHeaderPark } from "@/stores/park";
-import AddPic from "@/static/icon_contact_list_add.png";
 import { apiUploadFile } from "@/http/api/clue";
 
 const headerParkStore = useHeaderPark();
@@ -247,11 +222,6 @@ const apiChanceGetChanceContactListFun = (id: number) => {
     chanceContactList.value = res.chanceContactList;
   });
 };
-const ClipboardData = (e: any) => {
-  uni.setClipboardData({
-    data: e.toString(),
-  });
-};
 const isPic = (url: any) => {
   console.log("url", url);
   const regex = /\.(bmp|gif|jpg|png|jpe?g|webp)$/i;
@@ -279,25 +249,6 @@ const clickFile = (url: any) => {
   });
 };
 
-const phonePopup = ref();
-const phoneList = ref<number[]>([]);
-const showPhonePop = (e: any) => {
-  console.log("e", e);
-  phoneList.value = [];
-  e.phone && phoneList.value.push(e.phone);
-  e.phone2 && phoneList.value.push(e.phone2);
-  phonePopup.value.open();
-};
-const makePhoneCall = (e: any) => {
-  uni.makePhoneCall({
-    phoneNumber: e,
-  });
-};
-const jumpEdit = () => {
-  uni.navigateTo({
-    url: "/pages/clue/edit",
-  });
-};
 const save = () => {
   if (!formData.value.customerName) {
     uni.showToast({
@@ -588,6 +539,7 @@ view {
           width: 60px;
           height: 60px;
           margin: 0 16px 10px 0;
+          border: 1px solid #efebeb;
         }
       }
     }

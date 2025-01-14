@@ -328,14 +328,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
-import clueHeader from "./components/clue-header.vue";
 import hbxwConfirm from "@/uni_modules/hbxw-confirm/components/hbxw-confirm/hbxw-confirm.vue";
 import {
-  apiChanceSearchMyChanceClueList,
-  apiChanceSearchChanceClueTeam,
-  apiChanceSearchChanceClueList,
   apiChanceGetChanceClueDetail,
   apiChanceGetChanceContactList,
   apiChanceDeleteChance,
