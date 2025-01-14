@@ -254,7 +254,7 @@
         <span class="iconfont z-dianhua" style="font-size: 20px"></span>
         拨打电话
       </view>
-      <view class="btn" @click="showMorePopup()">
+      <view class="btn">
         <span class="iconfont z-gengduo" style="font-size: 20px"></span>
         更多操作
       </view>
@@ -265,7 +265,7 @@
     ref="phonePopup"
     class="phone-popup"
     type="bottom"
-    backgroundColor="transparent"
+    backgroundColor="white"
   >
     <view class="phone-popup-content">
       <view
@@ -278,43 +278,6 @@
       </view>
       <view class="gray-line"> </view>
       <view class="cancel" @click="phonePopup?.close()"> 取消 </view>
-    </view>
-  </uni-popup>
-
-  <uni-popup
-    ref="morePopup"
-    class="more-popup"
-    type="bottom"
-    backgroundColor="transparent"
-  >
-    <view class="more-popup-content">
-      <view class="more-title">更多操作</view>
-      <view class="more-item-list">
-        <view class="more-item" @click="jumpEdit">
-          <span class="iconfont z-edit" style="font-size: 16px"></span>
-          <span class="txt">编辑线索</span>
-        </view>
-        <view class="more-item">
-          <span
-            class="iconfont z-duankailianjie"
-            style="font-size: 16px"
-          ></span>
-          <span class="txt">释放线索</span>
-        </view>
-        <view class="more-item">
-          <span class="iconfont z-shanchu" style="font-size: 16px"></span>
-          <span class="txt">删除线索</span>
-        </view>
-        <view class="more-item">
-          <span class="iconfont z-zhuanshangji" style="font-size: 16px"></span>
-          <span class="txt">转商机</span>
-        </view>
-        <view class="more-item" @click="clickSms">
-          <span class="iconfont z-duihua" style="font-size: 16px"></span>
-          <span class="txt">发送短信</span>
-        </view>
-      </view>
-      <view class="cancel"> </view>
     </view>
   </uni-popup>
 </template>
@@ -332,7 +295,6 @@ import {
 } from "@/http/api/clue";
 import { formatDate } from "@/utils/index";
 import { useHeaderPark } from "@/stores/park";
-import { sendSms } from "@/utils";
 
 const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
@@ -405,21 +367,10 @@ const makePhoneCall = (e: any) => {
     phoneNumber: e,
   });
 };
-
-const morePopup = ref();
-const showMorePopup = () => {
-  morePopup.value.open();
-};
-
 const jumpEdit = () => {
-  uni.navigateTo({ url: `/pages/clue/edit?id=${formData.value.id}` });
-  morePopup.value?.close();
-};
-const clickSms = () => {
-  let phone = formData.value.customerPhone.toString(); // 手机号(可以是单个或则多个)
-  let body = "客户, 你好"; // 短信发送的内容
-  sendSms(phone, body);
-  morePopup.value?.close();
+  uni.navigateTo({
+    url: "/pages/clue/edit",
+  });
 };
 const back = () => {
   uni.navigateBack();
@@ -688,6 +639,12 @@ view {
   }
 }
 
+.phone-popup {
+  background: #ffffff !important;
+  :deep(.uni-popup__wrapper.bottom) {
+    background-color: #ffffff !important;
+  }
+}
 .phone-popup-content {
   background: #ffffff;
   .phone-item {
@@ -710,48 +667,6 @@ view {
     background-color: #ebebeb;
   }
   .cancel {
-    font-size: 16px;
-    text-align: center;
-    padding: 10px 0;
-    box-sizing: border-box;
-  }
-}
-
-.more-popup-content {
-  background: #ffffff;
-  border-radius: 12px 12px 0 0;
-  overflow: hidden;
-  .more-title {
-    text-align: center;
-    font-size: 16px;
-    height: 50px;
-    line-height: 50px;
-    font-weight: 500;
-  }
-  .more-item-list {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .more-item {
-    width: 25%;
-    height: 70px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    font-weight: 500;
-    .iconfont {
-      margin-bottom: 10px;
-      color: #686868;
-    }
-    .txt {
-      font-size: 12px;
-      color: #686868;
-    }
-  }
-  .cancel {
-    height: 30px;
     font-size: 16px;
     text-align: center;
     padding: 10px 0;

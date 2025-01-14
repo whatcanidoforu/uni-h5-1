@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4351140 */
-  src: url('iconfont.woff2?t=1736408431407') format('woff2'),
-       url('iconfont.woff?t=1736408431407') format('woff'),
-       url('iconfont.ttf?t=1736408431407') format('truetype');
+  src: url('iconfont.woff2?t=1736749021356') format('woff2'),
+       url('iconfont.woff?t=1736749021356') format('woff'),
+       url('iconfont.ttf?t=1736749021356') format('truetype');
 }
 
 .iconfont {
@@ -13,11 +13,55 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-edit:before {
+.z-duankailianjie:before {
+  content: "\e718";
+}
+
+.z-zhuanshangji:before {
+  content: "\e6d4";
+}
+
+.z-shanchu:before {
+  content: "\e608";
+}
+
+.z-youjian:before {
+  content: "\e624";
+}
+
+.z-tonghuajilu:before {
+  content: "\e63c";
+}
+
+.z-genjinjilu:before {
+  content: "\e67d";
+}
+
+.z-biangengrizhichaxun:before {
+  content: "\e66a";
+}
+
+.z-gengduo:before {
+  content: "\e73a";
+}
+
+.z-dianhua:before {
+  content: "\e635";
+}
+
+.z-tianjialianxiren:before {
+  content: "\e821";
+}
+
+.z-duihua:before {
+  content: "\e710";
+}
+
+.z-edit:before {
   content: "\e661";
 }
 
-.icon-tuodong:before {
+.z-tuodong:before {
   content: "\e600";
 }
 

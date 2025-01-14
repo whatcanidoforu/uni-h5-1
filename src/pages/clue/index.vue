@@ -254,7 +254,7 @@ watch(
 );
 
 const clickCardItem = (item: any) => {
-  uni.navigateTo({ url: "/pages/clue/detail" });
+  uni.navigateTo({ url: `/pages/clue/detail?id=${item.id}` });
 };
 </script>
 
@@ -339,6 +339,10 @@ const clickCardItem = (item: any) => {
       color: #292929;
       padding-left: 14px;
       position: relative;
+      padding-right: 80px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       .jump-area {
         display: flex;
         align-items: baseline;

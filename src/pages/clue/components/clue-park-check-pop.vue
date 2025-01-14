@@ -50,7 +50,7 @@ import { apiGetUserAuthInfo, apiLogout } from "@/http/api/login";
 import type { IPark } from "@/types/permission";
 
 const clueSourcesCheckPopRef = ref();
-const emit = defineEmits(["update:parks"]);
+const emit = defineEmits(["update:parks", "confirm"]);
 const props = defineProps({
   parks: {
     type: Array,
@@ -89,6 +89,7 @@ const cancel = () => {
 };
 const confirm = () => {
   emit("update:parks", useParks.value);
+  emit("confirm", useParks.value);
   close();
 };
 

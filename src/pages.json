@@ -82,6 +82,22 @@
         "navigationBarTitleText": "线索详情",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
+    },
+    {
+      "path": "pages/clue/add",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "线索新增",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/clue/edit",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "线索编辑",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
     }
   ],
   "globalStyle": {
