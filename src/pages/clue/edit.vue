@@ -329,8 +329,10 @@ const confirmPark = (e: any) => {
 };
 const confirmAgency = (e: any) => {
   if (e && e.length > 0) {
-    formData.value.parkName = e[0].parkName;
-    formData.value.parkId = e[0].id;
+    formData.value.agencyId = e[0].id;
+    formData.value.agencyName = e[0].contact;
+    formData.value.agencyContact = e[0].name;
+    formData.value.agencyMobile = e[0].mobile;
   }
 };
 
