@@ -144,12 +144,6 @@ const registerUser = () => {
     margin-top: 40px;
   }
 }
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 0;
-}
 .button-container {
   margin-top: 40px;
 }

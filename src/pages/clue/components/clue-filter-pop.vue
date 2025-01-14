@@ -15,15 +15,41 @@
       <view class="pop-cot">
         <view class="time tit">创建时间</view>
         <view class="time cot">
-          <uni-datetime-picker type="date" v-model="startDate" />
+          <uni-datetime-picker
+            type="date"
+            v-model="startDate"
+            placeholder="开始时间"
+          />
           <view style="padding: 12px">-</view>
-          <uni-datetime-picker type="date" v-model="endDate" />
+          <uni-datetime-picker
+            type="date"
+            v-model="endDate"
+            placeholder="结束时间"
+          />
         </view>
 
         <view class="sources tit">渠道选择</view>
         <view class="sources cot" @click="clueSourcesCheckPopRef?.open()">
           <view class="left">
-            {{ sources && sources.length > 0 ? sources.join("; ") : "请选择" }}
+            {{
+              sources && sources.length > 0 ? sources.join("; ") : "渠道选择"
+            }}
+          </view>
+          <uni-icons class="right" type="right" size="16"></uni-icons>
+        </view>
+
+        <view v-if="tabIndex === 1" class="directorIds tit">线索负责人</view>
+        <view
+          v-if="tabIndex === 1"
+          class="directorIds cot"
+          @click="clueDirectorIdsCheckPopRef?.open()"
+        >
+          <view class="left">
+            {{
+              directors && directors.length > 0
+                ? directors.map((item: any) => item.customerName).join("; ")
+                : "线索负责人"
+            }}
           </view>
           <uni-icons class="right" type="right" size="16"></uni-icons>
         </view>
@@ -59,12 +85,17 @@
   </uni-popup>
   <clueSourcesCheckPop ref="clueSourcesCheckPopRef" v-model:sources="sources" />
   <clueParkCheckPop ref="clueParkCheckPopRef" v-model:parks="parks" />
+  <clueDirectorIdsCheckPop
+    ref="clueDirectorIdsCheckPopRef"
+    v-model:directors="directors"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import clueSourcesCheckPop from "./clue-sources-check-pop.vue";
 import clueParkCheckPop from "./clue-park-check-pop.vue";
+import clueDirectorIdsCheckPop from "./clue-directorIds-check-pop.vue";
 import { useHeaderPark } from "@/stores/park";
 import type { IPark } from "@/types/permission";
 
@@ -73,9 +104,14 @@ const headerParkStore = useHeaderPark();
 const clueFilterPopupRef = ref();
 const clueSourcesCheckPopRef = ref();
 const clueParkCheckPopRef = ref();
+const clueDirectorIdsCheckPopRef = ref();
 
 const emit = defineEmits(["confirm"]);
 const props = defineProps({
+  tabIndex: {
+    type: Number,
+    default: 0,
+  },
   params: {
     type: Object as any,
     default: () => {},
@@ -86,6 +122,7 @@ const startDate = ref("");
 const endDate = ref("");
 const parks = ref<IPark[]>([]);
 const sources = ref([]);
+const directors = ref([]);
 
 const clearPark = (item: IPark) => {
   let arr: number[] = parks.value.map((ite: any) => ite.id);
@@ -95,16 +132,18 @@ const clearPark = (item: IPark) => {
 const reset = () => {
   startDate.value = "";
   endDate.value = "";
-  sources.value = [];
   parks.value = [];
+  sources.value = [];
+  directors.value = [];
 };
 const confirm = () => {
   clueFilterPopupRef.value.close();
   emit("confirm", {
     startDate: startDate.value,
     endDate: endDate.value,
-    sources: sources.value,
     parks: parks.value,
+    sources: sources.value,
+    directors: directors.value,
   });
 };
 
@@ -113,6 +152,7 @@ const open = () => {
   endDate.value = props.params?.endDate;
   parks.value = props.params?.parks;
   sources.value = props.params?.sources;
+  directors.value = props.params?.directors;
   clueFilterPopupRef.value.open();
 };
 const close = () => {
@@ -122,6 +162,7 @@ const close = () => {
 defineExpose({
   open,
   close,
+  reset,
 });
 </script>
 
@@ -172,6 +213,20 @@ defineExpose({
   justify-content: space-between;
 }
 .sources.cot {
+  border: 1px solid #ececec;
+  font-size: 14px;
+  color: #666;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  .left {
+    flex: 1;
+  }
+  .right {
+    margin-left: 10px;
+  }
+}
+.directorIds.cot {
   border: 1px solid #ececec;
   font-size: 14px;
   color: #666;

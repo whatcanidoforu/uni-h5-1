@@ -1,5 +1,9 @@
 <template>
-  <uni-popup ref="clueSourcesCheckPopRef" background-color="#fff" type="left">
+  <uni-popup
+    ref="clueDirectorIdsCheckPopRef"
+    background-color="#fff"
+    type="left"
+  >
     <view class="popup-content">
       <view class="pop-header">
         <uni-icons
@@ -8,7 +12,7 @@
           size="20"
           @click="close"
         ></uni-icons>
-        <view class="center">项目选择</view>
+        <view class="center">选择负责人</view>
         <view class="right"></view>
       </view>
 
@@ -16,21 +20,27 @@
         placeholder="请输入关键字搜索"
         bgColor="#FFFFFF"
         v-model="searchValue"
-        @confirm="search"
+        @input="debouncedInput"
+        @confirm="debouncedInput"
         style="padding: 0; margin-top: 10px"
       />
-
-      <scroll-view class="sources-list" scroll-y>
+      <scroll-view class="directorIds-list" scroll-y>
         <view
-          v-for="item in authParks"
-          :key="item.id"
+          v-for="item in directorsList"
+          :key="item.customerId"
           class="sources-item"
-          @click="clickParkItem(item)"
+          @click="clickDirectorIdsItem(item)"
         >
-          <view class="label">{{ item.name }}</view>
+          <view class="label">{{ item.customerName }}</view>
           <uni-icons
             class="check"
-            :type="useParks.map((ite: any) => ite.id).includes(item.id) ? 'circle-filled' : 'circle'"
+            :type="
+                useDirectors
+                  .map((ite:any) => ite.customerId)
+                  .includes(item.customerId)
+                  ? 'circle-filled'
+                  : 'circle'
+              "
             size="24"
           ></uni-icons>
         </view>
@@ -45,62 +55,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { apiGetUserAuthInfo, apiLogout } from "@/http/api/login";
-import type { IPark } from "@/types/permission";
+import { ref, computed, onMounted } from "vue";
+import {
+  apiSearchUser,
+  apiSearchUserByKeyword,
+  apiSearchCompanyByKeyword,
+  apiAuthSearchUser,
+} from "@/http/api/customer";
+import { useHeaderPark } from "@/stores/park";
 
-const clueSourcesCheckPopRef = ref();
-const emit = defineEmits(["update:parks", "confirm"]);
+const headerParkStore = useHeaderPark();
+const clueDirectorIdsCheckPopRef = ref();
+const emit = defineEmits(["update:directors"]);
 const props = defineProps({
-  parks: {
+  directors: {
     type: Array,
     default: () => [],
   },
 });
-const authParks = ref<IPark[]>([]);
-const getAuthParks = async () => {
-  try {
-    const userId = localStorage.getItem("userId") || "";
-    const res = await apiGetUserAuthInfo(userId);
-    authParks.value = res.parks;
-  } catch (e) {
-    authParks.value = [];
+
+const directorsList = ref<any>([]);
+
+const searchValue = ref("");
+const apiSearchUserFun = () => {
+  apiSearchUserByKeyword({
+    customerType: 1,
+    keywords: searchValue.value,
+    pageNo: 1,
+    pageSize: 99999,
+  }).then((res) => {
+    directorsList.value = res.data;
+  });
+};
+const clickDirectorIdsItem = (item: any) => {
+  let ids = useDirectors.value.map((ite: any) => ite.customerId) || [];
+  if (ids.includes(item.customerId)) {
+    useDirectors.value.splice(ids.indexOf(item.customerId), 1);
+  } else {
+    useDirectors.value.push(item);
   }
 };
 
-const searchValue = ref("");
-const search = () => {
-  console.log(searchValue.value);
-};
-const clickParkItem = (item: IPark) => {
-  // let arr: number[] = useParks.value.map((ite: any) => ite.id);
-  // if (arr.includes(item.id)) {
-  //   useParks.value.splice(arr.indexOf(item.id), 1);
-  // } else {
-  //   useParks.value.push(item);
-  // }
-  useParks.value.splice(0);
-  useParks.value.push(item);
-};
-
-const useParks = ref();
+const useDirectors = ref();
 const cancel = () => {
   close();
 };
 const confirm = () => {
-  emit("update:parks", useParks.value);
-  emit("confirm", useParks.value);
+  emit("update:directors", useDirectors.value);
   close();
 };
 
 const open = () => {
-  getAuthParks();
-  useParks.value = [...props.parks];
-  clueSourcesCheckPopRef.value.open();
+  apiSearchUserFun();
+  useDirectors.value = [...props.directors];
+  clueDirectorIdsCheckPopRef.value.open();
 };
 const close = () => {
-  useParks.value = [];
-  clueSourcesCheckPopRef.value.close();
+  useDirectors.value = [];
+  clueDirectorIdsCheckPopRef.value.close();
+};
+const timer = ref();
+const debouncedInput = (e: string) => {
+  if (timer.value) {
+    clearTimeout(timer.value);
+  }
+  timer.value = setTimeout(() => {
+    apiSearchUserFun();
+  }, 500);
 };
 
 defineExpose({
@@ -145,7 +166,7 @@ defineExpose({
     background-color: #fafafa !important;
   }
 }
-.sources-list {
+.directorIds-list {
   background-color: #f4f8fb;
   height: 1px;
   flex: 1;

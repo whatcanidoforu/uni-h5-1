@@ -41,14 +41,16 @@
           class="clue-card"
           v-for="(item, index) in dataList"
           :key="'clue-card' + index"
+          @click="clickCardItem(item)"
         >
           <view class="clue-name top">
-            万表样动切委
+            {{ item.customerName }}
             <view class="jump-area">
-              未跟进<uni-icons type="right" size="12"></uni-icons>
+              {{ item.statusName }}
+              <uni-icons type="right" size="12"></uni-icons>
             </view>
           </view>
-          <view class="phone center">联系方式: 18662282621</view>
+          <view class="phone center">联系方式: {{ item.customerPhone }}</view>
           <view class="btns-area bottom">
             <div class="btn">
               <uni-icons type="chat" size="18"></uni-icons>跟进
@@ -67,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import clueHeader from "./components/clue-header.vue";
 import {
   apiChanceSearchMyChanceClueList,
@@ -78,7 +80,6 @@ import { useHeaderPark } from "@/stores/park";
 
 const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
-const keyWords = ref("");
 
 const statusMapList = ref<any>([
   { label: "全部", type: 0, num: 0 },
@@ -96,7 +97,6 @@ const debouncedInput = (e: string) => {
     zPageing.value.reload();
   }, 500);
 };
-const userId = localStorage.getItem("userId") || "";
 
 const params = ref<any>({
   pageNo: 1,
@@ -105,22 +105,38 @@ const params = ref<any>({
   type: 0,
   startDate: "",
   endDate: "",
+  directors: [],
   directorIds: 0,
   stages: [],
   parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [103],
-  parks: [],
+  parks: headerParkStore.parks.filter(
+    (item) => item.id === headerParkStore.selectedId
+  ),
   sources: [],
   notExistsDirector: false,
 });
+onMounted(() => {
+  if (headerParkStore.parks) {
+    params.value.parks = headerParkStore.parks.filter(
+      (item) => item.id === headerParkStore.selectedId
+    );
+  } else {
+    params.value.parks = [];
+  }
+  params.value.parkIds = headerParkStore.selectedId
+    ? [headerParkStore.selectedId]
+    : [];
+  console.log("onMounted params", headerParkStore.parks, params.value);
+});
+
 const changeStatus = (item: any) => {
   params.value.type = item.type;
   zPageing.value.reload();
 };
-const dataList = ref([]);
+const dataList = ref<any>([]);
 const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
   let userId = Number(localStorage.getItem("userId")) as number;
-
   if (tabIndex.value === 0) {
     let res = await apiChanceSearchMyChanceClueList({
       pageNo: pageNo,
@@ -145,7 +161,18 @@ const queryList = async (pageNo: number, pageSize: number) => {
       { label: "已转商机", type: 3, num: res.businessTotal },
     ];
   } else if (tabIndex.value === 1) {
-    let res = await apiChanceSearchChanceClueTeam(params.value as any);
+    let res = await apiChanceSearchChanceClueTeam({
+      pageNo: pageNo,
+      pageSize: 999999,
+      keyWords: params.value.keyWords,
+      type: params.value.type,
+      startDate: params.value.startDate,
+      endDate: params.value.endDate,
+      directorIds: params.value.directorIds,
+      parkIds: params.value.parkIds,
+      sources: params.value.sources,
+      notExistsDirector: true,
+    });
     if (!res) {
       zPageing.value.complete(false);
     }
@@ -157,7 +184,17 @@ const queryList = async (pageNo: number, pageSize: number) => {
       { label: "已转商机", type: 3, num: res.businessTotal },
     ];
   } else if (tabIndex.value === 2) {
-    let res = await apiChanceSearchChanceClueList(params.value as any);
+    let res = await apiChanceSearchChanceClueList({
+      pageNo: pageNo,
+      pageSize: pageSize,
+      keyWords: params.value.keyWords,
+      type: params.value.type,
+      startDate: params.value.startDate,
+      endDate: params.value.endDate,
+      parkIds: params.value.parkIds,
+      sources: params.value.sources,
+      notExistsDirector: false,
+    });
     if (!res) {
       zPageing.value.complete(false);
     }
@@ -174,9 +211,14 @@ const confirmParams = (obj: any) => {
   console.log("index confirmParams", obj);
   params.value.startDate = obj.startDate;
   params.value.endDate = obj.endDate;
-  params.value.sources = obj.sources;
   params.value.parks = obj.parks;
-  params.value.parkIds = obj.parks.map((item: any) => item.id);
+  params.value.parkIds =
+    obj.parks && obj.parks.length > 0
+      ? obj.parks.map((item: any) => item.id)
+      : [headerParkStore.selectedId];
+  params.value.sources = obj.sources;
+  params.value.directors = obj.directors;
+  params.value.directorIds = obj.directors.map((item: any) => item.customerId);
   zPageing.value.reload();
 };
 
@@ -186,11 +228,20 @@ watch(
     params.value.keyWords = "";
     params.value.startDate = "";
     params.value.endDate = "";
-    params.value.endDate = "";
+
+    if (headerParkStore.parks) {
+      params.value.parks = headerParkStore.parks.filter(
+        (item) => item.id === headerParkStore.selectedId
+      );
+    } else {
+      params.value.parks = [];
+    }
     params.value.parkIds = headerParkStore.selectedId
       ? [headerParkStore.selectedId]
-      : [103];
+      : [];
     params.value.sources = [];
+    params.value.directors = [];
+    params.value.directorIds = [];
     if (val === 0) {
       params.value.type = 0;
     } else if (val === 1) {
@@ -201,6 +252,10 @@ watch(
     zPageing.value.reload();
   }
 );
+
+const clickCardItem = (item: any) => {
+  uni.navigateTo({ url: `/pages/clue/detail?id=${item.id}` });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -284,6 +339,10 @@ watch(
       color: #292929;
       padding-left: 14px;
       position: relative;
+      padding-right: 80px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       .jump-area {
         display: flex;
         align-items: baseline;

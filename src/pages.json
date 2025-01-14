@@ -1,6 +1,14 @@
 {
   "pages": [
     {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "transparentTitle": "always",
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/login/index",
       "style": {
         "navigationBarTitleText": "",
@@ -30,12 +38,6 @@
         "navigationBarTitleText": "",
         "transparentTitle": "always",
         "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/home/index",
-      "style": {
-        "navigationBarTitleText": "uni-app"
       }
     },
     {
@@ -70,6 +72,30 @@
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "线索管理",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/clue/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "线索详情",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/clue/add",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "线索新增",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/clue/edit",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "线索编辑",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
     },
@@ -130,7 +156,7 @@
         "text": "合同"
       },
       {
-        "pagePath": "pages/home/index",
+        "pagePath": "pages/system/index",
         "iconPath": "static/icon_menu_me.png",
         "selectedIconPath": "static/icon_menu_me_checked.png",
         "text": "我的"

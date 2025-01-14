@@ -1,0 +1,100 @@
+{
+  "id": "4351140",
+  "name": "我的项目",
+  "font_family": "iconfont",
+  "css_prefix_text": "z-",
+  "description": "我的项目",
+  "glyphs": [
+    {
+      "icon_id": "16840394",
+      "name": "断开链接",
+      "font_class": "duankailianjie",
+      "unicode": "e718",
+      "unicode_decimal": 59160
+    },
+    {
+      "icon_id": "32263204",
+      "name": "转商机",
+      "font_class": "zhuanshangji",
+      "unicode": "e6d4",
+      "unicode_decimal": 59092
+    },
+    {
+      "icon_id": "2020252",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "1304893",
+      "name": "邮件",
+      "font_class": "youjian",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "12544115",
+      "name": "通话记录",
+      "font_class": "tonghuajilu",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "28375475",
+      "name": "跟进记录",
+      "font_class": "genjinjilu",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "40192849",
+      "name": "变更日志查询",
+      "font_class": "biangengrizhichaxun",
+      "unicode": "e66a",
+      "unicode_decimal": 58986
+    },
+    {
+      "icon_id": "577338",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e73a",
+      "unicode_decimal": 59194
+    },
+    {
+      "icon_id": "3835607",
+      "name": "电话",
+      "font_class": "dianhua",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "15253880",
+      "name": "添加联系人",
+      "font_class": "tianjialianxiren",
+      "unicode": "e821",
+      "unicode_decimal": 59425
+    },
+    {
+      "icon_id": "4266149",
+      "name": "对话",
+      "font_class": "duihua",
+      "unicode": "e710",
+      "unicode_decimal": 59152
+    },
+    {
+      "icon_id": "3889107",
+      "name": "edit",
+      "font_class": "edit",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "7470691",
+      "name": "拖动",
+      "font_class": "tuodong",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

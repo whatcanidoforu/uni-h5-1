@@ -29,6 +29,7 @@
   <clueFilterPop
     ref="clueFilterPopRef"
     @confirm="confirm"
+    :tabIndex="props.tabIndex"
     :params="props.params"
   />
 </template>
@@ -68,7 +69,8 @@ const tabIndex = computed({
     emit("update:tabIndex", val);
   },
 });
-const changeTabIndex = (val) => {
+const changeTabIndex = (val: number) => {
+  clueFilterPopRef.value?.reset();
   tabIndex.value = val;
 };
 
