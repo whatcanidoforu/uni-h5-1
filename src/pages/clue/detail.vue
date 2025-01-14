@@ -321,7 +321,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShow } from "@dcloudio/uni-app";
 import clueHeader from "./components/clue-header.vue";
 import {
   apiChanceSearchMyChanceClueList,
@@ -341,10 +341,14 @@ const formData = ref<any>({
   fileInfos: [],
 });
 const chanceContactList = ref<any>([]);
+const pageOption = ref();
 onLoad((option) => {
+  pageOption.value = option;
   console.log(option);
-  apiChanceGetChanceClueDetailFun(Number(option?.id));
-  apiChanceGetChanceContactListFun(Number(option?.id));
+});
+onShow(() => {
+  apiChanceGetChanceClueDetailFun(Number(pageOption.value?.id));
+  apiChanceGetChanceContactListFun(Number(pageOption.value?.id));
 });
 // 详情
 const apiChanceGetChanceClueDetailFun = (id: number) => {

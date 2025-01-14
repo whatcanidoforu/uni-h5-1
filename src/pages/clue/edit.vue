@@ -318,6 +318,10 @@ const save = () => {
     console.log("apiChanceUpdateChance", res);
     apiChanceGetChanceClueDetailFun(Number(formData.value.id));
     apiChanceGetChanceContactListFun(Number(formData.value.id));
+    uni.showToast({ title: "保存成功", icon: "none", duration: 200 });
+    setTimeout(() => {
+      uni.navigateBack();
+    }, 200);
   });
 };
 
