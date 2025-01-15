@@ -65,6 +65,14 @@
         </view>
       </z-paging>
     </view>
+
+    <uni-icons
+      class="jump-add"
+      type="plus-filled"
+      size="60"
+      color="#009bf4"
+      @click="jumpAdd"
+    ></uni-icons>
   </view>
 </template>
 
@@ -76,6 +84,7 @@ import {
   apiChanceSearchChanceClueTeam,
   apiChanceSearchChanceClueList,
 } from "@/http/api/clue";
+import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
 const headerParkStore = useHeaderPark();
@@ -115,7 +124,7 @@ const params = ref<any>({
   sources: [],
   notExistsDirector: false,
 });
-onMounted(() => {
+const init = () => {
   if (headerParkStore.parks) {
     params.value.parks = headerParkStore.parks.filter(
       (item) => item.id === headerParkStore.selectedId
@@ -126,9 +135,13 @@ onMounted(() => {
   params.value.parkIds = headerParkStore.selectedId
     ? [headerParkStore.selectedId]
     : [];
-  console.log("onMounted params", headerParkStore.parks, params.value);
+};
+onMounted(() => {
+  init();
 });
-
+onShow(() => {
+  changeStatus(statusMapList.value[0]);
+});
 const changeStatus = (item: any) => {
   params.value.type = item.type;
   zPageing.value.reload();
@@ -220,6 +233,9 @@ const confirmParams = (obj: any) => {
   params.value.directors = obj.directors;
   params.value.directorIds = obj.directors.map((item: any) => item.customerId);
   zPageing.value.reload();
+};
+const jumpAdd = () => {
+  uni.navigateTo({ url: `/pages/clue/edit` });
 };
 
 watch(
@@ -381,5 +397,11 @@ const clickCardItem = (item: any) => {
       }
     }
   }
+}
+.jump-add {
+  position: fixed;
+  right: 0;
+  top: 70%;
+  z-index: 999;
 }
 </style>

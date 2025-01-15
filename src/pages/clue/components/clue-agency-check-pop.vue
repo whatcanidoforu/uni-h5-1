@@ -95,6 +95,7 @@ const clickDataItem = (item: any) => {
   // } else {
   //   useDataList.value.push(item);
   // }
+  console.log(" >>>>> clickDataItem", item);
   useDataList.value.splice(0);
   useDataList.value.push(item);
 };

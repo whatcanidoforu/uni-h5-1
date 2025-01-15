@@ -14,13 +14,6 @@
 
     <scroll-view class="base-detail page-content" scroll-y>
       <view class="card">
-        <!-- <view class="tit">基本信息</view> -->
-        <!-- <view class="label-value">
-          <view class="label">线索编号</view>
-          <view class="value a-link" @click="ClipboardData(formData.id)">
-            {{ formData.id || "-" }}
-          </view>
-        </view> -->
         <view class="label-value">
           <view class="label required">客户名称<span class="red">*</span></view>
           <uni-easyinput
@@ -47,11 +40,8 @@
           <view class="label">园区<span class="red">*</span></view>
           <view class="value">{{ formData.parkName || "-" }}</view>
         </view>
-        <!-- <view class="label-value">
-          <view class="label">线索状态</view>
-          <view class="value">{{ formData.statusName || "-" }}</view>
-        </view> -->
-        <view class="label-value">
+
+        <view class="label-value" @click="clueSourcesCheckPopRef?.open()">
           <view class="label">渠道来源</view>
           <view class="value">{{ formData.source || "-" }}</view>
         </view>
@@ -91,14 +81,6 @@
           ></uni-easyinput>
         </view>
 
-        <!-- <view class="label-value">
-          <view class="label">线素负责人</view>
-          <view class="value">{{ formData.directorName || "-" }}</view>
-        </view> -->
-        <!-- <view class="label-value">
-          <view class="label">关联商机</view>
-          <view class="value">{{ formData.businessChanceId || "-" }}</view>
-        </view> -->
         <view class="label-value remark">
           <view class="label">备注</view>
           <uni-easyinput
@@ -167,6 +149,12 @@
     @confirm="confirmAgency"
   />
 
+  <clueSourcesCheckPop
+    ref="clueSourcesCheckPopRef"
+    v-model:sources="sources"
+    @confirm="confirmSources"
+  />
+
   <uni-popup ref="FileNameRef" type="dialog">
     <uni-popup-dialog
       ref="inputClose"
@@ -185,42 +173,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import clueHeader from "./components/clue-header.vue";
 import {
-  apiChanceSearchMyChanceClueList,
-  apiChanceSearchChanceClueTeam,
-  apiChanceSearchChanceClueList,
   apiChanceGetChanceClueDetail,
   apiChanceGetChanceContactList,
-  apiChanceCreateChance,
   apiChanceUpdateChance,
+  apiChanceCreateChance,
 } from "@/http/api/clue";
-import { formatDate } from "@/utils/index";
 import clueParkCheckPop from "@/pages/clue/components/clue-park-check-pop.vue";
 import clueAgencyCheckPop from "@/pages/clue/components/clue-agency-check-pop.vue";
-import { checkStr, deepClone } from "@/utils";
+import clueSourcesCheckPop from "@/pages/clue/components/clue-sources-check-pop.vue";
+import { checkStr } from "@/utils";
 import { useHeaderPark } from "@/stores/park";
-import AddPic from "@/static/icon_contact_list_add.png";
 import { apiUploadFile } from "@/http/api/clue";
 
 const headerParkStore = useHeaderPark();
 
 const clueParkCheckPopRef = ref();
 const clueAgencyCheckPopRef = ref();
+const clueSourcesCheckPopRef = ref();
 
 const parks = ref<any>([]);
 const agencyList = ref<any>([]);
+const sources = ref<any>([]);
 
 const formData = ref<any>({
   fileInfos: [],
 });
 const chanceContactList = ref<any>([]);
+const pageOption = ref();
 onLoad((option) => {
-  console.log(option);
-  apiChanceGetChanceClueDetailFun(Number(option?.id));
-  apiChanceGetChanceContactListFun(Number(option?.id));
+  pageOption.value = option;
+  if (option?.id) {
+    apiChanceGetChanceClueDetailFun(Number(option?.id));
+    apiChanceGetChanceContactListFun(Number(option?.id));
+  } else {
+    let parkItem = headerParkStore.parks.filter(
+      (item) => item.id === headerParkStore.selectedId
+    )[0];
+    parks.value = [parkItem];
+    formData.value = {
+      parkName: parkItem.name,
+      parkId: parkItem.id,
+      changeBusiness: false,
+      fileInfos: [],
+      chanceContactList: [],
+    };
+  }
 });
 // 详情
 const apiChanceGetChanceClueDetailFun = (id: number) => {
@@ -234,11 +234,6 @@ const apiChanceGetChanceContactListFun = (id: number) => {
   apiChanceGetChanceContactList({ data: id }).then((res) => {
     console.log("apiChanceGetChanceContactList", res);
     chanceContactList.value = res.chanceContactList;
-  });
-};
-const ClipboardData = (e: any) => {
-  uni.setClipboardData({
-    data: e.toString(),
   });
 };
 const isPic = (url: any) => {
@@ -268,25 +263,6 @@ const clickFile = (url: any) => {
   });
 };
 
-const phonePopup = ref();
-const phoneList = ref<number[]>([]);
-const showPhonePop = (e: any) => {
-  console.log("e", e);
-  phoneList.value = [];
-  e.phone && phoneList.value.push(e.phone);
-  e.phone2 && phoneList.value.push(e.phone2);
-  phonePopup.value.open();
-};
-const makePhoneCall = (e: any) => {
-  uni.makePhoneCall({
-    phoneNumber: e,
-  });
-};
-const jumpEdit = () => {
-  uni.navigateTo({
-    url: "/pages/clue/edit",
-  });
-};
 const save = () => {
   if (!formData.value.customerName) {
     uni.showToast({
@@ -314,23 +290,62 @@ const save = () => {
   formData.value.files = formData.value.fileInfos
     .map((item: any) => item.id)
     .join(",");
-  apiChanceUpdateChance(formData.value).then((res) => {
-    console.log("apiChanceUpdateChance", res);
-    apiChanceGetChanceClueDetailFun(Number(formData.value.id));
-    apiChanceGetChanceContactListFun(Number(formData.value.id));
-  });
+
+  if (pageOption.value.id) {
+    apiChanceUpdateChance(formData.value).then((res) => {
+      console.log("apiChanceUpdateChance", res);
+      uni.showToast({ title: "保存成功", icon: "none", duration: 200 });
+      setTimeout(() => {
+        uni.navigateBack();
+      }, 200);
+    });
+  } else {
+    formData.value.chanceContactList = [
+      {
+        name: formData.value.customerName,
+        phone: formData.value.customerPhone,
+        phone2: "",
+        email: "",
+        keyMan: false,
+        remark: "",
+        position: "",
+      },
+    ];
+    apiChanceCreateChance(formData.value).then((res) => {
+      console.log("apiChanceCreateChance", res);
+      uni.showToast({ title: "保存成功", icon: "none", duration: 200 });
+      setTimeout(() => {
+        uni.navigateBack();
+      }, 200);
+    });
+  }
 };
 
 const confirmPark = (e: any) => {
+  console.log("confirmPark", e);
   if (e && e.length > 0) {
-    formData.value.parkName = e[0].parkName;
+    formData.value.parkName = e[0].name;
     formData.value.parkId = e[0].id;
   }
 };
 const confirmAgency = (e: any) => {
   if (e && e.length > 0) {
-    formData.value.parkName = e[0].parkName;
-    formData.value.parkId = e[0].id;
+    formData.value.agencyId = e[0].id;
+    formData.value.agencyName = e[0].contact;
+    formData.value.agencyContact = e[0].name;
+    formData.value.agencyMobile = e[0].mobile;
+  }
+};
+const confirmSources = (e: any) => {
+  console.log("confirmSources", e);
+  if (e && e.length > 0) {
+    formData.value.source = e[0];
+    if (formData.value.source !== "渠道中介") {
+      formData.value.agencyId = "";
+      formData.value.agencyName = "";
+      formData.value.agencyContact = "";
+      formData.value.agencyMobile = "";
+    }
   }
 };
 
@@ -559,6 +574,7 @@ view {
           width: 60px;
           height: 60px;
           margin: 0 16px 10px 0;
+          border: 1px solid #efebeb;
         }
       }
     }
