@@ -106,6 +106,14 @@
         "navigationBarTitleText": "新增跟进",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
+    },
+    {
+      "path": "pages/bill/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "账单管理",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
     }
   ],
   "globalStyle": {
