@@ -98,6 +98,14 @@
         "navigationBarTitleText": "线索编辑",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
+    },
+    {
+      "path": "pages/clue/gj-edit",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "新增跟进",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
     }
   ],
   "globalStyle": {
