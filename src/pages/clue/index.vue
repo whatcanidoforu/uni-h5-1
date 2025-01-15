@@ -52,15 +52,15 @@
           </view>
           <view class="phone center">联系方式: {{ item.customerPhone }}</view>
           <view class="btns-area bottom">
-            <div class="btn">
+            <view class="btn" @click.stop="jumpFollow(item)">
               <uni-icons type="chat" size="18"></uni-icons>跟进
-            </div>
-            <div class="btn">
+            </view>
+            <view class="btn" @click.stop="jumpPhone(item)">
               <uni-icons type="phone" size="18"></uni-icons>电话
-            </div>
-            <div class="btn">
+            </view>
+            <view class="btn" @click.stop="jumpWx(item)">
               <uni-icons type="chat" size="18"></uni-icons>微信
-            </div>
+            </view>
           </view>
         </view>
       </z-paging>
@@ -236,6 +236,57 @@ const confirmParams = (obj: any) => {
 };
 const jumpAdd = () => {
   uni.navigateTo({ url: `/pages/clue/edit` });
+};
+const jumpFollow = (item: any) => {
+  uni.navigateTo({ url: "/pages/clue/gj-edit" });
+};
+const jumpPhone = (item: any) => {
+  uni.makePhoneCall({ phoneNumber: item.customerPhone });
+};
+const jumpWx = (item: any) => {
+  // let url = "weixin://biz/ww/profile/";
+  // let url = "weixin://";
+  // plus.runtime.openURL(url);
+
+  // var UIApplication = plus.ios.import("UIApplication");
+  // var NSURL = plus.ios.import("NSURL");
+  // var setting = NSURL.URLWithString("weixin://");
+  // var application = UIApplication.sharedApplication();
+  // application.openURL(setting);
+  // plus.ios.deleteObject(setting);
+  // plus.ios.deleteObject(application);
+
+  uni.share({
+    provider: "weixin",
+    scene: "WXSceneSession",
+    type: 1,
+    summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
+    success: function (res) {
+      uni.showToast({
+        title: "success:" + JSON.stringify(res),
+        icon: "none",
+      });
+      console.log("success:" + JSON.stringify(res));
+    },
+    fail: function (err) {
+      uni.showToast({
+        title: "fail:" + JSON.stringify(err),
+        icon: "none",
+      });
+      console.log("fail:" + JSON.stringify(err));
+    },
+  });
+
+  // uni.shareWithSystem({
+  //   summary: "",
+  //   href: "https://uniapp.dcloud.io",
+  //   success() {
+  //     // 分享完成，请注意此时不一定是成功分享
+  //   },
+  //   fail() {
+  //     // 分享失败
+  //   },
+  // });
 };
 
 watch(

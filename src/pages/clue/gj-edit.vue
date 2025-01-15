@@ -8,7 +8,7 @@
         @click="back"
         color="#fff"
       ></uni-icons>
-      <view class="center">{{ pageOption.id ? "线索编辑" : "新建线索" }}</view>
+      <view class="center">{{ "新增跟进" }}</view>
       <view class="right"></view>
     </view>
 

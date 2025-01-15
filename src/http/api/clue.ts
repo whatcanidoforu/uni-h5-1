@@ -113,3 +113,18 @@ export function apiChanceUnAssignChance(params: IThreadChangeRequest[]) {
     data: { assignChances: params },
   });
 }
+
+// 新增沟通记录
+export function apiCrmCreateChanceContactRecord(params: IContactDetail) {
+  return rjkRequest({
+    url: "crm.createChanceContactRecord",
+    data: params,
+  });
+}
+// 编辑沟通记录
+export function apiCrmUpdateChanceContactRecord(params: IContactDetail) {
+  return rjkRequest({
+    url: "crm.updateChanceContactRecord",
+    data: params,
+  });
+}
