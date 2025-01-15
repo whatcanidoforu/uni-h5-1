@@ -98,9 +98,16 @@ export function apiGetReceivableOffInfo(data: {
 }
 // 查询账单列表
 export function apiSearchBill(
-  data: IPageParams<TSearchBill> & { keyWords: string }
+  data: IPageParams<TSearchBill> & { keyWords: string | undefined }
 ) {
-  return rjkRequest<IPageBody<IBill>>({
+  return rjkRequest<
+    IPageBody<IBill> & {
+      totalCount: number | 0;
+      unReceivedCount: number | 0;
+      partReceivedCount: number | 0;
+      receivedCount: number | 0;
+    }
+  >({
     url: "bill.searchBill",
     data: data,
   });

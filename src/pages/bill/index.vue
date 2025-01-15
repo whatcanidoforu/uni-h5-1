@@ -1,22 +1,4 @@
 <template>
-  <view class="bill-header">
-    <uni-icons
-      class="left"
-      style="font-weight: bolder"
-      type="left"
-      size="20"
-      @click="goBacktoHome"
-    ></uni-icons>
-    <view class="bill-tille">账单管理</view>
-    <view @click="searchBill"
-      ><uni-icons
-        class="iconfont icon-loudou"
-        style="padding-right: 5px"
-        :size="18"
-      ></uni-icons
-      >筛选</view
-    >
-  </view>
   <view class="bill-page">
     <view class="z-paging-container">
       <z-paging
@@ -27,6 +9,23 @@
         overflow="hidden"
       >
         <template #top>
+          <view class="bill-header">
+            <uni-icons
+              style="font-weight: bolder"
+              type="left"
+              size="20"
+              @click="goBacktoHome"
+            ></uni-icons>
+            <view class="bill-tille">账单管理</view>
+            <view @click="searchBill"
+              ><uni-icons
+                class="iconfont icon-loudou"
+                style="padding-right: 5px"
+                :size="18"
+              ></uni-icons
+              >筛选</view
+            >
+          </view>
           <view class="page-content">
             <uni-search-bar
               radius="5"
@@ -89,19 +88,25 @@
       </z-paging>
     </view>
   </view>
+  <billDataScreen ref="billDataScreenRef" @confirm="confirm" />
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
+import billDataScreen from "./components/bill-data-screen.vue";
 import { apiSearchBill } from "@/http/api/charge";
 import type { IBill } from "@/types/charge";
+import { useHeaderPark } from "@/stores/park";
 
+const headerParkStore = useHeaderPark();
+const billDataScreenRef = ref();
 const searchBill = () => {
-  //跳转数据筛选页面
-  console.log("searchBill");
+  billDataScreenRef.value?.open();
 };
 const goBacktoHome = () => {
-  uni.navigateBack({ delta: 1 });
+  uni.navigateTo({
+    url: "/pages/home/index",
+  });
 };
 
 const statusMapList = [
@@ -117,6 +122,10 @@ const changeStatus = (value: any) => {
   paging.value.reload();
 };
 const keyWords = ref("");
+const startTime = ref();
+const endTime = ref();
+const customerComId = ref();
+const customerType = ref();
 const searchBills = (e: any) => {
   keyWords.value = e;
   paging.value.reload();
@@ -136,14 +145,17 @@ const queryList = async (pageNo: any, pageSize: any) => {
   setTimeout(function () {
     uni.hideLoading();
   }, 10);
-  let userId = Number(localStorage.getItem("userId"));
+
   const params = {
     pageNo: pageNo,
     pageSize: pageSize,
-    parkIds: [77],
+    startTime: startTime.value ? startTime.value : undefined,
+    endTime: endTime.value ? endTime.value : undefined,
+    parkId: headerParkStore.selectedId ? [headerParkStore.selectedId] : [77],
+    customerType: customerType.value ? customerType.value : undefined,
     labelType: labelType.value,
-    userId: userId,
     keyWords: keyWords.value,
+    customerComId: customerComId.value ? customerComId.value : undefined,
   };
   let res = await apiSearchBill(params);
   if (!res) {
@@ -161,6 +173,14 @@ const queryList = async (pageNo: any, pageSize: any) => {
   partReceived.value = partReceivedCount;
   received.value = receivedCount;
   paging.value.complete(data);
+};
+
+const confirm = (options: any) => {
+  startTime.value = options.startDate;
+  endTime.value = options.endDate;
+  customerComId.value = options.customerComId;
+  customerType.value = options.customerType;
+  paging.value.reload();
 };
 </script>
 
@@ -183,7 +203,7 @@ const queryList = async (pageNo: any, pageSize: any) => {
   font-weight: bold;
 }
 .bill-page {
-  height: calc(100% - 62px);
+  height: 100%;
   overflow: hidden;
   background-color: #f4f8fb;
   display: flex;
