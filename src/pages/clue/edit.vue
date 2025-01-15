@@ -179,6 +179,7 @@ import {
   apiChanceGetChanceClueDetail,
   apiChanceGetChanceContactList,
   apiChanceUpdateChance,
+  apiChanceCreateChance,
 } from "@/http/api/clue";
 import clueParkCheckPop from "@/pages/clue/components/clue-park-check-pop.vue";
 import clueAgencyCheckPop from "@/pages/clue/components/clue-agency-check-pop.vue";
@@ -203,9 +204,22 @@ const formData = ref<any>({
 const chanceContactList = ref<any>([]);
 const pageOption = ref();
 onLoad((option) => {
+  pageOption.value = option;
   if (option?.id) {
     apiChanceGetChanceClueDetailFun(Number(option?.id));
     apiChanceGetChanceContactListFun(Number(option?.id));
+  } else {
+    let parkItem = headerParkStore.parks.filter(
+      (item) => item.id === headerParkStore.selectedId
+    )[0];
+    parks.value = [parkItem];
+    formData.value = {
+      parkName: parkItem.name,
+      parkId: parkItem.id,
+      changeBusiness: false,
+      fileInfos: [],
+      chanceContactList: [],
+    };
   }
 });
 // 详情
@@ -276,20 +290,41 @@ const save = () => {
   formData.value.files = formData.value.fileInfos
     .map((item: any) => item.id)
     .join(",");
-  apiChanceUpdateChance(formData.value).then((res) => {
-    console.log("apiChanceUpdateChance", res);
-    apiChanceGetChanceClueDetailFun(Number(formData.value.id));
-    apiChanceGetChanceContactListFun(Number(formData.value.id));
-    uni.showToast({ title: "保存成功", icon: "none", duration: 200 });
-    setTimeout(() => {
-      uni.navigateBack();
-    }, 200);
-  });
+
+  if (pageOption.value.id) {
+    apiChanceUpdateChance(formData.value).then((res) => {
+      console.log("apiChanceUpdateChance", res);
+      uni.showToast({ title: "保存成功", icon: "none", duration: 200 });
+      setTimeout(() => {
+        uni.navigateBack();
+      }, 200);
+    });
+  } else {
+    formData.value.chanceContactList = [
+      {
+        name: formData.value.customerName,
+        phone: formData.value.customerPhone,
+        phone2: "",
+        email: "",
+        keyMan: false,
+        remark: "",
+        position: "",
+      },
+    ];
+    apiChanceCreateChance(formData.value).then((res) => {
+      console.log("apiChanceCreateChance", res);
+      uni.showToast({ title: "保存成功", icon: "none", duration: 200 });
+      setTimeout(() => {
+        uni.navigateBack();
+      }, 200);
+    });
+  }
 };
 
 const confirmPark = (e: any) => {
+  console.log("confirmPark", e);
   if (e && e.length > 0) {
-    formData.value.parkName = e[0].parkName;
+    formData.value.parkName = e[0].name;
     formData.value.parkId = e[0].id;
   }
 };

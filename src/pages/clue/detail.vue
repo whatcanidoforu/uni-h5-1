@@ -479,7 +479,6 @@ const clickDeleteChance = () => {
         id: formData.value.id,
         version: formData.value.version,
       }).then(() => {
-        init();
         uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
         uni.navigateBack();
       });

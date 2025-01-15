@@ -84,6 +84,7 @@ import {
   apiChanceSearchChanceClueTeam,
   apiChanceSearchChanceClueList,
 } from "@/http/api/clue";
+import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
 const headerParkStore = useHeaderPark();
@@ -123,7 +124,7 @@ const params = ref<any>({
   sources: [],
   notExistsDirector: false,
 });
-onMounted(() => {
+const init = () => {
   if (headerParkStore.parks) {
     params.value.parks = headerParkStore.parks.filter(
       (item) => item.id === headerParkStore.selectedId
@@ -134,9 +135,13 @@ onMounted(() => {
   params.value.parkIds = headerParkStore.selectedId
     ? [headerParkStore.selectedId]
     : [];
-  console.log("onMounted params", headerParkStore.parks, params.value);
+};
+onMounted(() => {
+  init();
 });
-
+onShow(() => {
+  changeStatus(statusMapList.value[0]);
+});
 const changeStatus = (item: any) => {
   params.value.type = item.type;
   zPageing.value.reload();
