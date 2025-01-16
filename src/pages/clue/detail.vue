@@ -508,10 +508,8 @@ const jumpLxrEdit = (item: any) => {
 };
 const delLxr = (item: any) => {
   apiChanceDeleteChanceContact({ id: item.id }).then((res) => {
-    if (res && res.code == "SUCCESS") {
-      uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
-      init();
-    }
+    uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
+    init();
   });
 };
 
