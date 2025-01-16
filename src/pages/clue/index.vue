@@ -4,6 +4,7 @@
       v-model:tabIndex="tabIndex"
       :params="params"
       @confirm="confirmParams"
+      @PopOpenStatusChange="PopOpenStatusChange"
     ></clueHeader>
     <view class="page-content">
       <uni-search-bar
@@ -58,15 +59,16 @@
             <view class="btn" @click.stop="jumpPhone(item)">
               <uni-icons type="phone" size="18"></uni-icons>电话
             </view>
-            <view class="btn" @click.stop="jumpWx(item)">
+            <!-- <view class="btn" @click.stop="jumpWx(item)">
               <uni-icons type="chat" size="18"></uni-icons>微信
-            </view>
+            </view> -->
           </view>
         </view>
       </z-paging>
     </view>
 
     <uni-icons
+      v-if="!isFilterPopOpen"
       class="jump-add"
       type="plus-filled"
       size="60"
@@ -238,7 +240,7 @@ const jumpAdd = () => {
   uni.navigateTo({ url: `/pages/clue/edit` });
 };
 const jumpFollow = (item: any) => {
-  uni.navigateTo({ url: "/pages/clue/gj-edit" });
+  uni.navigateTo({ url: `/pages/clue/gj-edit?chanceId=${item.id}` });
 };
 const jumpPhone = (item: any) => {
   uni.makePhoneCall({ phoneNumber: item.customerPhone });
@@ -276,17 +278,11 @@ const jumpWx = (item: any) => {
       console.log("fail:" + JSON.stringify(err));
     },
   });
+};
 
-  // uni.shareWithSystem({
-  //   summary: "",
-  //   href: "https://uniapp.dcloud.io",
-  //   success() {
-  //     // 分享完成，请注意此时不一定是成功分享
-  //   },
-  //   fail() {
-  //     // 分享失败
-  //   },
-  // });
+const isFilterPopOpen = ref(false);
+const PopOpenStatusChange = (e: any) => {
+  isFilterPopOpen.value = e;
 };
 
 watch(

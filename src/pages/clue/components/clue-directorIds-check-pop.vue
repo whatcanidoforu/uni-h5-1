@@ -31,7 +31,19 @@
           class="sources-item"
           @click="clickDirectorIdsItem(item)"
         >
-          <view class="label">{{ item.customerName }}</view>
+          <view class="label">
+            <view class="left">
+              <image
+                class="pic"
+                mode="aspectFill"
+                src="https://test-file.ruijiakeyun.com:2644/user-file///c766a3c1-6edb-4b00-9abe-006bc1fb861a.png"
+              />
+            </view>
+            <view class="right">
+              <view>{{ item.customerName }}</view>
+              <view>{{ item.mobile }}</view>
+            </view>
+          </view>
           <uni-icons
             class="check"
             :type="
@@ -66,11 +78,15 @@ import { useHeaderPark } from "@/stores/park";
 
 const headerParkStore = useHeaderPark();
 const clueDirectorIdsCheckPopRef = ref();
-const emit = defineEmits(["update:directors"]);
+const emit = defineEmits(["update:directors", "confirm"]);
 const props = defineProps({
   directors: {
     type: Array,
     default: () => [],
+  },
+  multiply: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -89,9 +105,14 @@ const apiSearchUserFun = () => {
 };
 const clickDirectorIdsItem = (item: any) => {
   let ids = useDirectors.value.map((ite: any) => ite.customerId) || [];
-  if (ids.includes(item.customerId)) {
-    useDirectors.value.splice(ids.indexOf(item.customerId), 1);
+  if (props.multiply) {
+    if (ids.includes(item.customerId)) {
+      useDirectors.value.splice(ids.indexOf(item.customerId), 1);
+    } else {
+      useDirectors.value.push(item);
+    }
   } else {
+    useDirectors.value.splice(0);
     useDirectors.value.push(item);
   }
 };
@@ -102,10 +123,12 @@ const cancel = () => {
 };
 const confirm = () => {
   emit("update:directors", useDirectors.value);
+  emit("confirm", useDirectors.value);
   close();
 };
 
 const open = () => {
+  console.log("open", open);
   apiSearchUserFun();
   useDirectors.value = [...props.directors];
   clueDirectorIdsCheckPopRef.value.open();
@@ -121,7 +144,7 @@ const debouncedInput = (e: string) => {
   }
   timer.value = setTimeout(() => {
     apiSearchUserFun();
-  }, 500);
+  }, 200);
 };
 
 defineExpose({
@@ -178,6 +201,25 @@ defineExpose({
     justify-content: space-between;
     padding: 12px;
     border-radius: 8px;
+
+    .label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .left {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+        .pic {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .right {
+        flex: 1;
+      }
+    }
   }
 }
 .btns {

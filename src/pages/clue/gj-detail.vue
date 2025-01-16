@@ -15,11 +15,11 @@
     <scroll-view class="base-detail page-content" scroll-y>
       <view class="card">
         <view class="label-value" @click="clueDirectorIdsCheckPopRef?.open()">
-          <view class="label">跟进人员<span class="red">*</span></view>
+          <view class="label">跟进人员</view>
           <view class="value"> {{ formData.communicatorName }} </view>
         </view>
         <view class="label-value time">
-          <view class="label">跟进日期<span class="red">*</span></view>
+          <view class="label">跟进时间</view>
           <uni-datetime-picker
             class="value"
             type="date"
@@ -32,26 +32,30 @@
           </uni-datetime-picker>
         </view>
         <view class="label-value" @click="clueGjtypeCheckPopRef?.open()">
-          <view class="label">跟进方式<span class="red">*</span></view>
+          <view class="label">跟进方式</view>
           <view class="value">{{ formData.type || "-" }}</view>
+        </view>
+        <view class="label-value time">
+          <view class="label">下次跟进时间</view>
+          <uni-datetime-picker
+            class="value"
+            type="date"
+            :clear-icon="false"
+            v-model="formData.nextContactTime"
+          >
+            <view class="time-cot">{{ formData.nextContactTime }} </view>
+          </uni-datetime-picker>
         </view>
       </view>
       <view class="card">
         <view class="label-value remark">
-          <view class="label">备注</view>
-          <uni-easyinput
-            type="textarea"
-            v-model="formData.detail"
-            placeholder="请输入"
-            :trim="true"
-            :clearable="false"
-            :inputBorder="false"
-          ></uni-easyinput>
+          <view class="label">跟进内容</view>
+          <view class="value">{{ formData.detail }}</view>
         </view>
       </view>
       <view class="card">
         <view class="label-value fj">
-          <view class="label">上传附件</view>
+          <view class="label">附件</view>
           <view class="value">
             <template v-for="(item, index) in formData.files">
               <view class="file-item-out">
@@ -69,100 +73,41 @@
                   :key="item.url + '-file'"
                   @click="clickFile(item.url)"
                 ></view>
-                <uni-icons
+                <!-- <uni-icons
                   class="del-btn"
                   type="clear"
                   size="20"
                   @click="delFileItem(index)"
-                ></uni-icons>
+                ></uni-icons> -->
               </view>
             </template>
-            <image
+            <!-- <image
               v-if="formData.files.length < 7"
               @click="clickAddFile"
               class="add-file-btn"
               src="@/static/icon_contact_list_add.png"
               mode="aspectFill"
-            ></image>
+            ></image> -->
           </view>
-        </view>
-        <view class="label-value time">
-          <view class="label">下次跟进时间</view>
-          <uni-datetime-picker
-            class="value"
-            type="date"
-            :clear-icon="false"
-            v-model="formData.nextContactTime"
-          >
-            <view class="time-cot">{{ formData.nextContactTime }} </view>
-          </uni-datetime-picker>
         </view>
       </view>
     </scroll-view>
-
-    <view class="btns">
-      <view class="cancel btn">取消</view>
-      <view class="confirm btn" @click="save">保存</view>
-    </view>
   </view>
-
-  <clueAgencyCheckPop
-    ref="clueAgencyCheckPopRef"
-    v-model:agencyList="agencyList"
-    @confirm="confirmAgency"
-  />
-
-  <clueGjtypeCheckPop
-    ref="clueGjtypeCheckPopRef"
-    v-model:dataList="gjtypeList"
-    :multiply="false"
-    @confirm="confirmGjtype"
-  />
-  <clueDirectorIdsCheckPop
-    ref="clueDirectorIdsCheckPopRef"
-    v-model:directors="directors"
-    :multiply="false"
-    @confirm="confirmDirectorIds"
-  />
-
-  <uni-popup ref="FileNameRef" type="dialog">
-    <uni-popup-dialog
-      ref="inputClose"
-      mode="input"
-      title="请输入文件名"
-      confirmText="确定"
-      cancelText="取消"
-      @confirm="confirmFileName"
-    >
-      <template #default>
-        <uni-easyinput v-model="fileName" placeholder="请输入"></uni-easyinput>
-        <view class="file-name-pop-content">{{ fileType }}</view>
-      </template>
-    </uni-popup-dialog>
-  </uni-popup>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { apiCrmCreateChanceContactRecord } from "@/http/api/clue";
-import clueAgencyCheckPop from "@/pages/clue/components/clue-agency-check-pop.vue";
-import clueGjtypeCheckPop from "@/pages/clue/components/clue-gjtype-check-pop.vue";
-import clueDirectorIdsCheckPop from "@/pages/clue/components/clue-directorIds-check-pop.vue";
+import { apiCrmGetChanceContactRecord } from "@/http/api/clue";
 
-import { checkStr } from "@/utils";
 import { useHeaderPark } from "@/stores/park";
 import { apiUploadFile } from "@/http/api/clue";
+import { format } from "echarts";
 
 const headerParkStore = useHeaderPark();
 
-const clueAgencyCheckPopRef = ref();
 const clueGjtypeCheckPopRef = ref();
 const clueDirectorIdsCheckPopRef = ref();
-
-const agencyList = ref<any>([]);
-const gjtypeList = ref<any>([]);
-const directors = ref([]);
 
 const userId = ref(Number(localStorage.getItem("userId")) as number);
 const formData = ref<any>({
@@ -180,8 +125,16 @@ const formData = ref<any>({
 const pageOption = ref();
 onLoad((option) => {
   pageOption.value = option;
-  formData.value.chanceId = pageOption.value.chanceId;
+  apiCrmGetChanceContactRecordFun();
 });
+
+const apiCrmGetChanceContactRecordFun = () => {
+  apiCrmGetChanceContactRecord(pageOption.value.id).then((res) => {
+    console.log(" >>>> apiCrmGetChanceContactRecord", res);
+    formData.value = res;
+  });
+};
+
 const isPic = (url: any) => {
   console.log("url", url);
   const regex = /\.(bmp|gif|jpg|png|jpe?g|webp)$/i;
@@ -209,78 +162,10 @@ const clickFile = (url: any) => {
   });
 };
 
-const save = () => {
-  console.log("formData", formData.value);
-  if (!formData.value.communicatorName) {
-    uni.showToast({ title: "跟进人员不能为空", icon: "none", mask: true });
-    return false;
-  }
-  if (!formData.value.communicateTime) {
-    uni.showToast({ title: "跟进日期不能为空", icon: "none", mask: true });
-    return false;
-  }
-
-  if (!formData.value.type) {
-    uni.showToast({ title: "跟进方式不能为空", icon: "none", mask: true });
-    return false;
-  }
-
-  apiCrmCreateChanceContactRecord(formData.value).then((res) => {
-    console.log("apiCrmCreateChanceContactRecord", res);
-    uni.showToast({ title: "保存成功", icon: "none", duration: 200 });
-    setTimeout(() => {
-      uni.navigateBack();
-    }, 200);
-  });
-};
-
-const confirmAgency = (e: any) => {
-  if (e && e.length > 0) {
-    formData.value.agencyId = e[0].id;
-    formData.value.agencyName = e[0].contact;
-    formData.value.agencyContact = e[0].name;
-    formData.value.agencyMobile = e[0].mobile;
-  }
-};
-const confirmGjtype = (e: any) => {
-  console.log("confirmGjtype", e);
-  if (e && e.length > 0) {
-    formData.value.type = e[0];
-  }
-};
-const confirmDirectorIds = (e: any) => {
-  console.log("confirmDirectorIds", e);
-  if (e && e.length > 0) {
-    formData.value.communicatorId = e[0].customerId;
-    formData.value.communicatorName = e[0].customerName;
-  }
-};
-
 const fileName = ref("");
 const fileType = ref("");
 const FileNameRef = ref();
 const currentFileItem = ref<any>();
-const confirmFileName = () => {
-  console.log("fileName", fileName.value);
-  if (!fileName.value) {
-    return uni.showToast({
-      title: "名称不能为空",
-      icon: "none",
-      mask: true,
-    });
-  }
-  apiUploadFile(
-    currentFileItem.value,
-    fileName.value + "." + fileType.value
-  ).then((res) => {
-    uni.showToast({ title: "上传成功", icon: "none", duration: 200 });
-    if (formData.value.files) {
-      formData.value.files.push(res);
-    } else {
-      formData.value.files = [res];
-    }
-  });
-};
 const clickAddFile = () => {
   uni.chooseImage({
     success: (chooseImageRes: any) => {
@@ -330,6 +215,7 @@ const back = () => {
 }
 view {
   box-sizing: border-box !important;
+  word-break: break-all;
 }
 .page-header {
   color: #fff;

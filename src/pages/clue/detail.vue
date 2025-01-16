@@ -211,7 +211,7 @@
       scroll-y
     >
       <view class="card">
-        <view class="label-value">
+        <view class="label-value" @click="jumpGjList">
           <view class="label">
             <span class="iconfont z-genjinjilu" style="font-size: 17px"></span>
             跟进记录
@@ -239,7 +239,7 @@
     </scroll-view>
 
     <view class="btns-area">
-      <view class="btn">
+      <view class="btn" @click="jumpGjAdd">
         <span class="iconfont z-duihua" style="font-size: 20px"></span>
         新增跟进
       </view>
@@ -490,6 +490,16 @@ const clickSms = () => {
   let body = "客户, 你好"; // 短信发送的内容
   sendSms(phone, body);
   morePopup.value?.close();
+};
+const jumpGjAdd = () => {
+  uni.navigateTo({
+    url: `/pages/clue/gj-edit?chanceId=${pageOption.value.id}`,
+  });
+};
+const jumpGjList = () => {
+  uni.navigateTo({
+    url: `/pages/clue/gj-list?chanceId=${formData.value.id}`,
+  });
 };
 const back = () => {
   uni.navigateBack();

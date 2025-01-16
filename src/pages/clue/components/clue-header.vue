@@ -38,7 +38,7 @@
 import { ref, computed } from "vue";
 import clueFilterPop from "./clue-filter-pop.vue";
 
-const emit = defineEmits(["update:tabIndex", "confirm"]);
+const emit = defineEmits(["update:tabIndex", "confirm", "PopOpenStatusChange"]);
 const props = defineProps({
   tabIndex: {
     type: Number,
@@ -54,11 +54,13 @@ const clueFilterPopRef = ref();
 const clickClueFilterPopRef = () => {
   console.log("clickClueFilterPopRef", clueFilterPopRef.value);
   clueFilterPopRef.value?.open();
+  emit("PopOpenStatusChange", false);
 };
 
 const confirm = (params: any) => {
   console.log("clue-header confirm", params);
   emit("confirm", params);
+  emit("PopOpenStatusChange", true);
 };
 
 const tabIndex = computed({

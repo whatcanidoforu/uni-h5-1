@@ -128,3 +128,22 @@ export function apiCrmUpdateChanceContactRecord(params: IContactDetail) {
     data: params,
   });
 }
+
+// 查询沟通记录
+
+export function apiSearchChanceContactRecord(
+  params: IPageParams<IContactSearch>
+) {
+  return rjkRequest<IPageBody<IContactTable>>({
+    url: "crm.searchChanceContactRecord",
+    data: params,
+  });
+}
+
+// 沟通记录详情
+export function apiCrmGetChanceContactRecord(id: number) {
+  return rjkRequest<IContactDetail>({
+    url: "crm.getChanceContactRecord",
+    data: { data: id },
+  });
+}
