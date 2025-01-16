@@ -147,3 +147,29 @@ export function apiCrmGetChanceContactRecord(id: number) {
     data: { data: id },
   });
 }
+
+// post 新增商机线索联系人
+export function apiChanceCreateChanceContact(
+  params: IChanceContact & { chanceId: number }
+) {
+  return rjkRequest({
+    url: "chance.createChanceContact",
+    data: params,
+  });
+}
+// post 编辑商机线索联系人
+export function apiChanceUpdateChanceContact(
+  params: IChanceContact & { chanceId: number }
+) {
+  return rjkRequest({
+    url: "chance.updateChanceContact",
+    data: params,
+  });
+}
+// post 删除商机线索联系人
+export function apiChanceDeleteChanceContact(params: { id: number }) {
+  return rjkRequest<any>({
+    url: "chance.deleteChanceContact",
+    data: params,
+  });
+}

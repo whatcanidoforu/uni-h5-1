@@ -190,13 +190,13 @@
             </view>
           </view>
 
-          <view class="btn" @click="showPhonePop(item)" v-if="index > 0">
+          <view class="btn" @click="jumpLxrEdit(item)" v-if="index > 0">
             <view class="btn-text">
               <span class="iconfont z-edit" style="font-size: 14px"></span>
               编辑
             </view>
           </view>
-          <view class="btn" @click="showPhonePop(item)" v-if="index > 0">
+          <view class="btn" @click="delLxr(item)" v-if="index > 0">
             <view class="btn-text">
               <span class="iconfont z-shanchu" style="font-size: 14px"></span>
               删除
@@ -243,7 +243,7 @@
         <span class="iconfont z-duihua" style="font-size: 20px"></span>
         新增跟进
       </view>
-      <view class="btn">
+      <view class="btn" @click="jumpLxrAdd">
         <span
           class="iconfont z-tianjialianxiren"
           style="font-size: 20px"
@@ -334,6 +334,7 @@ import hbxwConfirm from "@/uni_modules/hbxw-confirm/components/hbxw-confirm/hbxw
 import {
   apiChanceGetChanceClueDetail,
   apiChanceGetChanceContactList,
+  apiChanceDeleteChanceContact,
   apiChanceDeleteChance,
   apiChanceUnAssignChance,
 } from "@/http/api/clue";
@@ -353,7 +354,6 @@ onLoad((option) => {
   pageOption.value = option;
 });
 const init = () => {
-  tabIndex.value = 0;
   apiChanceGetChanceClueDetailFun(Number(pageOption.value?.id));
   apiChanceGetChanceContactListFun(Number(pageOption.value?.id));
 };
@@ -496,6 +496,25 @@ const jumpGjAdd = () => {
     url: `/pages/clue/gj-edit?chanceId=${pageOption.value.id}`,
   });
 };
+const jumpLxrAdd = () => {
+  uni.navigateTo({
+    url: `/pages/clue/lxr-edit?chanceId=${pageOption.value.id}`,
+  });
+};
+const jumpLxrEdit = (item: any) => {
+  uni.navigateTo({
+    url: `/pages/clue/lxr-edit?chanceId=${pageOption.value.id}&id=${item.id}`,
+  });
+};
+const delLxr = (item: any) => {
+  apiChanceDeleteChanceContact({ id: item.id }).then((res) => {
+    if (res && res.code == "SUCCESS") {
+      uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
+      init();
+    }
+  });
+};
+
 const jumpGjList = () => {
   uni.navigateTo({
     url: `/pages/clue/gj-list?chanceId=${formData.value.id}`,

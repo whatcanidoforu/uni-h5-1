@@ -108,6 +108,30 @@
       }
     },
     {
+      "path": "pages/clue/gj-detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "跟进详情",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/clue/gj-list",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "跟进记录",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/clue/lxr-edit",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "新建联系人",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/bill/index",
       "style": {
         "navigationStyle": "custom",
