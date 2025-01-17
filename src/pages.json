@@ -124,6 +124,22 @@
       }
     },
     {
+      "path": "pages/clue/change-log",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "变更日志",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/clue/call-log",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "通话记录",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/clue/lxr-edit",
       "style": {
         "navigationStyle": "custom",

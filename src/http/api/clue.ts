@@ -173,3 +173,21 @@ export function apiChanceDeleteChanceContact(params: { id: number }) {
     data: params,
   });
 }
+
+// 操作/变更日志
+export function apiChanceSearchChanceChangeList(
+  params: IPageParams<IOperationSearch>
+) {
+  return rjkRequest<IPageBody<IOperationTable>>({
+    url: "chance.searchChanceChangeList",
+    data: params,
+  });
+}
+
+// 通话记录 chance.getChancePhoneRecord
+export function apiChanceGetChancePhoneRecord(data: { id: number }) {
+  return rjkRequest<any>({
+    url: "chance.getChancePhoneRecord",
+    data,
+  });
+}

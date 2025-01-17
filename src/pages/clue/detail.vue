@@ -218,14 +218,14 @@
           </view>
           <uni-icons class="right" type="right" size="18"></uni-icons>
         </view>
-        <view class="label-value">
+        <view class="label-value" @click="jumpCallLog">
           <view class="label">
             <span class="iconfont z-tonghuajilu" style="font-size: 9px"></span>
             通话记录
           </view>
           <uni-icons class="right" type="right" size="18"></uni-icons>
         </view>
-        <view class="label-value">
+        <view class="label-value" @click="jumpChangeLog">
           <view class="label">
             <span
               class="iconfont z-biangengrizhichaxun"
@@ -518,6 +518,17 @@ const jumpGjList = () => {
     url: `/pages/clue/gj-list?chanceId=${formData.value.id}`,
   });
 };
+const jumpCallLog = () => {
+  uni.navigateTo({
+    url: `/pages/clue/call-log?chanceId=${formData.value.id}`,
+  });
+};
+const jumpChangeLog = () => {
+  uni.navigateTo({
+    url: `/pages/clue/change-log?chanceId=${formData.value.id}`,
+  });
+};
+
 const back = () => {
   uni.navigateBack();
 };
