@@ -58,11 +58,7 @@ import {
 } from "@/http/api/message";
 import type { TSearchNotice } from "@/types/message";
 import { onLoad, onShow } from "@dcloudio/uni-app";
-import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
-
-const params = ref<any>({});
 const init = () => {};
 onMounted(() => {
   init();
