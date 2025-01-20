@@ -576,6 +576,9 @@ view {
     text-overflow: ellipsis;
     text-align: center;
   }
+  .left {
+    text-align: left;
+  }
   .right {
     width: max-content;
     font-size: 13px;

@@ -157,6 +157,9 @@ defineExpose({
     box-sizing: border-box;
     width: 50px;
   }
+  .left {
+    text-align: left;
+  }
   .center {
     font-size: 14px;
     height: 30px;

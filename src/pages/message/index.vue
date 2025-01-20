@@ -8,8 +8,11 @@
         @click="back"
         color="#000000"
       ></uni-icons>
-      <view class="center">{{ "跟进记录" }}</view>
-      <view class="right"></view>
+      <view class="center">
+        {{ "消息通知" }}
+        <span class="iconfont z-iconsaoba" style="font-size: 12px"></span>
+      </view>
+      <view class="right">全部已读</view>
     </view>
 
     <view class="page-content">
@@ -28,59 +31,36 @@
           class="clue-card"
           v-for="(item, index) in dataList"
           :key="'clue-card' + index"
-          @click="jumpGjDetail(item)"
         >
           <view class="clue-name top">
-            {{ item.communicateTime.split(" ")[0] }}
+            {{ item.createTime }}
             <view class="jump-area">
-              {{ item.type }}
-              <uni-icons type="right" size="12"></uni-icons>
+              {{ item.createrName }}
             </view>
           </view>
-          <view class="detail center">{{ item.detail }}</view>
-          <view class="communicator center"
-            >跟进人: {{ item.communicatorName }}</view
-          >
+          <view class="detail line">
+            <span>变更类型</span>
+            <span>{{ item.type }}</span>
+          </view>
+          <view class="communicator line">
+            <span>变更内容</span>
+            {{ item.detail }}
+          </view>
         </view>
       </z-paging>
     </view>
   </view>
-
-  <uni-icons
-    class="jump-add"
-    type="plus-filled"
-    size="60"
-    color="#009bf4"
-    @click="jumpGjAdd"
-  ></uni-icons>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
-import { apiSearchChanceContactRecord } from "@/http/api/clue";
+import { ref, onMounted } from "vue";
+import { apiChanceSearchChanceChangeList } from "@/http/api/clue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
 const headerParkStore = useHeaderPark();
-const tabIndex = ref(0);
 
-const params = ref<any>({
-  pageNo: 1,
-  pageSize: 10,
-  keyWords: "",
-  type: 0,
-  startDate: "",
-  endDate: "",
-  directors: [],
-  directorIds: 0,
-  stages: [],
-  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [103],
-  parks: headerParkStore.parks.filter(
-    (item) => item.id === headerParkStore.selectedId
-  ),
-  sources: [],
-  notExistsDirector: false,
-});
+const params = ref<any>({});
 const init = () => {};
 onMounted(() => {
   init();
@@ -95,68 +75,42 @@ onShow(() => {
 const dataList = ref<any>([]);
 const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
-  let res = await apiSearchChanceContactRecord({
+  let res = await apiChanceSearchChanceChangeList({
     pageNo: pageNo,
     pageSize: pageSize,
-    communicateStartTime: "",
-    communicateEndTime: "",
-    createStartTime: "",
-    createEndTime: "",
-    keyWord: "",
-    type: [],
+    startDate: "",
+    endDate: "",
+    types: [],
+    userIds: [],
     chanceId: Number(pageOption.value.chanceId),
   });
   if (!res) {
     zPageing.value.complete(false);
   }
   zPageing.value.complete(res.data);
+
+  // let item = {
+  //   chanceId: 166727,
+  //   createTime: "2025-01-17 09:24:46",
+  //   createdBy: 6296,
+  //   createrName: "彭文文",
+  //   deleted: false,
+  //   detail: "新增沟通日志",
+  //   id: 505,
+  //   oid: 1,
+  //   type: "跟踪",
+  //   updateTime: null,
+  //   version: 0,
+  // };
 };
 
-watch(
-  () => tabIndex.value,
-  (val) => {
-    params.value.keyWords = "";
-    params.value.startDate = "";
-    params.value.endDate = "";
-
-    if (headerParkStore.parks) {
-      params.value.parks = headerParkStore.parks.filter(
-        (item) => item.id === headerParkStore.selectedId
-      );
-    } else {
-      params.value.parks = [];
-    }
-    params.value.parkIds = headerParkStore.selectedId
-      ? [headerParkStore.selectedId]
-      : [];
-    params.value.sources = [];
-    params.value.directors = [];
-    params.value.directorIds = [];
-    if (val === 0) {
-      params.value.type = 0;
-    } else if (val === 1) {
-      params.value.type = 0;
-    } else if (val === 2) {
-      params.value.type = 1;
-    }
-    zPageing.value.reload();
-  }
-);
-
-const jumpGjDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages/clue/gj-detail?id=${item.id}` });
-};
-const jumpGjAdd = () => {
-  uni.navigateTo({
-    url: `/pages/clue/gj-edit?chanceId=${pageOption.value.chanceId}`,
-  });
-};
 const back = () => {
   uni.navigateBack();
 };
 </script>
 
 <style lang="scss" scoped>
+@import "/src/static/icons/icon1/iconfont.css";
 .clue-page {
   height: 100%;
   overflow: hidden;
@@ -180,7 +134,7 @@ view {
     justify-content: left;
     padding-left: 10px;
     box-sizing: border-box;
-    width: 50px;
+    width: 80px;
   }
   .center {
     font-size: 14px;
@@ -196,7 +150,7 @@ view {
     text-align: left;
   }
   .right {
-    width: max-content;
+    // width: max-content;
     font-size: 13px;
     justify-content: right;
     padding-right: 14px;
@@ -292,20 +246,17 @@ view {
         }
       }
     }
-    .detail {
-      font-size: 16px;
-      min-height: 30px;
-      word-break: break-all;
-      min-height: 30px;
-      color: #9b9b9b;
-      padding-left: 14px;
-    }
-    .communicator {
-      font-size: 14px;
+    .line {
       min-height: 28px;
-      line-height: 28px;
+      min-height: 28px;
+      word-break: break-all;
       color: #9b9b9b;
-      padding-left: 14px;
+
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px 0 14px;
     }
   }
 }

@@ -6,6 +6,13 @@
   "description": "我的项目",
   "glyphs": [
     {
+      "icon_id": "7615195",
+      "name": "扫把",
+      "font_class": "iconsaoba",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
       "icon_id": "16840394",
       "name": "断开链接",
       "font_class": "duankailianjie",
