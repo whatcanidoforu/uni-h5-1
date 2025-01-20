@@ -37,6 +37,7 @@
             {{ item.title }}
             <view class="jump-area">
               <uni-icons type="right" size="12"></uni-icons>
+              <view class="red-dot" v-if="!item.isRead"></view>
             </view>
           </view>
           <view class="detail line">
@@ -116,6 +117,23 @@ const clickDelAll = () => {
             uni.showToast({
               title: "删除成功",
             });
+          }
+        });
+      }
+    },
+  });
+};
+const clickReadAll = () => {
+  uni.showModal({
+    title: "提示",
+    content: "确定全部已读？",
+    success: (res) => {
+      if (res.confirm) {
+        apiReadUserNotice({
+          userId: userId.value,
+        }).then((res) => {
+          if (res) {
+            uni.showToast({});
           }
         });
       }
@@ -252,15 +270,23 @@ view {
       .jump-area {
         color: #9b9b9b;
         display: flex;
-        align-items: baseline;
-        justify-content: flex-end;
+        align-items: center;
+        justify-content: flex-start;
         position: absolute;
         right: 10px;
         top: 50%;
         transform: translateY(-50%);
         font-size: 14px;
+        width: 25px;
         .uni-icons {
           margin-left: 4px;
+        }
+        .red-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background-color: #ff0000;
+          position: relative;
         }
       }
     }
