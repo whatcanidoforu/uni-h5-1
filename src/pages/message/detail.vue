@@ -1,5 +1,5 @@
 <template>
-  <view class="clue-page">
+  <view class="message-detail-page">
     <view class="page-header">
       <uni-icons
         class="left"
@@ -8,97 +8,63 @@
         @click="back"
         color="#000000"
       ></uni-icons>
-      <view class="center">{{ "变更日志" }}</view>
+      <view class="center">{{ "消息详情" }}</view>
       <view class="right"></view>
     </view>
 
     <view class="page-content">
-      <z-paging
-        class="clue-card-list"
-        ref="zPageing"
-        :hide-empty-view="false"
-        :refresher-enabled="true"
-        v-model="dataList"
-        @query="queryList"
-        :auto-clean-list-when-reload="false"
-        :auto="true"
-        :fixed="false"
-      >
-        <view
-          class="clue-card"
-          v-for="(item, index) in dataList"
-          :key="'clue-card' + index"
-        >
-          <view class="clue-name top">
-            {{ item.createTime }}
-            <view class="jump-area">
-              {{ item.createrName }}
-            </view>
-          </view>
-          <view class="detail line">
-            <span>变更类型</span>
-            <span>{{ item.type }}</span>
-          </view>
-          <view class="communicator line">
-            <span>变更内容</span>
-            {{ item.detail }}
-          </view>
-        </view>
-      </z-paging>
+      <view class="title"> {{ formData.title }} </view>
+      <view class="time"> {{ formData.createTime }} </view>
+      <view class="content"> {{ formData.content }} </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { apiChanceSearchChanceChangeList } from "@/http/api/clue";
+import { apiGetUserNoticeDetail } from "@/http/api/message";
 import { onLoad, onShow } from "@dcloudio/uni-app";
-import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
-
-const params = ref<any>({});
-const init = () => {};
-onMounted(() => {
-  init();
-});
-const pageOption = ref();
+const formData = ref<any>({});
 onLoad((option) => {
-  pageOption.value = option;
+  apiGetUserNoticeDetailFun(Number(option?.id));
 });
-onShow(() => {
-  zPageing.value.reload();
-});
-const dataList = ref<any>([]);
-const zPageing = ref();
-const queryList = async (pageNo: number, pageSize: number) => {
-  let res = await apiChanceSearchChanceChangeList({
-    pageNo: pageNo,
-    pageSize: pageSize,
-    startDate: "",
-    endDate: "",
-    types: [],
-    userIds: [],
-    chanceId: Number(pageOption.value.chanceId),
-  });
-  if (!res) {
-    zPageing.value.complete(false);
-  }
-  zPageing.value.complete(res.data);
-
-  // let item = {
-  //   chanceId: 166727,
-  //   createTime: "2025-01-17 09:24:46",
-  //   createdBy: 6296,
-  //   createrName: "彭文文",
-  //   deleted: false,
-  //   detail: "新增沟通日志",
-  //   id: 505,
-  //   oid: 1,
-  //   type: "跟踪",
-  //   updateTime: null,
-  //   version: 0,
-  // };
+const apiGetUserNoticeDetailFun = async (id: number) => {
+  const userId = ref(Number(localStorage.getItem("userId")) as number);
+  apiGetUserNoticeDetail({
+    id,
+    userId: userId.value,
+  })
+    .then((res) => {
+      //       {
+      //     "content": "交房提醒\n租赁位置:【1#栋203】 \n客户: 【LBS位置服务管理有限公司】 \n合同：【HT2024122307315494】\n负责人：彭文文\n信息：已超期【28】天未交房，请及时跟进交房信息！",
+      //     "createTime": "2025-01-20 09:30:52",
+      //     "createdBy": null,
+      //     "deleted": false,
+      //     "id": 125708,
+      //     "isRead": true,
+      //     "oid": 1,
+      //     "readTime": "2025-01-20 11:17:15",
+      //     "title": "交房提醒",
+      //     "url": "",
+      //     "userId": 6296,
+      //     "version": 0
+      // }
+      if (res && res.id) {
+        formData.value = res;
+      } else {
+        uni.showToast({
+          title: "获取详情失败",
+          icon: "none",
+        });
+      }
+    })
+    .catch((err) => {
+      uni.showToast({
+        title: err || err.message || "获取详情失败",
+        icon: "none",
+      });
+    });
 };
 
 const back = () => {
@@ -107,10 +73,10 @@ const back = () => {
 </script>
 
 <style lang="scss" scoped>
-.clue-page {
+.message-detail-page {
   height: 100%;
   overflow: hidden;
-  background-color: #f4f8fb;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -156,110 +122,22 @@ view {
   padding: 0 10px;
   box-sizing: border-box;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+  word-break: break-all;
 
-.uni-searchbar {
-  width: 100%;
-}
-.type-list {
-  width: 100%;
-  margin-top: 10px;
-  background-color: #ffffff;
-  display: flex;
-  align-self: center;
-  height: 80px;
-  .type-card {
-    flex: 1;
-    position: relative;
-    color: #9a9a9a;
-    text-align: center;
-    .label {
-      margin-top: 14px;
-    }
-    .num {
-      margin-top: 10px;
-    }
+  .title {
+    font-size: 25px;
+    text-align: left;
   }
-  .type-card::before {
-    content: "";
-    width: 1px;
-    height: 80%;
-    background-color: #eaf3fc;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+  .time {
+    font-size: 16px;
+    padding: 6px 0;
+    text-align: left;
+    color: #c5c5c5;
   }
-  .type-card.active {
-    color: #000;
+  .content {
+    color: #7c7c7c;
+    font-size: 20px;
+    padding: 20px 0 0;
   }
-  .type-card.active::after {
-    content: "";
-    width: 36px;
-    height: 4px;
-    border-radius: 4px;
-    background-color: #000;
-    position: absolute;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
-
-.clue-card-list {
-  flex: 1;
-  .clue-card {
-    background-color: #ffffff;
-    margin-top: 12px;
-    border-radius: 12px;
-    .clue-name {
-      font-size: 18px;
-      height: 36px;
-      line-height: 36px;
-      color: #2e2e2e;
-      padding-left: 14px;
-      position: relative;
-      padding-right: 80px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      .jump-area {
-        color: #9b9b9b;
-        display: flex;
-        align-items: baseline;
-        justify-content: flex-end;
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 14px;
-        .uni-icons {
-          margin-left: 4px;
-        }
-      }
-    }
-    .line {
-      min-height: 28px;
-      min-height: 28px;
-      word-break: break-all;
-      color: #9b9b9b;
-
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px 0 14px;
-    }
-  }
-}
-.jump-add {
-  position: fixed;
-  right: 0;
-  top: 70%;
-  z-index: 999;
 }
 </style>

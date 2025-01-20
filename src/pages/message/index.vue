@@ -1,5 +1,5 @@
 <template>
-  <view class="clue-page">
+  <view class="message-page">
     <view class="page-header">
       <uni-icons
         class="left"
@@ -8,16 +8,16 @@
         @click="back"
         color="#000000"
       ></uni-icons>
-      <view class="center">
+      <view class="center" @click="clickDelAll">
         {{ "消息通知" }}
         <span class="iconfont z-iconsaoba" style="font-size: 12px"></span>
       </view>
-      <view class="right">全部已读</view>
+      <view class="right" @click="clickReadAll">全部已读</view>
     </view>
 
     <view class="page-content">
       <z-paging
-        class="clue-card-list"
+        class="message-card-list"
         ref="zPageing"
         :hide-empty-view="false"
         :refresher-enabled="true"
@@ -28,23 +28,19 @@
         :fixed="false"
       >
         <view
-          class="clue-card"
+          class="message-card"
           v-for="(item, index) in dataList"
-          :key="'clue-card' + index"
+          :key="'message-card' + index"
+          @click="jumpCardDetail(item)"
         >
-          <view class="clue-name top">
-            {{ item.createTime }}
+          <view class="message-name top">
+            {{ item.title }}
             <view class="jump-area">
-              {{ item.createrName }}
+              <uni-icons type="right" size="12"></uni-icons>
             </view>
           </view>
           <view class="detail line">
-            <span>变更类型</span>
-            <span>{{ item.type }}</span>
-          </view>
-          <view class="communicator line">
-            <span>变更内容</span>
-            {{ item.detail }}
+            <span>{{ item.createTime }}</span>
           </view>
         </view>
       </z-paging>
@@ -54,7 +50,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { apiChanceSearchChanceChangeList } from "@/http/api/clue";
+import {
+  apiSearchUserNotice,
+  apiDeleteUserNoticeByUserId,
+  apiReadUserNotice,
+} from "@/http/api/message";
+import type { TSearchNotice } from "@/types/message";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
@@ -74,15 +75,10 @@ onShow(() => {
 });
 const dataList = ref<any>([]);
 const zPageing = ref();
+const userId = ref(Number(localStorage.getItem("userId")) as number);
 const queryList = async (pageNo: number, pageSize: number) => {
-  let res = await apiChanceSearchChanceChangeList({
-    pageNo: pageNo,
-    pageSize: pageSize,
-    startDate: "",
-    endDate: "",
-    types: [],
-    userIds: [],
-    chanceId: Number(pageOption.value.chanceId),
+  let res = await apiSearchUserNotice({
+    userId: userId.value,
   });
   if (!res) {
     zPageing.value.complete(false);
@@ -90,20 +86,42 @@ const queryList = async (pageNo: number, pageSize: number) => {
   zPageing.value.complete(res.data);
 
   // let item = {
-  //   chanceId: 166727,
-  //   createTime: "2025-01-17 09:24:46",
-  //   createdBy: 6296,
-  //   createrName: "彭文文",
-  //   deleted: false,
-  //   detail: "新增沟通日志",
-  //   id: 505,
-  //   oid: 1,
-  //   type: "跟踪",
-  //   updateTime: null,
+  //   content:
+  //     "交房提醒\n租赁位置:【1#栋203】 \n客户: 【LBS位置服务管理有限公司】 \n合同：【HT2024122307315494】\n负责人：彭文文\n信息：已超期【28】天未交房，请及时跟进交房信息！",
+  //   createTime: "2025-01-20 09:30:52",
+  //   createdBy: null,
+  //   id: 125708,
+  //   isRead: true,
+  //   readTime: "2025-01-20 11:17:15",
+  //   title: "交房提醒",
+  //   url: "",
+  //   userId: 6296,
   //   version: 0,
   // };
 };
 
+const jumpCardDetail = (item: any) => {
+  uni.navigateTo({ url: `/pages/message/detail?id=${item.id}` });
+};
+const clickDelAll = () => {
+  uni.showModal({
+    title: "提示",
+    content: "确定删除全部消息？",
+    success: (res) => {
+      if (res.confirm) {
+        apiDeleteUserNoticeByUserId({
+          data: userId.value,
+        }).then((res) => {
+          if (res) {
+            uni.showToast({
+              title: "删除成功",
+            });
+          }
+        });
+      }
+    },
+  });
+};
 const back = () => {
   uni.navigateBack();
 };
@@ -111,7 +129,7 @@ const back = () => {
 
 <style lang="scss" scoped>
 @import "/src/static/icons/icon1/iconfont.css";
-.clue-page {
+.message-page {
   height: 100%;
   overflow: hidden;
   background-color: #f4f8fb;
@@ -214,20 +232,20 @@ view {
   }
 }
 
-.clue-card-list {
+.message-card-list {
   flex: 1;
-  .clue-card {
+  .message-card {
     background-color: #ffffff;
     margin-top: 12px;
     border-radius: 12px;
-    .clue-name {
+    .message-name {
       font-size: 18px;
       height: 36px;
       line-height: 36px;
       color: #2e2e2e;
       padding-left: 14px;
       position: relative;
-      padding-right: 80px;
+      padding-right: 60px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

@@ -3,6 +3,7 @@ import rjkRequest from "../axios";
 import uploadRequest from "../axios/upload";
 import type {} from "@/types/permission";
 import type { IMessage, DetailMessage } from "@/types/message";
+import type { TSearchNotice } from "@/types/message";
 
 // 消息统计
 export function apiCountUserNotice(data: {
@@ -16,12 +17,7 @@ export function apiCountUserNotice(data: {
 }
 
 // 消息列表
-export function apiSearchUserNotice(data: {
-  pageNo: number;
-  pageSize: number;
-  userId: number | string;
-  isRead: boolean;
-}) {
+export function apiSearchUserNotice(data: TSearchNotice) {
   return rjkRequest<IPageBody<IMessage>>({
     url: "user.searchUserNotice",
     data: data,
