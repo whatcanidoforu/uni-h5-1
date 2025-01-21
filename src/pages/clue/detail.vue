@@ -443,47 +443,83 @@ const showInfo = ref({
 });
 // 释放
 const clickUnAssignChance = () => {
-  showInfo.value = {
-    show: true,
+  morePopup.value?.close();
+  uni.showModal({
     title: "释放确认",
     content: "确认要释放该线索到线索池?",
-    cancel: () => {
-      showInfo.value.show = false;
+    success: (res) => {
+      if (res.confirm) {
+        showInfo.value.show = false;
+        apiChanceUnAssignChance([
+          {
+            id: formData.value.id,
+            version: formData.value.version,
+          },
+        ]).then(() => {
+          init();
+          uni.showToast({ title: "释放成功", icon: "none", duration: 200 });
+        });
+      }
     },
-    sure: () => {
-      showInfo.value.show = false;
-      apiChanceUnAssignChance([
-        {
-          id: formData.value.id,
-          version: formData.value.version,
-        },
-      ]).then(() => {
-        init();
-        uni.showToast({ title: "释放成功", icon: "none", duration: 200 });
-      });
-    },
-  };
+  });
+  // showInfo.value = {
+  //   show: true,
+  //   title: "释放确认",
+  //   content: "确认要释放该线索到线索池?",
+  //   cancel: () => {
+  //     showInfo.value.show = false;
+  //   },
+  //   sure: () => {
+  //     showInfo.value.show = false;
+  //     apiChanceUnAssignChance([
+  //       {
+  //         id: formData.value.id,
+  //         version: formData.value.version,
+  //       },
+  //     ]).then(() => {
+  //       init();
+  //       uni.showToast({ title: "释放成功", icon: "none", duration: 200 });
+  //     });
+  //   },
+  // };
 };
 // 删除
 const clickDeleteChance = () => {
-  showInfo.value = {
-    show: true,
+  morePopup.value?.close();
+  uni.showModal({
     title: "删除确认",
     content: "确认要删除该线索?",
-    cancel: () => {
-      showInfo.value.show = false;
+    success: (res) => {
+      if (res.confirm) {
+        apiChanceDeleteChance({
+          id: formData.value.id,
+          version: formData.value.version,
+        }).then(() => {
+          uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
+          uni.navigateBack();
+        });
+      }
     },
-    sure: () => {
-      showInfo.value.show = false;
-      apiChanceDeleteChance({
-        id: formData.value.id,
-        version: formData.value.version,
-      }).then(() => {
-        uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
-        uni.navigateBack();
-      });
-    },
-  };
+  });
+
+  // showInfo.value = {
+  //   show: true,
+  //   title: "删除确认",
+  //   content: "确认要删除该线索?",
+  //   cancel: () => {
+  //     showInfo.value.show = false;
+  //   },
+  //   sure: () => {
+  //     showInfo.value.show = false;
+  //     apiChanceDeleteChance({
+  //       id: formData.value.id,
+  //       version: formData.value.version,
+  //     }).then(() => {
+  //       uni.showToast({ title: "删除成功", icon: "none", duration: 200 });
+  //       uni.navigateBack();
+  //     });
+  //   },
+  // };
 };
 const clickSms = () => {
   let phone = formData.value.customerPhone.toString(); // 手机号(可以是单个或则多个)
@@ -575,6 +611,9 @@ view {
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
+  }
+  .left {
+    text-align: left;
   }
   .right {
     width: max-content;

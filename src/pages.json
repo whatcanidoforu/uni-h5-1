@@ -148,6 +148,22 @@
       }
     },
     {
+      "path": "pages/message/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "消息通知",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/message/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "消息详情",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/bill/index",
       "style": {
         "navigationStyle": "custom",

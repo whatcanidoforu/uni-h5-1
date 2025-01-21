@@ -1,5 +1,5 @@
 <template>
-  <view class="clue-page">
+  <view class="message-page">
     <view class="page-header">
       <uni-icons
         class="left"
@@ -8,13 +8,16 @@
         @click="back"
         color="#000000"
       ></uni-icons>
-      <view class="center">{{ "跟进记录" }}</view>
-      <view class="right"></view>
+      <view class="center" @click="clickDelAll">
+        {{ "消息通知" }}
+        <span class="iconfont z-iconsaoba" style="font-size: 12px"></span>
+      </view>
+      <view class="right" @click="clickReadAll">全部已读</view>
     </view>
 
     <view class="page-content">
       <z-paging
-        class="clue-card-list"
+        class="message-card-list"
         ref="zPageing"
         :hide-empty-view="false"
         :refresher-enabled="true"
@@ -25,62 +28,37 @@
         :fixed="false"
       >
         <view
-          class="clue-card"
+          class="message-card"
           v-for="(item, index) in dataList"
-          :key="'clue-card' + index"
-          @click="jumpGjDetail(item)"
+          :key="'message-card' + index"
+          @click="jumpCardDetail(item)"
         >
-          <view class="clue-name top">
-            {{ item.communicateTime.split(" ")[0] }}
+          <view class="message-name top">
+            {{ item.title }}
             <view class="jump-area">
-              {{ item.type }}
               <uni-icons type="right" size="12"></uni-icons>
+              <view class="red-dot" v-if="!item.isRead"></view>
             </view>
           </view>
-          <view class="detail center">{{ item.detail }}</view>
-          <view class="communicator center"
-            >跟进人: {{ item.communicatorName }}</view
-          >
+          <view class="detail line">
+            <span>{{ item.createTime }}</span>
+          </view>
         </view>
       </z-paging>
     </view>
   </view>
-
-  <uni-icons
-    class="jump-add"
-    type="plus-filled"
-    size="60"
-    color="#009bf4"
-    @click="jumpGjAdd"
-  ></uni-icons>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
-import { apiSearchChanceContactRecord } from "@/http/api/clue";
+import { ref, onMounted } from "vue";
+import {
+  apiSearchUserNotice,
+  apiDeleteUserNoticeByUserId,
+  apiReadUserNotice,
+} from "@/http/api/message";
+import type { TSearchNotice } from "@/types/message";
 import { onLoad, onShow } from "@dcloudio/uni-app";
-import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
-const tabIndex = ref(0);
-
-const params = ref<any>({
-  pageNo: 1,
-  pageSize: 10,
-  keyWords: "",
-  type: 0,
-  startDate: "",
-  endDate: "",
-  directors: [],
-  directorIds: 0,
-  stages: [],
-  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [103],
-  parks: headerParkStore.parks.filter(
-    (item) => item.id === headerParkStore.selectedId
-  ),
-  sources: [],
-  notExistsDirector: false,
-});
 const init = () => {};
 onMounted(() => {
   init();
@@ -94,61 +72,68 @@ onShow(() => {
 });
 const dataList = ref<any>([]);
 const zPageing = ref();
+const userId = ref(Number(localStorage.getItem("userId")) as number);
 const queryList = async (pageNo: number, pageSize: number) => {
-  let res = await apiSearchChanceContactRecord({
-    pageNo: pageNo,
-    pageSize: pageSize,
-    communicateStartTime: "",
-    communicateEndTime: "",
-    createStartTime: "",
-    createEndTime: "",
-    keyWord: "",
-    type: [],
-    chanceId: Number(pageOption.value.chanceId),
+  let res = await apiSearchUserNotice({
+    userId: userId.value,
   });
   if (!res) {
     zPageing.value.complete(false);
   }
   zPageing.value.complete(res.data);
+
+  // let item = {
+  //   content:
+  //     "交房提醒\n租赁位置:【1#栋203】 \n客户: 【LBS位置服务管理有限公司】 \n合同：【HT2024122307315494】\n负责人：彭文文\n信息：已超期【28】天未交房，请及时跟进交房信息！",
+  //   createTime: "2025-01-20 09:30:52",
+  //   createdBy: null,
+  //   id: 125708,
+  //   isRead: true,
+  //   readTime: "2025-01-20 11:17:15",
+  //   title: "交房提醒",
+  //   url: "",
+  //   userId: 6296,
+  //   version: 0,
+  // };
 };
 
-watch(
-  () => tabIndex.value,
-  (val) => {
-    params.value.keyWords = "";
-    params.value.startDate = "";
-    params.value.endDate = "";
-
-    if (headerParkStore.parks) {
-      params.value.parks = headerParkStore.parks.filter(
-        (item) => item.id === headerParkStore.selectedId
-      );
-    } else {
-      params.value.parks = [];
-    }
-    params.value.parkIds = headerParkStore.selectedId
-      ? [headerParkStore.selectedId]
-      : [];
-    params.value.sources = [];
-    params.value.directors = [];
-    params.value.directorIds = [];
-    if (val === 0) {
-      params.value.type = 0;
-    } else if (val === 1) {
-      params.value.type = 0;
-    } else if (val === 2) {
-      params.value.type = 1;
-    }
-    zPageing.value.reload();
-  }
-);
-
-const jumpGjDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages/clue/gj-detail?id=${item.id}` });
+const jumpCardDetail = (item: any) => {
+  uni.navigateTo({ url: `/pages/message/detail?id=${item.id}` });
 };
-const jumpGjAdd = () => {
-  uni.navigateTo({
-    url: `/pages/clue/gj-edit?chanceId=${pageOption.value.chanceId}`,
+const clickDelAll = () => {
+  uni.showModal({
+    title: "提示",
+    content: "确定删除全部消息？",
+    success: (res) => {
+      if (res.confirm) {
+        apiDeleteUserNoticeByUserId({
+          data: userId.value,
+        }).then((res) => {
+          if (res) {
+            uni.showToast({
+              title: "删除成功",
+            });
+          }
+        });
+      }
+    },
+  });
+};
+const clickReadAll = () => {
+  uni.showModal({
+    title: "提示",
+    content: "确定全部已读？",
+    success: (res) => {
+      if (res.confirm) {
+        apiReadUserNotice({
+          userId: userId.value,
+        }).then((res) => {
+          if (res) {
+            uni.showToast({});
+          }
+        });
+      }
+    },
   });
 };
 const back = () => {
@@ -157,7 +142,8 @@ const back = () => {
 </script>
 
 <style lang="scss" scoped>
-.clue-page {
+@import "/src/static/icons/icon1/iconfont.css";
+.message-page {
   height: 100%;
   overflow: hidden;
   background-color: #f4f8fb;
@@ -180,7 +166,7 @@ view {
     justify-content: left;
     padding-left: 10px;
     box-sizing: border-box;
-    width: 50px;
+    width: 80px;
   }
   .center {
     font-size: 14px;
@@ -196,7 +182,7 @@ view {
     text-align: left;
   }
   .right {
-    width: max-content;
+    // width: max-content;
     font-size: 13px;
     justify-content: right;
     padding-right: 14px;
@@ -260,52 +246,57 @@ view {
   }
 }
 
-.clue-card-list {
+.message-card-list {
   flex: 1;
-  .clue-card {
+  .message-card {
     background-color: #ffffff;
     margin-top: 12px;
     border-radius: 12px;
-    .clue-name {
+    .message-name {
       font-size: 18px;
       height: 36px;
       line-height: 36px;
       color: #2e2e2e;
       padding-left: 14px;
       position: relative;
-      padding-right: 80px;
+      padding-right: 60px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       .jump-area {
         color: #9b9b9b;
         display: flex;
-        align-items: baseline;
-        justify-content: flex-end;
+        align-items: center;
+        justify-content: flex-start;
         position: absolute;
         right: 10px;
         top: 50%;
         transform: translateY(-50%);
         font-size: 14px;
+        width: 25px;
         .uni-icons {
           margin-left: 4px;
         }
+        .red-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background-color: #ff0000;
+          position: relative;
+        }
       }
     }
-    .detail {
-      font-size: 16px;
-      min-height: 30px;
-      word-break: break-all;
-      min-height: 30px;
-      color: #9b9b9b;
-      padding-left: 14px;
-    }
-    .communicator {
-      font-size: 14px;
+    .line {
       min-height: 28px;
-      line-height: 28px;
+      min-height: 28px;
+      word-break: break-all;
       color: #9b9b9b;
-      padding-left: 14px;
+
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px 0 14px;
     }
   }
 }

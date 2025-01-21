@@ -8,7 +8,7 @@
         @click="back"
         color="#000000"
       ></uni-icons>
-      <view class="center">{{ "变更日志" }}</view>
+      <view class="center">{{ "通话记录" }}</view>
       <view class="right"></view>
     </view>
 
@@ -129,6 +129,9 @@ view {
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
+  }
+  .left {
+    text-align: left;
   }
   .right {
     width: max-content;

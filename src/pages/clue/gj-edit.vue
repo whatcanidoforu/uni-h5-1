@@ -354,6 +354,9 @@ view {
     text-overflow: ellipsis;
     text-align: center;
   }
+  .left {
+    text-align: left;
+  }
   .right {
     font-size: 13px;
     justify-content: right;
