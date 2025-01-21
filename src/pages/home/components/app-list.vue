@@ -30,6 +30,7 @@ const appList = [
   {
     name: "账单管理",
     imgPath: "/static/image/home/zdgl.png",
+    path: "/pages/bill/index",
   },
   {
     name: "电销管理",
@@ -42,6 +43,7 @@ const appList = [
   {
     name: "寻源拓客",
     imgPath: "/static/image/home/xytk.png",
+    path: "/pages/toker/index",
   },
   {
     name: "锁定房源",

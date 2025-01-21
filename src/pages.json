@@ -154,6 +154,14 @@
         "navigationBarTitleText": "账单管理",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
+    },
+    {
+      "path": "pages/toker/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "寻源拓客",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
     }
   ],
   "globalStyle": {
