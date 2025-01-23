@@ -164,6 +164,14 @@
       }
     },
     {
+      "path": "pages/approve/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的审批",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/bill/index",
       "style": {
         "navigationStyle": "custom",

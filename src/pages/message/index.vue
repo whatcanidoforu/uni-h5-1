@@ -81,7 +81,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
     zPageing.value.complete(false);
   }
   zPageing.value.complete(res.data);
-
+  // res.total
   // let item = {
   //   content:
   //     "交房提醒\n租赁位置:【1#栋203】 \n客户: 【LBS位置服务管理有限公司】 \n合同：【HT2024122307315494】\n负责人：彭文文\n信息：已超期【28】天未交房，请及时跟进交房信息！",
@@ -109,6 +109,7 @@ const clickDelAll = () => {
         apiDeleteUserNoticeByUserId({
           data: userId.value,
         }).then((res) => {
+          zPageing.value.reload();
           if (res) {
             uni.showToast({
               title: "删除成功",
@@ -128,6 +129,7 @@ const clickReadAll = () => {
         apiReadUserNotice({
           userId: userId.value,
         }).then((res) => {
+          zPageing.value.reload();
           if (res) {
             uni.showToast({});
           }
