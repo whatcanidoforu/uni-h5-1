@@ -95,7 +95,7 @@
           </view>
           <view class="departmentName line">
             <span>申请人：</span>
-            {{ item.signedByName }}
+            {{ item.createByName }}
           </view>
           <view class="departmentName line">
             <span>申请时间：</span>
@@ -135,6 +135,19 @@ const list1 = ref<IContractTable[]>([]);
 const list2 = ref<ISearchLockApply[]>([]);
 const apiGetContractListFun = async () => {
   return new Promise((resolve, reject) => {
+    let labelType = 1;
+    let statuses: number[] = [];
+    if (tabIndex.value === 0) {
+      // labelType = 1
+      statuses = [];
+    } else if (tabIndex.value === 1) {
+      // labelType = 3
+      statuses = [1];
+    } else if (tabIndex.value === 2) {
+      // labelType = 2
+      statuses = [10, 20, 30];
+    }
+
     apiGetContractList({
       pageNo: 1,
       pageSize: 999999,
@@ -142,7 +155,7 @@ const apiGetContractListFun = async () => {
       startDate: "",
       endDate: "",
       code: "",
-      statuses: [],
+      statuses: statuses,
       customerUserIds: [],
       customerComIds: [],
       // parkIds: [77],
