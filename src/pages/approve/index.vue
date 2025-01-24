@@ -18,21 +18,21 @@
       <view
         class="tab"
         :class="{ active: tabIndex === 0 }"
-        @click="tabIndex = 0"
+        @click="checkTab(0)"
       >
         全部
       </view>
       <view
         class="tab"
         :class="{ active: tabIndex === 1 }"
-        @click="tabIndex = 1"
+        @click="checkTab(1)"
       >
         待审批
       </view>
       <view
         class="tab"
         :class="{ active: tabIndex === 2 }"
-        @click="tabIndex = 2"
+        @click="checkTab(2)"
       >
         已审批
       </view>
@@ -131,11 +131,17 @@ const dataList = ref<(IContractTable | ISearchLockApply)[]>([]);
 const zPageing = ref();
 const userId = ref(Number(localStorage.getItem("userId")) as number);
 
+const checkTab = (index: number) => {
+  tabIndex.value = index;
+  zPageing.value?.reload();
+};
+
 const list1 = ref<IContractTable[]>([]);
 const list2 = ref<ISearchLockApply[]>([]);
 const apiGetContractListFun = async () => {
+  console.log("tabIndex.value", tabIndex.value);
   return new Promise((resolve, reject) => {
-    let labelType = 1;
+    let labelType = undefined;
     let statuses: number[] = [];
     if (tabIndex.value === 0) {
       // labelType = 1
@@ -147,7 +153,6 @@ const apiGetContractListFun = async () => {
       // labelType = 2
       statuses = [10, 20, 30];
     }
-
     apiGetContractList({
       pageNo: 1,
       pageSize: 999999,
@@ -158,16 +163,18 @@ const apiGetContractListFun = async () => {
       statuses: statuses,
       customerUserIds: [],
       customerComIds: [],
-      // parkIds: [77],
+      parkIds: [], // 77
       buildingIds: [],
       floorIds: [],
       roomIds: [],
       resourceCode: "",
       signedBy: [],
       type: 100,
-      labelType: 3,
+      labelType: labelType,
       rentStartTime: "",
       rentEndTime: "",
+      expiredDays: undefined, // 到期天数
+      comId: undefined, // 企业id
     }).then((res) => {
       if (res) {
         // list1 = {
@@ -240,21 +247,37 @@ const apiResourceLockSearchLockApplyFun = async () => {
   });
 };
 
-const promiseList = ref<any>([
-  apiGetContractListFun(),
-  apiResourceLockSearchLockApplyFun(),
-]);
-
 const queryList = async (pageNo: number, pageSize: number) => {
-  Promise.all(promiseList.value).then((res) => {
-    console.log(res);
-    if (!res) {
+  try {
+    const [contractRes, lockRes] = await Promise.all([
+      apiGetContractListFun(),
+      apiResourceLockSearchLockApplyFun(),
+    ]);
+
+    if (!contractRes || !lockRes) {
       zPageing.value.complete(false);
+      return;
     }
-    list1.value = res[0].data || [];
-    list2.value = res[1].data || [];
+
+    list1.value = contractRes.data || [];
+    list2.value = lockRes.data || [];
+
+    // 假设 complete 方法可以接收一个数组参数
     zPageing.value.complete([...list1.value, ...list2.value]);
-  });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    zPageing.value.complete(false);
+  }
+
+  // Promise.all(promiseList.value).then((res) => {
+  //   console.log(res);
+  //   if (!res) {
+  //     zPageing.value.complete(false);
+  //   }
+  //   list1.value = res[0].data || [];
+  //   list2.value = res[1].data || [];
+  //   zPageing.value.complete([...list1.value, ...list2.value]);
+  // });
 };
 
 const jumpCardDetail = (item: any) => {

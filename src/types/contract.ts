@@ -117,7 +117,15 @@ type Contract = {
 /**
  * 合同搜索参数
  */
-export type IContractSearch = { signedBy?: number[]; keyWords?: string; expireType?: number } & Pick<
+export type IContractSearch = {
+  signedBy?: number[]
+  keyWords?: string
+  expireType?: number
+  rentStartTime?: string
+  rentStartTimeEnd?: string
+  rentEndTime?: string
+  rentEndTimeEnd?: string
+} & Pick<
   Contract,
   | 'startDate'
   | 'endDate'
@@ -200,6 +208,7 @@ export type IContractDetails = {
   parkId?: number
   buildingId?: number
   floorId?: number
+  chargeableArea?: number
 } & Pick<
   Contract,
   | 'id'
@@ -226,10 +235,15 @@ export type IContractDetails = {
  * 合同详情
  */
 export type IContractDetail = {
+  templateId?: number
+  templateName?: string
+  electronicUrl?: string
   reuseDeposit?: boolean
   rentFlag?: boolean
   virtualAddress?: string
   returnTime?: string
+  taxRate?: number
+  taxUnit: number
   delayFee?: number
   delayFeeUnit: number
   autoBill?: boolean
@@ -441,6 +455,8 @@ export type ISurrenderDetail = {
   id: number | undefined
   contractCode: string // 合同编号
   customerName: string // 客户名称
+  proposalMethod: number // 提出方式
+  proposalMethodName?: string // 提出方式
   rentStartTime: string // 合同开始时间
   rentEndTime: string // 合同结束时间
   contractId?: string
@@ -495,6 +511,18 @@ export type ISurrenderDetail = {
     feeItemId: number
     id: number
     feeItemName: string
+    resourceCode: string
+    resourceName: string
+  }[]
+  liquidatedDamagesItems: {
+    amount?: number
+    contractCode: string
+    dailyRent?: number
+    feeEndTime?: string
+    feeItemId: number
+    feeItemName: string
+    feeStartTime?: string
+    multiple?: number
     resourceCode: string
     resourceName: string
   }[]
