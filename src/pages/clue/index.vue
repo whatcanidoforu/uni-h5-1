@@ -119,7 +119,7 @@ const params = ref<any>({
   directors: [],
   directorIds: 0,
   stages: [],
-  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [103],
+  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
   parks: headerParkStore.parks.filter(
     (item) => item.id === headerParkStore.selectedId
   ),

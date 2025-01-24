@@ -114,7 +114,9 @@ import { apiResourceLockSearchLockApply } from "@/http/api/space";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import type { IContractTable } from "@/types/contract";
 import type { ISearchLockApply } from "@/types/space";
+import { useHeaderPark } from "@/stores/park";
 
+const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 const init = () => {};
 onMounted(() => {
@@ -163,6 +165,7 @@ const apiGetContractListFun = async () => {
       statuses: statuses,
       customerUserIds: [],
       customerComIds: [],
+      // parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
       parkIds: [], // 77
       buildingIds: [],
       floorIds: [],
@@ -204,6 +207,14 @@ const apiGetContractListFun = async () => {
   });
 };
 const apiResourceLockSearchLockApplyFun = async () => {
+  let status: number[] = [];
+  if (tabIndex.value === 0) {
+    status = [];
+  } else if (tabIndex.value === 1) {
+    status = [0];
+  } else if (tabIndex.value === 2) {
+    status = [10, 20];
+  }
   return new Promise((resolve, reject) => {
     apiResourceLockSearchLockApply({
       pageNo: 1,
@@ -217,7 +228,7 @@ const apiResourceLockSearchLockApplyFun = async () => {
       customerType: "",
       customerUserId: "",
       customerComId: "",
-      status: [0],
+      status: status,
     }).then((res) => {
       // list2 = {
       //   code: "SD2025012394380530",
@@ -248,24 +259,24 @@ const apiResourceLockSearchLockApplyFun = async () => {
 };
 
 const queryList = async (pageNo: number, pageSize: number) => {
+  uni.showLoading();
   try {
-    const [contractRes, lockRes] = await Promise.all([
+    const [res1, res2]: [any, any] = await Promise.all([
       apiGetContractListFun(),
       apiResourceLockSearchLockApplyFun(),
     ]);
+    uni.hideLoading();
 
-    if (!contractRes || !lockRes) {
+    if (!res1 || !res2) {
       zPageing.value.complete(false);
       return;
     }
-
-    list1.value = contractRes.data || [];
-    list2.value = lockRes.data || [];
-
-    // 假设 complete 方法可以接收一个数组参数
+    list1.value = res1.data || [];
+    list2.value = res2.data || [];
     zPageing.value.complete([...list1.value, ...list2.value]);
   } catch (error) {
     console.error("Error fetching data:", error);
+    uni.hideLoading();
     zPageing.value.complete(false);
   }
 
