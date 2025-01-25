@@ -271,8 +271,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
   uni.showLoading();
   try {
     const [res1, res2]: [any, any] = await Promise.all([
-      apiResourceLockSearchLockApplyFun(),
-      // apiGetContractListFun(),
+      apiGetContractListFun(),
       apiResourceLockSearchLockApplyFun(),
     ]);
     uni.hideLoading();
@@ -281,7 +280,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
       zPageing.value.complete(false);
       return;
     }
-    // list1.value = res1.data || [];
+    list1.value = res1.data || [];
     list2.value =
       res2.data.filter((item: any) => item.createdBy === userId.value) || [];
     zPageing.value.complete([...list1.value, ...list2.value]);
@@ -290,16 +289,6 @@ const queryList = async (pageNo: number, pageSize: number) => {
     uni.hideLoading();
     zPageing.value.complete(false);
   }
-
-  // Promise.all(promiseList.value).then((res) => {
-  //   console.log(res);
-  //   if (!res) {
-  //     zPageing.value.complete(false);
-  //   }
-  //   list1.value = res[0].data || [];
-  //   list2.value = res[1].data || [];
-  //   zPageing.value.complete([...list1.value, ...list2.value]);
-  // });
 };
 
 const jumpContractDetail = (item: any) => {};
