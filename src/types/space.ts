@@ -303,6 +303,8 @@ export interface ISearchGetAllResources {
   totalRentedArea: number
   totalSaleableArea: number
   totalSaledArea: number
+  selfArea: number
+  selfRate: number
   floors: {
     buildingId: number
     chargeableArea: number
@@ -762,4 +764,28 @@ export type TCertificateCreate = {
   obligee?: string // 权利人
   files: string
   fileList: IUploadFile[]
+}
+
+//项目
+export type IProjectForm = {
+  parkId?: number
+  contractPhone?: string //联系电话
+  houseType?: string //房源类型 :"公寓","商业","办公","厂房","其他"
+  rent?: number //租金
+  propertyFee?: number //物业费
+  houseArea?: number //房屋面积
+  buildingNum?: number //楼栋数量
+  address?: string //地址
+  files?: IUploadFile[] //图片
+  tags?: string[] //标签 :"近地铁","近机场","交通便捷","多公交","班车接送","园区多业态"
+}
+
+export interface TSearchProjectForm {
+  parkName?: string
+}
+
+export type ProjectForm = IProjectForm & {
+  id?: number | string
+  parkName?: string
+  deleted?: number
 }

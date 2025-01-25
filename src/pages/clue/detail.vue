@@ -140,7 +140,7 @@
         </view>
         <view class="label-value">
           <view class="label">下次跟进时间</view>
-          <view class="value">{{ 166718 }}</view>
+          <view class="value">{{ formData.nextContactTime }}</view>
         </view>
       </view>
     </scroll-view>

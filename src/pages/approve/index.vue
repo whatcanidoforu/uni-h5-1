@@ -54,7 +54,7 @@
           class="card-item"
           v-for="(item, index) in list1"
           :key="'card-item' + index"
-          @click="jumpCardDetail(item)"
+          @click="jumpContractDetail(item)"
         >
           <view class="card-item-name top">
             租赁合同审批
@@ -80,12 +80,21 @@
           class="card-item"
           v-for="(item, index) in list2"
           :key="'card-item' + index"
-          @click="jumpCardDetail(item)"
+          @click="jumpResourceLockDetail(item)"
         >
           <view class="card-item-name top">
             资源锁定审批
-            <view class="jump-area">
-              {{ item.statusName }}
+            <view
+              class="jump-area"
+              :class="{ 'clue-blue': item.status === 10 }"
+            >
+              {{
+                item.status === 0
+                  ? "申请中"
+                  : item.status === 10
+                  ? "审核通过"
+                  : "审核驳回"
+              }}
               <uni-icons type="right" size="12"></uni-icons>
             </view>
           </view>
@@ -113,7 +122,7 @@ import { apiGetContractList } from "@/http/api/contract";
 import { apiResourceLockSearchLockApply } from "@/http/api/space";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import type { IContractTable } from "@/types/contract";
-import type { ISearchLockApply } from "@/types/space";
+import type { IApiGetApplyLock } from "@/types/space";
 import { useHeaderPark } from "@/stores/park";
 
 const headerParkStore = useHeaderPark();
@@ -129,7 +138,7 @@ onLoad((option) => {
 onShow(() => {
   zPageing.value?.reload();
 });
-const dataList = ref<(IContractTable | ISearchLockApply)[]>([]);
+const dataList = ref<(IContractTable | IApiGetApplyLock)[]>([]);
 const zPageing = ref();
 const userId = ref(Number(localStorage.getItem("userId")) as number);
 
@@ -139,7 +148,7 @@ const checkTab = (index: number) => {
 };
 
 const list1 = ref<IContractTable[]>([]);
-const list2 = ref<ISearchLockApply[]>([]);
+const list2 = ref<IApiGetApplyLock[]>([]);
 const apiGetContractListFun = async () => {
   console.log("tabIndex.value", tabIndex.value);
   return new Promise((resolve, reject) => {
@@ -262,7 +271,8 @@ const queryList = async (pageNo: number, pageSize: number) => {
   uni.showLoading();
   try {
     const [res1, res2]: [any, any] = await Promise.all([
-      apiGetContractListFun(),
+      apiResourceLockSearchLockApplyFun(),
+      // apiGetContractListFun(),
       apiResourceLockSearchLockApplyFun(),
     ]);
     uni.hideLoading();
@@ -271,8 +281,9 @@ const queryList = async (pageNo: number, pageSize: number) => {
       zPageing.value.complete(false);
       return;
     }
-    list1.value = res1.data || [];
-    list2.value = res2.data || [];
+    // list1.value = res1.data || [];
+    list2.value =
+      res2.data.filter((item: any) => item.createdBy === userId.value) || [];
     zPageing.value.complete([...list1.value, ...list2.value]);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -291,9 +302,13 @@ const queryList = async (pageNo: number, pageSize: number) => {
   // });
 };
 
-const jumpCardDetail = (item: any) => {
-  uni.navigateTo({ url: `/pages/message/detail?id=${item.id}` });
+const jumpContractDetail = (item: any) => {};
+const jumpResourceLockDetail = (item: any) => {
+  uni.navigateTo({
+    url: `/pages/approve/resource-lock-detail?code=${item.code}`,
+  });
 };
+
 const back = () => {
   uni.navigateBack();
 };
@@ -480,5 +495,8 @@ view {
   right: 0;
   top: 70%;
   z-index: 999;
+}
+.clue-blue {
+  color: #0c94d7 !important;
 }
 </style>

@@ -60,3 +60,32 @@ export function apiResourceLockSearchLockApply(
     data: params,
   });
 }
+
+// 通过锁定申请编号 查询锁定明细
+export function apiGetApplyLock(params: string) {
+  return rjkRequest<IApiGetApplyLock>({
+    url: "resource.lock.getApplyLock",
+    data: { data: params },
+  });
+}
+
+// 审核资源
+export function apiVerifyLockApply(params: {
+  applyCode: string | undefined;
+  version: number | undefined;
+}) {
+  return rjkRequest<any>({
+    url: "resource.lock.verifyLockApply",
+    data: params,
+  });
+}
+// 释放资源
+export function apiReleaseLockApply(params: {
+  applyCode: string | undefined;
+  version: number | undefined;
+}) {
+  return rjkRequest<any>({
+    url: "resource.lock.releaseLockApply",
+    data: params,
+  });
+}
