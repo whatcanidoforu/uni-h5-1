@@ -104,7 +104,7 @@ const searchBill = () => {
   billDataScreenRef.value?.open();
 };
 const goBacktoHome = () => {
-  uni.navigateTo({
+  uni.switchTab({
     url: "/pages/home/index",
   });
 };

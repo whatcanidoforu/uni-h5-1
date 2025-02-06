@@ -133,7 +133,7 @@ const clickTab = (e: string) => {
   }
 };
 const goBackHome = () => {
-  uni.navigateTo({
+  uni.switchTab({
     url: "/pages/home/index",
   });
 };
