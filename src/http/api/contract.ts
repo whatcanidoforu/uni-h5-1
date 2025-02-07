@@ -46,3 +46,26 @@ export function apiGetContractList(params: IPageParams<IContractSearch>) {
     data: params,
   });
 }
+
+// 部门人员列表(支持递归)
+export function apiCompanyDepartmentGetMemberOfDepartments(params: {
+  departmentIdList: any[];
+  includeSub: boolean;
+}) {
+  // PARK_SERVICE
+  return rjkRequest<any>({
+    url: "company.department.getMemberOfDepartments",
+    data: params,
+  });
+}
+
+// 获取部门目录
+export function apiCompanyDepartmentGetDepartmentTree(params: {
+  companyId?: string | number;
+}) {
+  // PARK_SERVICE
+  return rjkRequest<any>({
+    url: "company.department.getDepartmentTree",
+    data: params,
+  });
+}

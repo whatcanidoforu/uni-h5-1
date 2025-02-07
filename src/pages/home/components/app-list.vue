@@ -26,6 +26,7 @@ const appList = [
   {
     name: "合同管理",
     imgPath: "/static/image/home/htgl.png",
+    path: "/pages/contract/index",
   },
   {
     name: "账单管理",

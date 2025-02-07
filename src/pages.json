@@ -68,6 +68,14 @@
       }
     },
     {
+      "path": "pages/contract/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "合同管理",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/clue/index",
       "style": {
         "navigationStyle": "custom",
