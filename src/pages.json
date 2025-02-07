@@ -172,6 +172,14 @@
       }
     },
     {
+      "path": "pages/approve/resource-lock-detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "锁定详情",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/bill/index",
       "style": {
         "navigationStyle": "custom",
