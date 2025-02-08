@@ -160,7 +160,7 @@ const agencyList = ref<any>([]);
 const gjtypeList = ref<any>([]);
 const directors = ref([]);
 
-const userId = ref(Number(localStorage.getItem("userId")) as number);
+const userId = ref(Number(uni.getStorageSync("userId")) as number);
 const formData = ref<any>({
   chanceId: "", // 线索id
   type: "", // 跟进方式

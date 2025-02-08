@@ -1,7 +1,7 @@
 import type { DirectiveBinding } from "vue";
 
 function checkArray(key: string) {
-  const list = JSON.parse(localStorage.getItem("userPermission") || "[]");
+  const list = JSON.parse(uni.getStorageSync("userPermission") || "[]");
   const index = list.indexOf(key);
   if (index > -1) {
     return true; // 有权限

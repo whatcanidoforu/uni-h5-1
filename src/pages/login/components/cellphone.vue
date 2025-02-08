@@ -123,10 +123,10 @@ const mobileLogin = () => {
     checkCode: userForm.value.checkCode,
   })
     .then((res) => {
-      localStorage.setItem("sessionId", res.sessionId);
-      localStorage.setItem("userId", res.userId);
-      localStorage.setItem("oldToken", res.oldToken);
-      localStorage.setItem("oldEmpId", res.oldEmpId);
+      uni.setStorageSync("sessionId", res.sessionId);
+      uni.setStorageSync("userId", res.userId);
+      uni.setStorageSync("oldToken", res.oldToken);
+      uni.setStorageSync("oldEmpId", res.oldEmpId);
       uni.switchTab({
         url: "/pages/home/index",
       });

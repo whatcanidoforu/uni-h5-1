@@ -88,11 +88,11 @@ class Request {
               icon: "none",
             });
             this.cancelAllRequest();
-            localStorage.removeItem("sessionId");
-            localStorage.removeItem("userId");
-            localStorage.removeItem("oid");
-            localStorage.removeItem("oldToken");
-            localStorage.removeItem("oldEmpId");
+            uni.removeStorageSync("sessionId");
+            uni.removeStorageSync("userId");
+            uni.removeStorageSync("oid");
+            uni.removeStorageSync("oldToken");
+            uni.removeStorageSync("oldEmpId");
             const pages = getCurrentPages();
             const currentPage = pages[pages.length - 1];
             const currentRoute = currentPage.route || "";
@@ -124,6 +124,7 @@ class Request {
       },
       (err) => {
         if (!isCancel(err)) {
+          console.log(">>>>>> 1", err);
           uni.showToast({
             title: err?.response?.data?.message || "网络异常",
             icon: "none",

@@ -168,7 +168,7 @@ const changeStatus = (item: any) => {
 const dataList = ref<any>([]);
 const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
-  let userId = Number(localStorage.getItem("userId")) as number;
+  let userId = Number(uni.getStorageSync("userId")) as number;
   if (tabIndex.value === 0) {
     console.log("params.value", params.value);
     let res = await apiChanceSearchMyChanceBusinessList({

@@ -121,7 +121,7 @@ import {
 import { checkStr } from "@/utils";
 import { apiUploadFile } from "@/http/api/clue";
 
-const userId = ref(Number(localStorage.getItem("userId")) as number);
+const userId = ref(Number(uni.getStorageSync("userId")) as number);
 const formData = ref<any>({
   name: "",
   phone: "",

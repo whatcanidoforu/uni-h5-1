@@ -32,11 +32,11 @@ onLoad((option) => {
 const apiReadUserNoticeFun = async (id: number) => {
   apiReadUserNotice({
     id,
-    userId: Number(localStorage.getItem("userId")),
+    userId: Number(uni.getStorageSync("userId")),
   });
 };
 const apiGetUserNoticeDetailFun = async (id: number) => {
-  const userId = ref(Number(localStorage.getItem("userId")) as number);
+  const userId = ref(Number(uni.getStorageSync("userId")) as number);
   apiGetUserNoticeDetail({
     id,
     userId: userId.value,

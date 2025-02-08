@@ -39,12 +39,18 @@ const requestWuye = new Request({
 
 const rjkRequest = <T>(config: AxiosRequestConfig) => {
   // const permissionStore = usePermissionStore()
-  const _sessionId = localStorage.getItem("sessionId");
-  const _userId = localStorage.getItem("userId");
-  // const _oid = localStorage.getItem("oid");
+  const _sessionId = uni.getStorageSync("sessionId");
+  const _userId = uni.getStorageSync("userId");
+  // const _oid = uni.getStorageSync("oid");
   config.method = config.method || "POST";
   config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}&oid=1`;
+
+  console.log("window", window);
+
   const _globalBaseURL = window?.globalApi?.business ?? "";
+
+  console.log("_globalBaseURL", _globalBaseURL);
+
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
 };
@@ -52,9 +58,9 @@ const rjkRequestOuter = <T>(
   config: AxiosRequestConfig & { rgkRequestType?: string }
 ) => {
   // const permissionStore = usePermissionStore()
-  const _sessionId = localStorage.getItem("sessionId");
-  const _userId = localStorage.getItem("userId");
-  // const _oid = localStorage.getItem("oid");
+  const _sessionId = uni.getStorageSync("sessionId");
+  const _userId = uni.getStorageSync("userId");
+  // const _oid = uni.getStorageSync("oid");
   config.method = config.method || "POST";
   config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}&oid=1`;
   const _globalBaseURL = window?.globalApi?.business ?? "";
@@ -63,7 +69,7 @@ const rjkRequestOuter = <T>(
 };
 
 const rjkWuyeRequest = <T>(config: CustomAxiosRequestConfig) => {
-  const _oldToken = localStorage.getItem("oldToken");
+  const _oldToken = uni.getStorageSync("oldToken");
   config.method = config.method || "POST";
   config.rgkRequestType = "wuye";
   if (_oldToken) {
@@ -108,7 +114,7 @@ const rjkWuyeOpenRequest = (
   open = true,
   fullPath = ""
 ) => {
-  // const _oldToken = localStorage.getItem('oldToken')
+  // const _oldToken = uni.getStorageSync('oldToken')
   let queryString = "";
   if (config.params) {
     for (const key in config.params) {
@@ -139,9 +145,9 @@ const rjkOpenRequest = (
   open = true,
   fullPath = ""
 ) => {
-  const _sessionId = localStorage.getItem("sessionId");
-  const _userId = localStorage.getItem("userId");
-  // const _oid = localStorage.getItem("oid");
+  const _sessionId = uni.getStorageSync("sessionId");
+  const _userId = uni.getStorageSync("userId");
+  // const _oid = uni.getStorageSync("oid");
   let queryString = "";
   if (config.params) {
     for (const key in config.params) {

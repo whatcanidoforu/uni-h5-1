@@ -72,7 +72,7 @@ onShow(() => {
 });
 const dataList = ref<any>([]);
 const zPageing = ref();
-const userId = ref(Number(localStorage.getItem("userId")) as number);
+const userId = ref(Number(uni.getStorageSync("userId")) as number);
 const queryList = async (pageNo: number, pageSize: number) => {
   let res = await apiSearchUserNotice({
     userId: userId.value,

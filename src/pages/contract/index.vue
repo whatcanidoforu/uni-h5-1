@@ -127,7 +127,7 @@ onMounted(() => {
 const dataList = ref<any>([]);
 const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
-  let userId = Number(localStorage.getItem("userId")) as number;
+  let userId = Number(uni.getStorageSync("userId")) as number;
   let signedBy: number[] = [];
   if (tabIndex.value === 0) {
     signedBy.push(userId);
@@ -198,7 +198,7 @@ watch(
     params.value.selectedSignBy = [];
     params.value.type = undefined;
     if (val === 0) {
-      let userId = Number(localStorage.getItem("userId")) as number;
+      let userId = Number(uni.getStorageSync("userId")) as number;
       params.value.signedBy = [userId];
     } else {
       params.value.signedBy = [];

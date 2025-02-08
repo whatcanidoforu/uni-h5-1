@@ -28,7 +28,6 @@ import type {
   IResourceTreeBuildingItem,
   ICustomerList,
 } from "@/types/space";
-import { useRefresh } from "@/stores/refresh";
 import type {
   TSearchCertificate,
   TCertificateCreate,

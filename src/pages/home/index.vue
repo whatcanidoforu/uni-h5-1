@@ -82,11 +82,11 @@ const parkId = computed(() => {
 
 onBeforeMount(async () => {
   const headerParkStore = useHeaderPark();
-  const userId = localStorage.getItem("userId") || "";
+  const userId = uni.getStorageSync("userId") || "";
   const storagedParkId =
-    Number(localStorage.getItem(`parkId_zhaoshang_${userId}`)) || undefined;
+    Number(uni.getStorageSync(`parkId_zhaoshang_${userId}`)) || undefined;
   const storagedParkIdWuye =
-    String(localStorage.getItem(`parkId_wuye_${userId}`)) || "";
+    String(uni.getStorageSync(`parkId_wuye_${userId}`)) || "";
   try {
     const res = await apiGetUserAuthInfo(userId);
     parks.value = res.parks;

@@ -10,9 +10,9 @@ const request = new Request({
 });
 
 const uploadRequest = <T>(config: AxiosRequestConfig) => {
-  const _sessionId = localStorage.getItem("sessionId");
-  const _userId = localStorage.getItem("userId");
-  // const _oid = localStorage.getItem("oid");
+  const _sessionId = uni.getStorageSync("sessionId");
+  const _userId = uni.getStorageSync("userId");
+  // const _oid = uni.getStorageSync("oid");
   config.method = "POST";
   config.url = `?sessionId=${_sessionId}&userId=${_userId}&method=${config.url}&oid=1`;
   const _globalBaseURL = window?.globalApi?.business ?? "";

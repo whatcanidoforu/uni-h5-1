@@ -1,5 +1,5 @@
 const showLog = (el: any) => {
-  const show = localStorage.getItem("showLog");
+  const show = uni.getStorageSync("showLog");
   if (!show) {
     // el.parentNode && el.parentNode.removeChild(el)
     el.style.cssText =

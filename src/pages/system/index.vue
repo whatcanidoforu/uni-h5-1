@@ -106,12 +106,12 @@ const parks = ref<IPark[]>([]);
 
 onBeforeMount(async () => {
   const headerParkStore = useHeaderPark();
-  const userId = localStorage.getItem("userId") || "";
+  const userId = uni.getStorageSync("userId") || "";
 
   const storagedParkId =
-    Number(localStorage.getItem(`parkId_zhaoshang_${userId}`)) || undefined;
+    Number(uni.getStorageSync(`parkId_zhaoshang_${userId}`)) || undefined;
   const storagedParkIdWuye =
-    String(localStorage.getItem(`parkId_wuye_${userId}`)) || "";
+    String(uni.getStorageSync(`parkId_wuye_${userId}`)) || "";
   try {
     const res = await apiGetUserAuthInfo(userId);
     parks.value = res.parks;
@@ -225,12 +225,12 @@ const deleteAccount = () => {
     success: (res) => {
       if (res.confirm) {
         //掉用注销接口
-        apiLogout(localStorage.getItem("sessionId")!).then(() => {
-          localStorage.removeItem("sessionId");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("oid");
-          localStorage.removeItem("oldToken");
-          localStorage.removeItem("oldEmpId");
+        apiLogout(uni.getStorageSync("sessionId")!).then(() => {
+          uni.removeStorageSync("sessionId");
+          uni.removeStorageSync("userId");
+          uni.removeStorageSync("oid");
+          uni.removeStorageSync("oldToken");
+          uni.removeStorageSync("oldEmpId");
           uni.showToast({
             title: "注销成功",
             icon: "none",
@@ -249,12 +249,14 @@ const toVersionRecordsPage = () => {
   });
 };
 const signOut = () => {
-  apiLogout(localStorage.getItem("sessionId")!).then(() => {
-    localStorage.removeItem("sessionId");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("oid");
-    localStorage.removeItem("oldToken");
-    localStorage.removeItem("oldEmpId");
+  console.log("退出登录");
+  apiLogout(uni.getStorageSync("sessionId")!).then((res) => {
+    console.log("退出登录成功", res);
+    uni.removeStorageSync("sessionId");
+    uni.removeStorageSync("userId");
+    uni.removeStorageSync("oid");
+    uni.removeStorageSync("oldToken");
+    uni.removeStorageSync("oldEmpId");
     uni.showToast({
       title: "退出登录成功",
       icon: "none",

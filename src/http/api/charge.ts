@@ -2,7 +2,6 @@ import rjkRequest from "../axios";
 import { rjkOpenRequest } from "../axios";
 import { useRefresh } from "@/stores/refresh";
 import uploadRequest from "../axios/upload";
-const refreshStore = useRefresh();
 import type {
   TSearchReceiveForm,
   IReceiveDetail,

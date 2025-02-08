@@ -103,7 +103,7 @@ import { apiCrmGetChanceContactRecord } from "@/http/api/clue";
 const clueGjtypeCheckPopRef = ref();
 const clueDirectorIdsCheckPopRef = ref();
 
-const userId = ref(Number(localStorage.getItem("userId")) as number);
+const userId = ref(Number(uni.getStorageSync("userId")) as number);
 const formData = ref<any>({
   chanceId: "", // 线索id
   type: "", // 跟进方式

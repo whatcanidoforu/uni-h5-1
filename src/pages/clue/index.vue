@@ -89,6 +89,7 @@ import {
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
+const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
 const statusMapList = ref<any>([
@@ -108,11 +109,26 @@ const debouncedInput = (e: string) => {
   }, 500);
 };
 
-const params = ref<any>();
+const params = ref<any>({
+  pageNo: 1,
+  pageSize: 10,
+  keyWords: "",
+  type: 0,
+  startDate: "",
+  endDate: "",
+  directors: [],
+  directorIds: 0,
+  stages: [],
+  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
+  parks: headerParkStore.parks?.filter(
+    (item) => item.id === headerParkStore.selectedId
+  ),
+  sources: [],
+  notExistsDirector: false,
+});
 const init = () => {
-  const headerParkStore = useHeaderPark();
   if (headerParkStore.parks) {
-    params.value.parks = headerParkStore.parks.filter(
+    params.value.parks = headerParkStore.parks?.filter(
       (item) => item.id === headerParkStore.selectedId
     );
   } else {
@@ -126,24 +142,6 @@ onMounted(() => {
   init();
 });
 onShow(() => {
-  const headerParkStore = useHeaderPark();
-  params.value = {
-    pageNo: 1,
-    pageSize: 10,
-    keyWords: "",
-    type: 0,
-    startDate: "",
-    endDate: "",
-    directors: [],
-    directorIds: 0,
-    stages: [],
-    parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
-    parks: headerParkStore.parks.filter(
-      (item) => item.id === headerParkStore.selectedId
-    ),
-    sources: [],
-    notExistsDirector: false,
-  };
   changeStatus(statusMapList.value[0]);
 });
 const changeStatus = (item: any) => {
@@ -153,7 +151,7 @@ const changeStatus = (item: any) => {
 const dataList = ref<any>([]);
 const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
-  let userId = Number(localStorage.getItem("userId")) as number;
+  let userId = Number(uni.getStorageSync("userId")) as number;
   if (tabIndex.value === 0) {
     let res = await apiChanceSearchMyChanceClueList({
       pageNo: pageNo,
@@ -225,7 +223,6 @@ const queryList = async (pageNo: number, pageSize: number) => {
 };
 
 const confirmParams = (obj: any) => {
-  const headerParkStore = useHeaderPark();
   console.log("index confirmParams", obj);
   params.value.startDate = obj.startDate;
   params.value.endDate = obj.endDate;
@@ -291,13 +288,12 @@ const PopOpenStatusChange = (e: any) => {
 watch(
   () => tabIndex.value,
   (val) => {
-    const headerParkStore = useHeaderPark();
     params.value.keyWords = "";
     params.value.startDate = "";
     params.value.endDate = "";
 
     if (headerParkStore.parks) {
-      params.value.parks = headerParkStore.parks.filter(
+      params.value.parks = headerParkStore.parks?.filter(
         (item) => item.id === headerParkStore.selectedId
       );
     } else {

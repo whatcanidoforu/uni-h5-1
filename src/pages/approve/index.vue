@@ -138,7 +138,7 @@ onShow(() => {
 });
 const dataList = ref<(IContractTable | IApiGetApplyLock)[]>([]);
 const zPageing = ref();
-const userId = ref(Number(localStorage.getItem("userId")) as number);
+const userId = ref(Number(uni.getStorageSync("userId")) as number);
 
 const checkTab = (index: number) => {
   tabIndex.value = index;

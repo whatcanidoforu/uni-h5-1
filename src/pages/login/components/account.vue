@@ -57,7 +57,7 @@ const props = defineProps({
 });
 
 // 账号密码登录
-const remember = ref(localStorage.getItem("loginName") ? true : false);
+const remember = ref(uni.getStorageSync("loginName") ? true : false);
 
 const rememberChange = (e: any) => {
   const length = e?.detail?.value?.length ?? 0;
@@ -66,7 +66,7 @@ const rememberChange = (e: any) => {
 
 // 用户登录表单
 const userForm = ref({
-  loginName: props.registerName || localStorage.getItem("loginName") || "",
+  loginName: props.registerName || uni.getStorageSync("loginName") || "",
   password: "",
 });
 const userLoginLoading = ref(false);
@@ -100,14 +100,14 @@ const userNameLogin = () => {
   })
     .then((res) => {
       if (remember.value) {
-        localStorage.setItem("loginName", userForm.value.loginName);
+        uni.setStorageSync("loginName", userForm.value.loginName);
       } else {
-        localStorage.removeItem("loginName");
+        uni.removeStorageSync("loginName");
       }
-      localStorage.setItem("sessionId", res.sessionId);
-      localStorage.setItem("userId", res.userId);
-      localStorage.setItem("oldToken", res.oldToken);
-      localStorage.setItem("oldEmpId", res.oldEmpId);
+      uni.setStorageSync("sessionId", res.sessionId);
+      uni.setStorageSync("userId", res.userId);
+      uni.setStorageSync("oldToken", res.oldToken);
+      uni.setStorageSync("oldEmpId", res.oldEmpId);
       uni.switchTab({
         url: "/pages/home/index",
       });

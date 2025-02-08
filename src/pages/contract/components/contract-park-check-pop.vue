@@ -62,7 +62,7 @@ const parks = ref<IPark[]>([]);
 
 const getAuthParks = async () => {
   try {
-    const userId = localStorage.getItem("userId") || "";
+    const userId = uni.getStorageSync("userId") || "";
     const res = await apiGetUserAuthInfo(userId);
     allParks.value = res.parks;
     parks.value = res.parks;
