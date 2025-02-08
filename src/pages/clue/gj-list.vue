@@ -61,26 +61,9 @@ import { apiSearchChanceContactRecord } from "@/http/api/clue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
-const params = ref<any>({
-  pageNo: 1,
-  pageSize: 10,
-  keyWords: "",
-  type: 0,
-  startDate: "",
-  endDate: "",
-  directors: [],
-  directorIds: 0,
-  stages: [],
-  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [103],
-  parks: headerParkStore.parks.filter(
-    (item) => item.id === headerParkStore.selectedId
-  ),
-  sources: [],
-  notExistsDirector: false,
-});
+const params = ref<any>();
 const init = () => {};
 onMounted(() => {
   init();
@@ -90,6 +73,24 @@ onLoad((option) => {
   pageOption.value = option;
 });
 onShow(() => {
+  const headerParkStore = useHeaderPark();
+  params.value = {
+    pageNo: 1,
+    pageSize: 10,
+    keyWords: "",
+    type: 0,
+    startDate: "",
+    endDate: "",
+    directors: [],
+    directorIds: 0,
+    stages: [],
+    parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [103],
+    parks: headerParkStore.parks.filter(
+      (item) => item.id === headerParkStore.selectedId
+    ),
+    sources: [],
+    notExistsDirector: false,
+  };
   zPageing.value.reload();
 });
 const dataList = ref<any>([]);
@@ -115,6 +116,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
 watch(
   () => tabIndex.value,
   (val) => {
+    const headerParkStore = useHeaderPark();
     params.value.keyWords = "";
     params.value.startDate = "";
     params.value.endDate = "";

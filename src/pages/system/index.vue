@@ -102,10 +102,10 @@ import { apiGetUserAuthInfo, apiLogout } from "@/http/api/login";
 import { useHeaderPark } from "@/stores/park";
 import type { IPark } from "@/types/permission";
 
-const headerParkStore = useHeaderPark();
 const parks = ref<IPark[]>([]);
 
 onBeforeMount(async () => {
+  const headerParkStore = useHeaderPark();
   const userId = localStorage.getItem("userId") || "";
 
   const storagedParkId =
@@ -161,6 +161,7 @@ const parkChange = (e: { detail: { value: number[] } }) => {
   tempParkIndex.value = e.detail.value[0];
 };
 const confirmPark = () => {
+  const headerParkStore = useHeaderPark();
   currentParkIndex.value = tempParkIndex.value;
   parkPopup.value.close();
   //设置当前园区的id到headerParkStore中
@@ -168,6 +169,7 @@ const confirmPark = () => {
 };
 
 const parkName = computed(() => {
+  const headerParkStore = useHeaderPark();
   const park = parks.value.find(
     (item) => item.id === headerParkStore.selectedId
   );

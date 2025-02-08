@@ -98,7 +98,6 @@ import { apiSearchBill } from "@/http/api/charge";
 import type { IBill } from "@/types/charge";
 import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const billDataScreenRef = ref();
 const searchBill = () => {
   billDataScreenRef.value?.open();
@@ -138,6 +137,7 @@ let unReceived = ref(0);
 let partReceived = ref(0);
 let received = ref(0);
 const queryList = async (pageNo: any, pageSize: any) => {
+  const headerParkStore = useHeaderPark();
   uni.showLoading({
     title: "加载中...",
     mask: true,

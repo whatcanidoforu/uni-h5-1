@@ -53,9 +53,6 @@
 import { ref, onMounted } from "vue";
 import { apiChanceSearchChanceChangeList } from "@/http/api/clue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
-import { useHeaderPark } from "@/stores/park";
-
-const headerParkStore = useHeaderPark();
 
 const params = ref<any>({});
 const init = () => {};

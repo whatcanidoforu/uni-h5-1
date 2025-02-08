@@ -119,10 +119,7 @@ import {
   apiChanceUpdateChanceContact,
 } from "@/http/api/clue";
 import { checkStr } from "@/utils";
-import { useHeaderPark } from "@/stores/park";
 import { apiUploadFile } from "@/http/api/clue";
-
-const headerParkStore = useHeaderPark();
 
 const userId = ref(Number(localStorage.getItem("userId")) as number);
 const formData = ref<any>({

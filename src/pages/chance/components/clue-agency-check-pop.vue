@@ -65,9 +65,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { apiGetAgencyList } from "@/http/api/clue";
-import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const clueDirectorIdsCheckPopRef = ref();
 const emit = defineEmits(["update:agencyList", "confirm"]);
 const props = defineProps({

@@ -75,7 +75,6 @@ import contractHeader from "./components/contract-header.vue";
 import { apiGetContractList } from "@/http/api/contract";
 import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
 const timer = ref();
@@ -88,25 +87,31 @@ const debouncedInput = (e: string) => {
   }, 500);
 };
 
-const params = ref<any>({
-  pageNo: 1,
-  pageSize: 10,
-  keyWords: "",
-  type: 100,
-  startDate: "",
-  endDate: "",
-  signedBy: [],
-  selectedSignBy: [],
-  departmentIds: [],
-  selectedDepartments: [],
-  statuses: [],
-  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
-  parks: headerParkStore.parks.filter(
-    (item) => item.id === headerParkStore.selectedId
-  ),
-});
+const params = ref<any>();
+const init = () => {
+  const headerParkStore = useHeaderPark();
+  params.value = {
+    pageNo: 1,
+    pageSize: 10,
+    keyWords: "",
+    type: 100,
+    startDate: "",
+    endDate: "",
+    signedBy: [],
+    selectedSignBy: [],
+    departmentIds: [],
+    selectedDepartments: [],
+    statuses: [],
+    parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
+    parks: headerParkStore.parks.filter(
+      (item) => item.id === headerParkStore.selectedId
+    ),
+  };
+};
 
 onMounted(() => {
+  init();
+  const headerParkStore = useHeaderPark();
   if (headerParkStore.parks) {
     params.value.parks = headerParkStore.parks.filter(
       (item) => item.id === headerParkStore.selectedId
@@ -148,6 +153,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
 };
 
 const confirmParams = (obj: any) => {
+  const headerParkStore = useHeaderPark();
   params.value.startDate = obj.startDate;
   params.value.endDate = obj.endDate;
   params.value.parks = obj.parks;
@@ -172,6 +178,7 @@ const PopOpenStatusChange = (e: any) => {
 watch(
   () => tabIndex.value,
   (val) => {
+    const headerParkStore = useHeaderPark();
     params.value.keyWords = "";
     params.value.startDate = "";
     params.value.endDate = "";

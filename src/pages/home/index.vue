@@ -61,7 +61,6 @@ import RankList from "./components/rank-list.vue";
 import { apiGetUserAuthInfo } from "@/http/api/login";
 import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const parks = ref<IPark[]>([]);
 
 const currentParkIndex = ref(0);
@@ -70,6 +69,7 @@ const parkChange = (e: any) => {
 };
 
 const parkName = computed(() => {
+  const headerParkStore = useHeaderPark();
   const park = parks.value.find(
     (item) => item.id === headerParkStore.selectedId
   );
@@ -81,6 +81,7 @@ const parkId = computed(() => {
 });
 
 onBeforeMount(async () => {
+  const headerParkStore = useHeaderPark();
   const userId = localStorage.getItem("userId") || "";
   const storagedParkId =
     Number(localStorage.getItem(`parkId_zhaoshang_${userId}`)) || undefined;

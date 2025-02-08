@@ -89,7 +89,6 @@ import {
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
 const statusMapList = ref<any>([
@@ -109,24 +108,9 @@ const debouncedInput = (e: string) => {
   }, 500);
 };
 
-const params = ref<any>({
-  pageNo: 1,
-  pageSize: 10,
-  keyWords: "",
-  type: 0,
-  startDate: "",
-  endDate: "",
-  directors: [],
-  directorIds: 0,
-  stages: [],
-  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
-  parks: headerParkStore.parks.filter(
-    (item) => item.id === headerParkStore.selectedId
-  ),
-  sources: [],
-  notExistsDirector: false,
-});
+const params = ref<any>();
 const init = () => {
+  const headerParkStore = useHeaderPark();
   if (headerParkStore.parks) {
     params.value.parks = headerParkStore.parks.filter(
       (item) => item.id === headerParkStore.selectedId
@@ -142,6 +126,24 @@ onMounted(() => {
   init();
 });
 onShow(() => {
+  const headerParkStore = useHeaderPark();
+  params.value = {
+    pageNo: 1,
+    pageSize: 10,
+    keyWords: "",
+    type: 0,
+    startDate: "",
+    endDate: "",
+    directors: [],
+    directorIds: 0,
+    stages: [],
+    parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
+    parks: headerParkStore.parks.filter(
+      (item) => item.id === headerParkStore.selectedId
+    ),
+    sources: [],
+    notExistsDirector: false,
+  };
   changeStatus(statusMapList.value[0]);
 });
 const changeStatus = (item: any) => {
@@ -223,6 +225,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
 };
 
 const confirmParams = (obj: any) => {
+  const headerParkStore = useHeaderPark();
   console.log("index confirmParams", obj);
   params.value.startDate = obj.startDate;
   params.value.endDate = obj.endDate;
@@ -288,6 +291,7 @@ const PopOpenStatusChange = (e: any) => {
 watch(
   () => tabIndex.value,
   (val) => {
+    const headerParkStore = useHeaderPark();
     params.value.keyWords = "";
     params.value.startDate = "";
     params.value.endDate = "";

@@ -74,9 +74,7 @@ import {
   apiSearchCompanyByKeyword,
   apiAuthSearchUser,
 } from "@/http/api/customer";
-import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const clueDirectorIdsCheckPopRef = ref();
 const emit = defineEmits(["update:directors", "confirm"]);
 const props = defineProps({

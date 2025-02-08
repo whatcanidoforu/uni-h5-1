@@ -188,8 +188,6 @@ import { checkStr } from "@/utils";
 import { useHeaderPark } from "@/stores/park";
 import { apiUploadFile } from "@/http/api/clue";
 
-const headerParkStore = useHeaderPark();
-
 const clueParkCheckPopRef = ref();
 const clueAgencyCheckPopRef = ref();
 const clueSourcesCheckPopRef = ref();
@@ -204,6 +202,7 @@ const formData = ref<any>({
 const chanceContactList = ref<any>([]);
 const pageOption = ref();
 onLoad((option) => {
+  const headerParkStore = useHeaderPark();
   pageOption.value = option;
   if (option?.id) {
     apiChanceGetChanceClueDetailFun(Number(option?.id));

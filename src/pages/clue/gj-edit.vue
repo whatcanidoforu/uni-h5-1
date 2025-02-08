@@ -150,11 +150,7 @@ import clueAgencyCheckPop from "@/pages/clue/components/clue-agency-check-pop.vu
 import clueGjtypeCheckPop from "@/pages/clue/components/clue-gjtype-check-pop.vue";
 import clueDirectorIdsCheckPop from "@/pages/clue/components/clue-directorIds-check-pop.vue";
 
-import { checkStr } from "@/utils";
-import { useHeaderPark } from "@/stores/park";
 import { apiUploadFile } from "@/http/api/clue";
-
-const headerParkStore = useHeaderPark();
 
 const clueAgencyCheckPopRef = ref();
 const clueGjtypeCheckPopRef = ref();

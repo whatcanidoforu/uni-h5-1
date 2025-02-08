@@ -153,10 +153,7 @@ import { ref, computed } from "vue";
 import TagPageCheckPop from "./tag-check-pop.vue";
 import ParkCheckPop from "./park-check-pop.vue";
 import DirectorIdsCheckPop from "./directorIds-check-pop.vue";
-import { useHeaderPark } from "@/stores/park";
 import type { IPark } from "@/types/permission";
-
-const headerParkStore = useHeaderPark();
 
 const FilterPopupRef = ref();
 const SourcesCheckPopRef = ref();

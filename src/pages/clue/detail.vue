@@ -339,10 +339,8 @@ import {
   apiChanceUnAssignChance,
 } from "@/http/api/clue";
 import { formatDate } from "@/utils/index";
-import { useHeaderPark } from "@/stores/park";
 import { sendSms } from "@/utils";
 
-const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
 const formData = ref<any>({

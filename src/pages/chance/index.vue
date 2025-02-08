@@ -90,7 +90,6 @@ import {
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
 const statusMapList = ref<any>([
@@ -114,34 +113,9 @@ const debouncedInput = (e: string) => {
   }, 500);
 };
 
-const params = ref<any>({
-  pageNo: 1,
-  pageSize: 10,
-  id: "",
-  startDate: "",
-  endDate: "",
-  customerName: "",
-  customerPhone: "",
-  customerCates: [], // ["B", "C", "D"],
-  statuses: [],
-  directors: [],
-  directorIds: undefined,
-  intentions: [], // ["租赁", "购买"],
-  sources: [],
-  searchType: 1,
-  parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
-  parks: headerParkStore.parks.filter(
-    (item) => item.id === headerParkStore.selectedId
-  ),
-  contactDays: "",
-  keyWords: "",
-  stages: [], //[30, 40],
-  customerCompany: "",
-  customerIndustries: [], //["机械/制造", "制药/医疗", "交通/物流", "能源/化工/环保"],
-  intentedAreaStart: undefined, // 1,
-  intentedAreaEnd: undefined, // 2,
-});
+const params = ref<any>();
 const init = () => {
+  const headerParkStore = useHeaderPark();
   if (headerParkStore.parks) {
     params.value.parks = headerParkStore.parks.filter(
       (item) => item.id === headerParkStore.selectedId
@@ -157,6 +131,34 @@ onMounted(() => {
   init();
 });
 onShow(() => {
+  const headerParkStore = useHeaderPark();
+  params.value = {
+    pageNo: 1,
+    pageSize: 10,
+    id: "",
+    startDate: "",
+    endDate: "",
+    customerName: "",
+    customerPhone: "",
+    customerCates: [], // ["B", "C", "D"],
+    statuses: [],
+    directors: [],
+    directorIds: undefined,
+    intentions: [], // ["租赁", "购买"],
+    sources: [],
+    searchType: 1,
+    parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
+    parks: headerParkStore.parks.filter(
+      (item) => item.id === headerParkStore.selectedId
+    ),
+    contactDays: "",
+    keyWords: "",
+    stages: [], //[30, 40],
+    customerCompany: "",
+    customerIndustries: [], //["机械/制造", "制药/医疗", "交通/物流", "能源/化工/环保"],
+    intentedAreaStart: undefined, // 1,
+    intentedAreaEnd: undefined, // 2,
+  };
   changeStatus(statusMapList.value[0]);
 });
 const changeStatus = (item: any) => {
@@ -280,6 +282,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
 };
 
 const confirmParams = (obj: any) => {
+  const headerParkStore = useHeaderPark();
   console.log("index confirmParams", obj);
   params.value.startDate = obj.startDate;
   params.value.endDate = obj.endDate;
@@ -349,6 +352,7 @@ const PopOpenStatusChange = (e: any) => {
 watch(
   () => tabIndex.value,
   (val) => {
+    const headerParkStore = useHeaderPark();
     params.value.keyWords = "";
     params.value.startDate = "";
     params.value.endDate = "";

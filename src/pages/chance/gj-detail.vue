@@ -100,12 +100,6 @@ import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { apiCrmGetChanceContactRecord } from "@/http/api/clue";
 
-import { useHeaderPark } from "@/stores/park";
-import { apiUploadFile } from "@/http/api/clue";
-import { format } from "echarts";
-
-const headerParkStore = useHeaderPark();
-
 const clueGjtypeCheckPopRef = ref();
 const clueDirectorIdsCheckPopRef = ref();
 

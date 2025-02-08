@@ -184,10 +184,7 @@ import clueParkCheckPop from "@/pages/clue/components/clue-park-check-pop.vue";
 import clueAgencyCheckPop from "@/pages/clue/components/clue-agency-check-pop.vue";
 import clueSourcesCheckPop from "@/pages/clue/components/clue-sources-check-pop.vue";
 import { checkStr } from "@/utils";
-import { useHeaderPark } from "@/stores/park";
 import { apiUploadFile } from "@/http/api/clue";
-
-const headerParkStore = useHeaderPark();
 
 const clueParkCheckPopRef = ref();
 const clueAgencyCheckPopRef = ref();
