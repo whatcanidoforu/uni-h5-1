@@ -16,17 +16,32 @@
         style="padding: 0; margin-top: 10px"
       />
       <view class="type-list">
-        <view
-          class="type-card"
-          :class="{ active: isActive(item) }"
-          v-for="item in statusMapList"
-          :key="tabIndex + '_' + item.type"
-          @click="changeStatus(item)"
-        >
-          <view class="label"> {{ item.label }} </view>
-          <view class="num"> {{ item.num }} </view>
-        </view>
+        <template v-if="tabIndex === 0">
+          <view
+            class="type-card"
+            :class="{ active: isActive(item) }"
+            v-for="item in statusMapList"
+            :key="tabIndex + '_statuses_' + item.statuses.join('-')"
+            @click="changeStatus(item)"
+          >
+            <view class="label"> {{ item.label }} </view>
+            <view class="num"> {{ item.num }} </view>
+          </view>
+        </template>
+        <template v-else>
+          <view
+            class="type-card"
+            :class="{ active: isActive(item) }"
+            v-for="item in statusMapList"
+            :key="tabIndex + '_type_' + item.type"
+            @click="changeStatus(item)"
+          >
+            <view class="label"> {{ item.label }} </view>
+            <view class="num"> {{ item.num }} </view>
+          </view>
+        </template>
       </view>
+
       <z-paging
         class="chance-card-list"
         ref="zPageing"
@@ -93,15 +108,24 @@ import { useHeaderPark } from "@/stores/park";
 const tabIndex = ref(0);
 
 const statusMapList = ref<any>([
-  { label: "全部", type: [], num: 0 },
-  { label: "待跟进", type: ["0"], num: 0 },
-  { label: "跟进中", type: ["10"], num: 0 },
-  { label: "已成交", type: ["100"], num: 0 },
-  { label: "已关闭", type: ["-10"], num: 0 },
+  { label: "全部", statuses: [], type: undefined, num: 0 },
+  { label: "待跟进", statuses: ["0"], type: undefined, num: 0 },
+  { label: "跟进中", statuses: ["10"], type: undefined, num: 0 },
+  { label: "已成交", statuses: ["100"], type: undefined, num: 0 },
+  { label: "已关闭", statuses: ["-10"], type: undefined, num: 0 },
 ]);
 
 const isActive = (item: any) => {
-  return JSON.stringify(params.value.statuses) === JSON.stringify(item.type);
+  console.log("isActive", params.value.statuses, item.type);
+  if (tabIndex.value === 0) {
+    return (
+      JSON.stringify(params.value.statuses) === JSON.stringify(item.statuses)
+    );
+  } else if (tabIndex.value === 1) {
+    return params.value.type === item.type;
+  } else if (tabIndex.value === 2) {
+    return params.value.type === item.type;
+  }
 };
 const timer = ref();
 const debouncedInput = (e: string) => {
@@ -162,12 +186,25 @@ onShow(() => {
   changeStatus(statusMapList.value[0]);
 });
 const changeStatus = (item: any) => {
-  params.value.statuses = item.type;
+  console.log("changeStatus 1", item.statuses);
+  if (tabIndex.value === 0) {
+    params.value.statuses = JSON.parse(JSON.stringify(item.statuses));
+    console.log("changeStatus 2", params.value.statuses);
+    console.log("changeStatus 3", params.value);
+    params.value.type = undefined;
+  } else if (tabIndex.value === 1) {
+    params.value.statuses = [];
+    params.value.type = item.type;
+  } else if (tabIndex.value === 2) {
+    params.value.statuses = [];
+    params.value.type = item.type;
+  }
   zPageing.value?.reload();
 };
 const dataList = ref<any>([]);
 const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
+  const headerParkStore = useHeaderPark();
   let userId = Number(uni.getStorageSync("userId")) as number;
   if (tabIndex.value === 0) {
     console.log("params.value", params.value);
@@ -175,8 +212,8 @@ const queryList = async (pageNo: number, pageSize: number) => {
       pageNo: pageNo,
       pageSize: pageSize,
       id: "",
-      startDate: "",
-      endDate: "",
+      startDate: params.value.startDate,
+      endDate: params.value.endDate,
       customerName: "",
       customerPhone: "",
       customerCates: params.value.customerCates, //["B", "C", "D"],
@@ -187,96 +224,117 @@ const queryList = async (pageNo: number, pageSize: number) => {
       searchType: 1,
       parkIds: params.value.parkIds,
       contactDays: "",
-      keyWords: "",
+      keyWords: params.value.keyWords,
       stages: params.value.stages, //[30, 40],
       customerCompany: "",
       customerIndustries: params.value.customerIndustries, //["机械/制造", "制药/医疗", "交通/物流", "能源/化工/环保"],
-      intentedAreaStart: undefined, // 1,
-      intentedAreaEnd: undefined, // 2,
+      intentedAreaStart: params.value.intentedAreaStart, // 1,
+      intentedAreaEnd: params.value.intentedAreaEnd, // 2,
     });
     if (!res) {
       zPageing.value.complete(false);
     }
     zPageing.value.complete(res.data);
     statusMapList.value = [
-      { label: "全部", type: [], num: res.allTotal },
-      { label: "待跟进", type: ["0"], num: res.nofollowTotal },
-      { label: "跟进中", type: ["10"], num: res.followUpTotal },
-      { label: "已成交", type: ["100"], num: res.finishedTotal },
-      { label: "已关闭", type: ["-10"], num: res.closedTotal },
+      { label: "全部", statuses: [], type: undefined, num: res.allTotal },
+      {
+        label: "待跟进",
+        statuses: ["0"],
+        type: undefined,
+        num: res.nofollowTotal,
+      },
+      {
+        label: "跟进中",
+        statuses: ["10"],
+        type: undefined,
+        num: res.followUpTotal,
+      },
+      {
+        label: "已成交",
+        statuses: ["100"],
+        type: undefined,
+        num: res.finishedTotal,
+      },
+      {
+        label: "已关闭",
+        statuses: ["-10"],
+        type: undefined,
+        num: res.closedTotal,
+      },
     ];
   } else if (tabIndex.value === 1) {
     let res = await apiChanceSearchChanceBusinessTeam({
-      pageNo: 1,
-      pageSize: 20,
+      pageNo: pageNo,
+      pageSize: pageSize,
       id: "",
-      startDate: "2025-02-06",
-      endDate: "2025-02-20",
+      startDate: params.value.startDate,
+      endDate: params.value.endDate,
       customerName: "",
       customerPhone: "",
-      customerCates: ["A", "B"],
-      statuses: [],
+      customerCates: params.value.customerCates, //["B", "C", "D"],
+      statuses: [], // params.value.statuses,
       directorIds: "",
-      intentions: ["租赁", "购买"],
-      sources: ["同事推荐", "朋友介绍", "自主拓客"],
-      parkIds: [77],
-      keyWords: "1",
-      contactDays: 5,
+      intentions: params.value.intentions, //["租赁", "购买"],
+      sources: params.value.sources,
+      parkIds: params.value.parkIds,
+      keyWords: params.value.keyWords,
+      contactDays: "",
       notExistsDirector: false,
-      stages: [30, 40],
-      type: 0,
-      customerIndustries: ["机械/制造", "能源/化工/环保", "交通/物流"],
-      intentedAreaStart: 1,
-      intentedAreaEnd: 2,
+      stages: params.value.stages, //[30, 40],
+      type: params.value.type,
+      customerIndustries: params.value.customerIndustries, //["机械/制造", "制药/医疗", "交通/物流", "能源/化工/环保"],
+      intentedAreaStart: params.value.intentedAreaStart, // 1,
+      intentedAreaEnd: params.value.intentedAreaEnd, // 2,
     });
     if (!res) {
       zPageing.value.complete(false);
     }
     zPageing.value.complete(res.data);
     statusMapList.value = [
-      { label: "全部", type: 0, num: res.myClueTotal },
-      { label: "待跟进", type: 1, num: res.waitDealTotal },
-      { label: "跟进中", type: 2, num: res.dealedTotal },
-      { label: "已转商机", type: 3, num: res.businessTotal },
+      { label: "全部", statuses: [], type: 0, num: res.allTotal },
+      { label: "待跟进", statuses: [], type: 1, num: res.nofollowTotal },
+      { label: "跟进中", statuses: [], type: 2, num: res.followUpTotal },
+      { label: "已成交", statuses: [], type: 3, num: res.finishedTotal },
+      { label: "已关闭", statuses: [], type: 4, num: res.closedTotal },
     ];
   } else if (tabIndex.value === 2) {
     let res = await apiChanceSearchChanceBusinessList({
-      pageNo: 1,
-      pageSize: 20,
+      pageNo: pageNo,
+      pageSize: pageSize,
       id: "",
-      startDate: "",
-      endDate: "",
+      startDate: params.value.startDate,
+      endDate: params.value.endDate,
       customerName: "",
       customerPhone: "",
-      customerCates: ["D", "C", "B"],
-      statuses: ["-10"],
+      customerCates: params.value.customerCates, //["B", "C", "D"],
+      statuses: [], // params.value.statuses,
       directorIds: "",
-      intentions: ["租赁", "购买"],
-      sources: ["自主拓客", "领导推荐", "朋友介绍"],
+      intentions: params.value.intentions, //["租赁", "购买"],
+      sources: params.value.sources,
       searchType: 2,
-      parkIds: [77],
-      keyWords: "1",
+      parkIds: params.value.parkIds,
+      keyWords: params.value.keyWords,
       contactDays: "",
       notExistsDirector: false,
-      stages: [30, 40],
-      type: 1,
-      customerIndustries: [
-        "计算机/电子/通信",
-        "能源/化工/环保",
-        "机械/制造",
-        "制药/医疗",
-      ],
-      intentedAreaStart: 1,
-      intentedAreaEnd: 2,
+      stages: params.value.stages, //[30, 40],
+      type: params.value.type,
+      customerIndustries: params.value.customerIndustries, //["机械/制造", "制药/医疗", "交通/物流", "能源/化工/环保"],
+      intentedAreaStart: params.value.intentedAreaStart, // 1,
+      intentedAreaEnd: params.value.intentedAreaEnd, // 2,
     });
     if (!res) {
       zPageing.value.complete(false);
     }
     zPageing.value.complete(res.data);
     statusMapList.value = [
-      { label: "全部", type: 1, num: res.totalClueNum },
-      { label: "新线索", type: 2, num: res.newChanceClueNum },
-      { label: "历史线索", type: 3, num: res.historyChanceClueNum },
+      { label: "全部", statuses: [], type: 0, num: res.totalNum },
+      { label: "新商机", statuses: [], type: 1, num: res.newChanceBusinessNum },
+      {
+        label: "历史商机",
+        statuses: [],
+        type: 2,
+        num: res.historyChanceBusinessNum,
+      },
     ];
   }
 };
@@ -296,6 +354,8 @@ const confirmParams = (obj: any) => {
   params.value.sources = obj.sources;
   params.value.customerIndustries = obj.customerIndustries;
   params.value.stages = obj.stages;
+  params.value.intentedAreaStart = obj.intentedAreaStart;
+  params.value.intentedAreaEnd = obj.intentedAreaEnd;
   params.value.directors = obj.directors;
   params.value.directorIds = obj.directors.map((item: any) => item.customerId);
   zPageing.value.reload();
@@ -371,11 +431,14 @@ watch(
     params.value.directors = [];
     params.value.directorIds = [];
     if (val === 0) {
-      params.value.type = [];
+      params.value.statuses = [];
+      params.value.type = undefined;
     } else if (val === 1) {
-      params.value.type = [];
+      params.value.statuses = [];
+      params.value.type = 0;
     } else if (val === 2) {
-      params.value.type = [];
+      params.value.statuses = [];
+      params.value.type = 0;
     }
     zPageing.value.reload();
   }

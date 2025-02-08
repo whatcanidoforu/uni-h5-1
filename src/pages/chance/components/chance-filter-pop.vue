@@ -12,7 +12,7 @@
         <view class="right"></view>
       </view>
 
-      <view class="pop-cot">
+      <scroll-view scroll-y="true" class="pop-cot">
         <view class="time tit">创建时间</view>
         <view class="time cot">
           <uni-datetime-picker
@@ -74,6 +74,23 @@
           <uni-icons class="right" type="right" size="16"></uni-icons>
         </view>
 
+        <view class="intented-area tit">需求面积</view>
+        <view class="intented-area cot">
+          <uni-easyinput
+            type="number"
+            v-model="intentedAreaStart"
+            placeholder="请输入"
+            @input="inputIntentedArea"
+          ></uni-easyinput>
+          <view style="padding: 12px">-</view>
+          <uni-easyinput
+            type="number"
+            v-model="intentedAreaEnd"
+            placeholder="请输入"
+            @input="inputIntentedArea"
+          ></uni-easyinput>
+        </view>
+
         <view class="stages tit">阶段</view>
         <view class="tag-block-list cot">
           <view
@@ -123,7 +140,7 @@
             </view>
           </view>
         </view>
-      </view>
+      </scroll-view>
 
       <view class="btns">
         <view class="cancel btn" @click="reset">重置</view>
@@ -237,6 +254,9 @@ const customerIndustries = ref([]); // 行业选择
 const stages = ref<number[]>([]);
 const directors = ref([]);
 
+const intentedAreaStart = ref();
+const intentedAreaEnd = ref();
+
 const clickIntentions = (item: string) => {
   if (intentions.value.includes(item)) {
     intentions.value.splice(intentions.value.indexOf(item), 1);
@@ -258,6 +278,13 @@ const clickStages = (item: number) => {
     stages.value.push(item);
   }
 };
+const inputIntentedArea = () => {
+  console.log(
+    "inputIntentedArea",
+    intentedAreaStart.value,
+    intentedAreaEnd.value
+  );
+};
 const clearPark = (item: IPark) => {
   let arr: number[] = parks.value.map((ite: any) => ite.id);
   parks.value.splice(arr.indexOf(item.id), 1);
@@ -272,6 +299,8 @@ const reset = () => {
   sources.value = [];
   customerIndustries.value = [];
   stages.value = [];
+  intentedAreaStart.value = "";
+  intentedAreaEnd.value = "";
   directors.value = [];
 };
 const confirm = () => {
@@ -285,6 +314,8 @@ const confirm = () => {
     sources: sources.value,
     customerIndustries: customerIndustries.value,
     stages: stages.value,
+    intentedAreaStart: intentedAreaStart.value,
+    intentedAreaEnd: intentedAreaEnd.value,
     directors: directors.value,
   });
 };
@@ -298,6 +329,8 @@ const open = () => {
   sources.value = props.params?.sources;
   customerIndustries.value = props.params?.customerIndustries;
   stages.value = props.params?.stages;
+  intentedAreaStart.value = intentedAreaStart.value;
+  intentedAreaEnd.value = intentedAreaEnd.value;
   directors.value = props.params?.directors;
   FilterPopupRef.value.open();
 };
@@ -344,6 +377,7 @@ defineExpose({
 }
 .pop-cot {
   flex: 1;
+  height: 1px;
 }
 
 .tit {
@@ -405,6 +439,11 @@ defineExpose({
   .right {
     margin-left: 10px;
   }
+}
+.intented-area.cot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .park.cot {
   .cot-hearder {
