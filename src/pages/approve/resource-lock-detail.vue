@@ -178,9 +178,7 @@ import { onLoad, onShow } from "@dcloudio/uni-app";
 import { apiVerifyLockApply, apiReleaseLockApply } from "@/http/api/space";
 import { apiGetApplyLock } from "@/http/api/space";
 import { formatDate } from "@/utils/index";
-import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
 const formData = ref<any>({

@@ -123,9 +123,7 @@ import { apiResourceLockSearchLockApply } from "@/http/api/space";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import type { IContractTable } from "@/types/contract";
 import type { IApiGetApplyLock } from "@/types/space";
-import { useHeaderPark } from "@/stores/park";
 
-const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 const init = () => {};
 onMounted(() => {
