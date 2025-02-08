@@ -12,6 +12,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "uni-config-center": "file:../../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center",
+    "uni-id": "file:",
     "uni-open-bridge-common": "file:../../../../../uni-open-bridge-common/uniCloud/cloudfunctions/common/uni-open-bridge-common"
   }
 }
