@@ -293,6 +293,7 @@ const queryList = async (pageNo: number, pageSize: number) => {
 
 const jumpContractDetail = (item: any) => {};
 const jumpResourceLockDetail = (item: any) => {
+  console.log("item", item);
   uni.navigateTo({
     url: `/pages/approve/resource-lock-detail?code=${item.code}`,
   });

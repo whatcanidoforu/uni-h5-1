@@ -1,11 +1,11 @@
 <template>
-  <view class="clue-page">
-    <clueHeader
+  <view class="chance-page">
+    <chanceHeader
       v-model:tabIndex="tabIndex"
       :params="params"
       @confirm="confirmParams"
       @PopOpenStatusChange="PopOpenStatusChange"
-    ></clueHeader>
+    ></chanceHeader>
     <view class="page-content">
       <uni-search-bar
         placeholder="请输入关键字搜索"
@@ -18,7 +18,7 @@
       <view class="type-list">
         <view
           class="type-card"
-          :class="{ active: params.type === item.type }"
+          :class="{ active: isActive(item) }"
           v-for="item in statusMapList"
           :key="tabIndex + '_' + item.type"
           @click="changeStatus(item)"
@@ -28,7 +28,7 @@
         </view>
       </view>
       <z-paging
-        class="clue-card-list"
+        class="chance-card-list"
         ref="zPageing"
         :hide-empty-view="false"
         :refresher-enabled="true"
@@ -39,15 +39,15 @@
         :fixed="false"
       >
         <view
-          class="clue-card"
+          class="chance-card"
           v-for="(item, index) in dataList"
-          :key="'clue-card' + index"
+          :key="'chance-card' + index"
           @click="clickCardItem(item)"
         >
-          <view class="clue-name top">
+          <view class="chance-name top">
             {{ item.customerName }}
             <view class="jump-area">
-              {{ item.statusName }}
+              {{ item.stageName }}
               <uni-icons type="right" size="12"></uni-icons>
             </view>
           </view>
@@ -80,12 +80,13 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
-import clueHeader from "./components/clue-header.vue";
+import chanceHeader from "./components/chance-header.vue";
 import {
-  apiChanceSearchMyChanceClueList,
-  apiChanceSearchChanceClueTeam,
-  apiChanceSearchChanceClueList,
-} from "@/http/api/clue";
+  apiChanceSearchMyChanceBusinessList,
+  apiChanceSearchChanceBusinessTeam,
+  apiChanceSearchChanceBusinessList,
+} from "@/http/api/chance";
+
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useHeaderPark } from "@/stores/park";
 
@@ -93,12 +94,16 @@ const headerParkStore = useHeaderPark();
 const tabIndex = ref(0);
 
 const statusMapList = ref<any>([
-  { label: "全部", type: 0, num: 0 },
-  { label: "待跟进", type: 1, num: 0 },
-  { label: "跟进中", type: 2, num: 0 },
-  { label: "已转商机", type: 3, num: 0 },
+  { label: "全部", type: [], num: 0 },
+  { label: "待跟进", type: ["0"], num: 0 },
+  { label: "跟进中", type: ["10"], num: 0 },
+  { label: "已成交", type: ["100"], num: 0 },
+  { label: "已关闭", type: ["-10"], num: 0 },
 ]);
 
+const isActive = (item: any) => {
+  return JSON.stringify(params.value.statuses) === JSON.stringify(item.type);
+};
 const timer = ref();
 const debouncedInput = (e: string) => {
   if (timer.value) {
@@ -112,19 +117,29 @@ const debouncedInput = (e: string) => {
 const params = ref<any>({
   pageNo: 1,
   pageSize: 10,
-  keyWords: "",
-  type: 0,
+  id: "",
   startDate: "",
   endDate: "",
+  customerName: "",
+  customerPhone: "",
+  customerCates: [], // ["B", "C", "D"],
+  statuses: [],
   directors: [],
-  directorIds: 0,
-  stages: [],
+  directorIds: undefined,
+  intentions: [], // ["租赁", "购买"],
+  sources: [],
+  searchType: 1,
   parkIds: headerParkStore.selectedId ? [headerParkStore.selectedId] : [],
   parks: headerParkStore.parks.filter(
     (item) => item.id === headerParkStore.selectedId
   ),
-  sources: [],
-  notExistsDirector: false,
+  contactDays: "",
+  keyWords: "",
+  stages: [], //[30, 40],
+  customerCompany: "",
+  customerIndustries: [], //["机械/制造", "制药/医疗", "交通/物流", "能源/化工/环保"],
+  intentedAreaStart: undefined, // 1,
+  intentedAreaEnd: undefined, // 2,
 });
 const init = () => {
   if (headerParkStore.parks) {
@@ -145,7 +160,7 @@ onShow(() => {
   changeStatus(statusMapList.value[0]);
 });
 const changeStatus = (item: any) => {
-  params.value.type = item.type;
+  params.value.statuses = item.type;
   zPageing.value?.reload();
 };
 const dataList = ref<any>([]);
@@ -153,40 +168,64 @@ const zPageing = ref();
 const queryList = async (pageNo: number, pageSize: number) => {
   let userId = Number(localStorage.getItem("userId")) as number;
   if (tabIndex.value === 0) {
-    let res = await apiChanceSearchMyChanceClueList({
+    console.log("params.value", params.value);
+    let res = await apiChanceSearchMyChanceBusinessList({
       pageNo: pageNo,
       pageSize: pageSize,
-      keyWords: params.value.keyWords,
-      type: params.value.type,
-      startDate: params.value.startDate,
-      endDate: params.value.endDate,
+      id: "",
+      startDate: "",
+      endDate: "",
+      customerName: "",
+      customerPhone: "",
+      customerCates: params.value.customerCates, //["B", "C", "D"],
+      statuses: params.value.statuses,
       directorIds: userId,
-      parkIds: params.value.parkIds,
+      intentions: params.value.intentions, //["租赁", "购买"],
       sources: params.value.sources,
-      notExistsDirector: false,
+      searchType: 1,
+      parkIds: params.value.parkIds,
+      contactDays: "",
+      keyWords: "",
+      stages: params.value.stages, //[30, 40],
+      customerCompany: "",
+      customerIndustries: params.value.customerIndustries, //["机械/制造", "制药/医疗", "交通/物流", "能源/化工/环保"],
+      intentedAreaStart: undefined, // 1,
+      intentedAreaEnd: undefined, // 2,
     });
     if (!res) {
       zPageing.value.complete(false);
     }
     zPageing.value.complete(res.data);
     statusMapList.value = [
-      { label: "全部", type: 0, num: res.myClueTotal },
-      { label: "待跟进", type: 1, num: res.waitDealTotal },
-      { label: "跟进中", type: 2, num: res.dealedTotal },
-      { label: "已转商机", type: 3, num: res.businessTotal },
+      { label: "全部", type: [], num: res.allTotal },
+      { label: "待跟进", type: ["0"], num: res.nofollowTotal },
+      { label: "跟进中", type: ["10"], num: res.followUpTotal },
+      { label: "已成交", type: ["100"], num: res.finishedTotal },
+      { label: "已关闭", type: ["-10"], num: res.closedTotal },
     ];
   } else if (tabIndex.value === 1) {
-    let res = await apiChanceSearchChanceClueTeam({
-      pageNo: pageNo,
-      pageSize: 999999,
-      keyWords: params.value.keyWords,
-      type: params.value.type,
-      startDate: params.value.startDate,
-      endDate: params.value.endDate,
-      directorIds: params.value.directorIds,
-      parkIds: params.value.parkIds,
-      sources: params.value.sources,
-      notExistsDirector: true,
+    let res = await apiChanceSearchChanceBusinessTeam({
+      pageNo: 1,
+      pageSize: 20,
+      id: "",
+      startDate: "2025-02-06",
+      endDate: "2025-02-20",
+      customerName: "",
+      customerPhone: "",
+      customerCates: ["A", "B"],
+      statuses: [],
+      directorIds: "",
+      intentions: ["租赁", "购买"],
+      sources: ["同事推荐", "朋友介绍", "自主拓客"],
+      parkIds: [77],
+      keyWords: "1",
+      contactDays: 5,
+      notExistsDirector: false,
+      stages: [30, 40],
+      type: 0,
+      customerIndustries: ["机械/制造", "能源/化工/环保", "交通/物流"],
+      intentedAreaStart: 1,
+      intentedAreaEnd: 2,
     });
     if (!res) {
       zPageing.value.complete(false);
@@ -199,16 +238,34 @@ const queryList = async (pageNo: number, pageSize: number) => {
       { label: "已转商机", type: 3, num: res.businessTotal },
     ];
   } else if (tabIndex.value === 2) {
-    let res = await apiChanceSearchChanceClueList({
-      pageNo: pageNo,
-      pageSize: pageSize,
-      keyWords: params.value.keyWords,
-      type: params.value.type,
-      startDate: params.value.startDate,
-      endDate: params.value.endDate,
-      parkIds: params.value.parkIds,
-      sources: params.value.sources,
+    let res = await apiChanceSearchChanceBusinessList({
+      pageNo: 1,
+      pageSize: 20,
+      id: "",
+      startDate: "",
+      endDate: "",
+      customerName: "",
+      customerPhone: "",
+      customerCates: ["D", "C", "B"],
+      statuses: ["-10"],
+      directorIds: "",
+      intentions: ["租赁", "购买"],
+      sources: ["自主拓客", "领导推荐", "朋友介绍"],
+      searchType: 2,
+      parkIds: [77],
+      keyWords: "1",
+      contactDays: "",
       notExistsDirector: false,
+      stages: [30, 40],
+      type: 1,
+      customerIndustries: [
+        "计算机/电子/通信",
+        "能源/化工/环保",
+        "机械/制造",
+        "制药/医疗",
+      ],
+      intentedAreaStart: 1,
+      intentedAreaEnd: 2,
     });
     if (!res) {
       zPageing.value.complete(false);
@@ -226,21 +283,25 @@ const confirmParams = (obj: any) => {
   console.log("index confirmParams", obj);
   params.value.startDate = obj.startDate;
   params.value.endDate = obj.endDate;
+  params.value.intentions = obj.intentions;
+  params.value.customerCates = obj.customerCates;
   params.value.parks = obj.parks;
   params.value.parkIds =
     obj.parks && obj.parks.length > 0
       ? obj.parks.map((item: any) => item.id)
       : [headerParkStore.selectedId];
   params.value.sources = obj.sources;
+  params.value.customerIndustries = obj.customerIndustries;
+  params.value.stages = obj.stages;
   params.value.directors = obj.directors;
   params.value.directorIds = obj.directors.map((item: any) => item.customerId);
   zPageing.value.reload();
 };
 const jumpAdd = () => {
-  uni.navigateTo({ url: `/pages/clue/edit` });
+  uni.navigateTo({ url: `/pages/chance/edit` });
 };
 const jumpFollow = (item: any) => {
-  uni.navigateTo({ url: `/pages/clue/gj-edit?chanceId=${item.id}` });
+  uni.navigateTo({ url: `/pages/chance/gj-edit?chanceId=${item.id}` });
 };
 const jumpPhone = (item: any) => {
   uni.makePhoneCall({ phoneNumber: item.customerPhone });
@@ -306,23 +367,23 @@ watch(
     params.value.directors = [];
     params.value.directorIds = [];
     if (val === 0) {
-      params.value.type = 0;
+      params.value.type = [];
     } else if (val === 1) {
-      params.value.type = 0;
+      params.value.type = [];
     } else if (val === 2) {
-      params.value.type = 1;
+      params.value.type = [];
     }
     zPageing.value.reload();
   }
 );
 
 const clickCardItem = (item: any) => {
-  uni.navigateTo({ url: `/pages/clue/detail?id=${item.id}` });
+  uni.navigateTo({ url: `/pages/chance/detail?id=${item.id}` });
 };
 </script>
 
 <style lang="scss" scoped>
-.clue-page {
+.chance-page {
   height: 100%;
   overflow: hidden;
   background-color: #f4f8fb;
@@ -389,13 +450,13 @@ const clickCardItem = (item: any) => {
   }
 }
 
-.clue-card-list {
+.chance-card-list {
   flex: 1;
-  .clue-card {
+  .chance-card {
     background-color: #ffffff;
     margin-top: 12px;
     border-radius: 12px;
-    .clue-name {
+    .chance-name {
       font-size: 16px;
       height: 50px;
       line-height: 50px;

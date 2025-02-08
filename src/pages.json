@@ -156,6 +156,14 @@
       }
     },
     {
+      "path": "pages/chance/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商机管理",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/message/index",
       "style": {
         "navigationStyle": "custom",

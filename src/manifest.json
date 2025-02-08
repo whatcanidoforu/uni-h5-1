@@ -60,7 +60,9 @@
                         "appid" : "APPIDwxd3b80809e86962a8",
                         "UniversalLinks" : "https://static-mp-c7705782-eeea-4b2e-842b-f4991f6eacc7.next.bspapp.com/uni-universallinks//"
                     }
-                }
+                },
+                "statics" : {},
+                "maps" : {}
             }
         }
     },

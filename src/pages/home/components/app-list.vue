@@ -22,6 +22,7 @@ const appList = [
   {
     name: "商机管理",
     imgPath: "/static/image/home/sjgl.png",
+    path: "/pages/chance/index",
   },
   {
     name: "合同管理",

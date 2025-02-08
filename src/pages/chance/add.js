@@ -1,0 +1,58 @@
+// 166722
+
+
+let obj = {
+  "clueToBusinessRate": "",
+  "contactTimes": "",
+  "createdBy": "",
+  "createrName": "",
+  "createTime": "",
+  "customerAddress": "",
+  "customerCate": "",
+  "customerIndustry": "",
+  "customerName": "1",
+  "customerPhone": "13000000004",
+  "detail": "",
+  "directorId": "",
+  "directorName": "",
+  "fileInfos": [],
+  "id": "",
+  "intentedArea": "",
+  "intentedPrice": "",
+  "intentedResource": "",
+  "intention": "",
+  "source": "",
+  "stage": "",
+  "stageName": "",
+  "stageTime": "",
+  "status": "",
+  "statusName": "",
+  "updateTime": "",
+  "version": "",
+  "lastedAssignTime": "",
+  "chanceContactList": [
+    {
+      "name": "1",
+      "phone": "13000000004",
+      "phone2": "",
+      "email": "",
+      "keyMan": false,
+      "remark": "",
+      "position": ""
+    }
+  ],
+  "parkId": 77,
+  "parkName": "",
+  "customerPhoneFixed": "",
+  "province": "",
+  "city": "",
+  "district": "",
+  "firstContactTime": "",
+  "lastContactTime": "",
+  "lastContactPersonName": "",
+  "customerCompany": "",
+  "email": "",
+  "changeBusiness": false,
+  "agencyMobile": "",
+  "agencyContact": ""
+}
