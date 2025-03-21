@@ -210,6 +210,30 @@
         "navigationBarTitleText": "寻源拓客",
         "navigationBarBackgroundColor": "#FFFFFF"
       }
+    },
+    {
+      "path": "pages/inspection/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "巡检管理",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/inspection/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "巡检任务详情",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/inspection/add",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "巡检提报",
+        "navigationBarBackgroundColor": "#FFFFFF"
+      }
     }
   ],
   "globalStyle": {

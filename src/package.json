@@ -1,0 +1,23 @@
+{
+    "id": "ambler-nfcrw",
+    "name": "nfcrw",
+    "displayName": "nfcrw",
+    "version": "1.0.0",
+    "description": "小程序nfc读取与写入",
+    "keywords": [
+        "小程序",
+        "nfc",
+        "读写"
+    ],
+    "dcloudext": {
+        "type": "component-vue",
+        "sale": {
+            "regular": {
+                "price": "0.00"
+            },
+            "sourcecode": {
+                "price": "0.00"
+            }
+        }
+    }
+}

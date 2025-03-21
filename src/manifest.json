@@ -2,8 +2,8 @@
     "name" : "锐嘉科云",
     "appid" : "__UNI__4EF3FCE",
     "description" : "产业园区物业服务",
-    "versionName" : "1.0.0",
-    "versionCode" : "100",
+    "versionName" : "1.0.1",
+    "versionCode" : 101,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -95,6 +95,39 @@
                         "spotlight@2x" : "unpackage/res/icons/80x80.png",
                         "spotlight@3x" : "unpackage/res/icons/120x120.png"
                     }
+                }
+            }
+        },
+        "safearea" : {
+            //可选，JSON对象，安全区域配置
+            "background" : "#FFFFFF", //可选，字符串类型，#FFFFFF格式，安全区域背景颜色
+            "backgroundDark" : "#000000", //可选，字符串类型，#RRGGBB格式，暗黑模式安全区域背景颜色
+            "bottom" : {
+                //可选，JSON对象，底部安全区域配置
+                "offset" : "none" //可选，字符串类型，安全区域偏移值，可取值auto、none
+            },
+            "left" : {
+                //可选，JSON对象，左侧安全区域配置
+                "offset" : "none" //可选，字符串类型，安全区域偏移值，可取值auto、none
+            },
+            "right" : {
+                //可选，JSON对象，左侧安全区域配置
+                "offset" : "none" //可选，字符串类型，安全区域偏移值，可取值auto、none
+            }
+        },
+        "nativePlugins" : {
+            "L-NfcModule" : {
+                "__plugin_info__" : {
+                    "name" : "安卓原生NFC读卡（银联芯片卡） - [试用版，仅用于自定义调试基座]",
+                    "description" : "安卓NFC插件（原生页面定制请联系我）",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=11959",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 0,
+                    "pid" : "11959",
+                    "parameters" : {}
                 }
             }
         }

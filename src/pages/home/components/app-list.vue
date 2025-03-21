@@ -51,6 +51,11 @@ const appList = [
     name: "锁定房源",
     imgPath: "/static/image/home/sdfy.png",
   },
+  {
+    name: "巡检管理",
+    imgPath: "/static/image/home/xsgl.png",
+    path: "/pages/inspection/index",
+  },
 ];
 
 const clickItem = (item) => {
