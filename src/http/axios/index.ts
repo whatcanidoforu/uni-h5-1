@@ -1,19 +1,9 @@
 import Request from "./request";
-// import { usePermissionStore } from '@/stores/permission'
 import type { AxiosRequestConfig } from "axios";
 import { downloadLinkFile } from "@/utils";
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   rgkRequestType?: string;
-}
-
-declare global {
-  interface Window {
-    globalApi?: {
-      business?: string;
-      property?: string;
-    };
-  }
 }
 
 const baseURL = import.meta.env.VITE_REQUEST_URL;
@@ -38,32 +28,24 @@ const requestWuye = new Request({
 });
 
 const rjkRequest = <T>(config: AxiosRequestConfig) => {
-  // const permissionStore = usePermissionStore()
   const _sessionId = uni.getStorageSync("sessionId");
   const _userId = uni.getStorageSync("userId");
-  // const _oid = uni.getStorageSync("oid");
   config.method = config.method || "POST";
   config.url = `?method=${config.url}&sessionId=${_sessionId}&userId=${_userId}&oid=1`;
 
-  console.log("window", window);
-
-  const _globalBaseURL = window?.globalApi?.business ?? "";
-
-  console.log("_globalBaseURL", _globalBaseURL);
-
+  const _globalBaseURL = uni.getStorageSync("globalApiBusiness") || "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
 };
+
 const rjkRequestOuter = <T>(
   config: AxiosRequestConfig & { rgkRequestType?: string }
 ) => {
-  // const permissionStore = usePermissionStore()
   const _sessionId = uni.getStorageSync("sessionId");
   const _userId = uni.getStorageSync("userId");
-  // const _oid = uni.getStorageSync("oid");
   config.method = config.method || "POST";
   config.url = `${config.url}?sessionId=${_sessionId}&userId=${_userId}&oid=1`;
-  const _globalBaseURL = window?.globalApi?.business ?? "";
+  const _globalBaseURL = uni.getStorageSync("globalApiBusiness") || "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return request.request<T>(config);
 };
@@ -104,7 +86,7 @@ const rjkWuyeRequest = <T>(config: CustomAxiosRequestConfig) => {
       config.url = `${config.url}?${queryString}`;
     }
   }
-  const _globalBaseURL = window?.globalApi?.property ?? "";
+  const _globalBaseURL = uni.getStorageSync("globalApiProperty") || "";
   config.baseURL = _globalBaseURL || config.baseURL;
   return requestWuye.request<T>(config);
 };
@@ -114,7 +96,6 @@ const rjkWuyeOpenRequest = (
   open = true,
   fullPath = ""
 ) => {
-  // const _oldToken = uni.getStorageSync('oldToken')
   let queryString = "";
   if (config.params) {
     for (const key in config.params) {
@@ -123,7 +104,7 @@ const rjkWuyeOpenRequest = (
       }
     }
   }
-  const _globalBaseURL = window?.globalApi?.property ?? "";
+  const _globalBaseURL = uni.getStorageSync("globalApiProperty") || "";
   let url = _globalBaseURL || wuyeBaseURL || "";
   if (!url) {
     url = `https://test.ruijiakeyun.com:2234/api`;
@@ -147,7 +128,6 @@ const rjkOpenRequest = (
 ) => {
   const _sessionId = uni.getStorageSync("sessionId");
   const _userId = uni.getStorageSync("userId");
-  // const _oid = uni.getStorageSync("oid");
   let queryString = "";
   if (config.params) {
     for (const key in config.params) {
@@ -156,7 +136,7 @@ const rjkOpenRequest = (
       }
     }
   }
-  const _globalBaseURL = window?.globalApi?.business ?? "";
+  const _globalBaseURL = uni.getStorageSync("globalApiBusiness") || "";
   let url = _globalBaseURL || baseURL || "";
   if (url == "/api") {
     url = `https://api.ruijiakeyun.com:9443/gateway`;
